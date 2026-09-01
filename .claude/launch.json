@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "proyecto-raices-static",
+      "runtimeExecutable": "powershell.exe",
+      "runtimeArgs": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "C:\\Users\\nacho\\AppData\\Local\\Temp\\claude\\C--Users-nacho-OneDrive-Escritorio-proyecto-raices-web-1\\f48eb12f-805b-46b4-ae3a-9c38bd9e6e14\\scratchpad\\serve.ps1"
+      ],
+      "port": 8080
+    }
+  ]
+}
