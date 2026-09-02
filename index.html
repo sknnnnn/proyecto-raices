@@ -34,7 +34,7 @@
       <a href="galeria.html" data-nav="galeria">Galería</a>
       <a href="contacto.html" data-nav="contacto">Contacto</a>
     </div>
-    <a href="contacto.html" class="btn nav-cta">Consultar</a>
+    <a href="contacto.html" class="btn nav-cta">Reservá ahora</a>
   </nav>
 </header>
 
@@ -48,7 +48,7 @@
     <h1 class="hero-inicio-tagline">Viajes para conectar con cada lugar</h1>
     <div class="hero-ctas">
       <a href="experiencias.html" class="btn">Ver experiencias</a>
-      <a href="contacto.html" class="btn btn-outline on-dark">Solicitar información</a>
+      <a href="contacto.html" id="hero-wa-cta" class="btn btn-outline on-dark">Reservá por WhatsApp</a>
     </div>
   </div>
 </section>
@@ -255,6 +255,22 @@
             <p>${d.resumen}</p>
           </div>
         </a>`).join("");
+    }
+  });
+</script>
+<script>
+  // Home: CTA de WhatsApp del Hero — reutiliza SITE_CONFIG.whatsapp /
+  // whatsappLink() (site-config.js). Si todavía no hay número cargado,
+  // whatsappLink() devuelve null y el botón sigue llevando a Contacto.
+  document.addEventListener("DOMContentLoaded", () => {
+    const waBtn = document.getElementById("hero-wa-cta");
+    if (waBtn && typeof whatsappLink === "function") {
+      const link = whatsappLink("Hola! Quiero reservar una experiencia con Proyecto Raíces.");
+      if (link) {
+        waBtn.href = link;
+        waBtn.target = "_blank";
+        waBtn.rel = "noopener";
+      }
     }
   });
 </script>

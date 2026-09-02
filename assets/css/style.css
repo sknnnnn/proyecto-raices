@@ -590,12 +590,16 @@ body[data-page="destinos"] .destinos-lista{background:transparent;}
    agrega el riel horizontal con auto-scroll continuo, pausado al
    interactuar. Ancho/alto fijos por card para que la simetría se
    sostenga aunque cambie el largo del texto real más adelante. */
-body[data-page="inicio"] .exp-home{padding-top:8px; padding-bottom:32px; position:relative;}
-body[data-page="inicio"] .destinos{padding-top:36px;}
+body[data-page="inicio"] .exp-home{padding-top:8px; padding-bottom:16px; position:relative;}
+body[data-page="inicio"] .destinos{padding-top:20px;}
 /* Halo muy sutil detrás del carrusel — misma paleta del lienzo, sólo
    para dar algo de profundidad sin competir con las fotos. */
 body[data-page="inicio"] .exp-carousel{position:relative; display:flex; align-items:center; gap:16px; margin-top:8px;}
-body[data-page="inicio"] .exp-carousel::before{content:""; position:absolute; inset:-40px -20px; z-index:0; background:radial-gradient(58% 70% at 50% 45%, rgba(141,75,18,0.1) 0%, transparent 100%); pointer-events:none;}
+body[data-page="inicio"] .exp-carousel::before{content:""; position:absolute; inset:-48px -24px; z-index:0; background:radial-gradient(60% 75% at 50% 48%, rgba(141,75,18,0.16) 0%, rgba(141,75,18,0.07) 55%, transparent 100%); pointer-events:none;}
+/* Superficie levemente hundida detrás de las cards: un borde interno
+   sutil arriba/abajo que separa el riel del resto del lienzo, sin caja
+   ni sombra dura. */
+body[data-page="inicio"] .exp-carousel-viewport{box-shadow:inset 0 24px 34px -30px rgba(33,29,22,0.22), inset 0 -24px 34px -30px rgba(33,29,22,0.22);}
 /* Padding interno para que la sombra de cada card no quede recortada
    contra el borde del viewport con scroll (arriba/abajo y en los
    extremos), sin alterar el ancho de las cards. */
@@ -603,14 +607,14 @@ body[data-page="inicio"] .exp-carousel-viewport{position:relative; z-index:1; fl
 body[data-page="inicio"] .exp-carousel-viewport.dragging{cursor:grabbing; scroll-behavior:auto;}
 body[data-page="inicio"] .exp-carousel-viewport::-webkit-scrollbar{display:none;}
 body[data-page="inicio"] .exp-carousel-track{display:flex; gap:26px; width:max-content;}
-body[data-page="inicio"] .exp-carousel .exp-card{flex:0 0 300px; width:300px; height:480px; display:flex; flex-direction:column;}
+body[data-page="inicio"] .exp-carousel .exp-card{flex:0 0 300px; width:300px; min-height:480px; height:auto; display:flex; flex-direction:column;}
 body[data-page="inicio"] .exp-carousel .exp-card .img-wrap,
 body[data-page="inicio"] .exp-carousel .exp-card:nth-child(3n+1) .img-wrap{flex:none; aspect-ratio:1.15;}
-body[data-page="inicio"] .exp-carousel .exp-card .body{flex:1; overflow:hidden; padding:16px 2px 0;}
+body[data-page="inicio"] .exp-carousel .exp-card .body{flex:1; padding:16px 2px 4px;}
 body[data-page="inicio"] .exp-carousel .exp-card .resumen{display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;}
 body[data-page="inicio"] .exp-carousel .exp-card .actions{margin-top:auto; padding-top:10px;}
 @media (max-width:640px){
-  body[data-page="inicio"] .exp-carousel .exp-card{width:76vw; flex-basis:76vw; height:440px;}
+  body[data-page="inicio"] .exp-carousel .exp-card{width:76vw; flex-basis:76vw; min-height:440px; height:auto;}
   body[data-page="inicio"] .exp-carousel .testi-arrow{display:none;}
   body[data-page="inicio"] .exp-carousel-viewport{padding:18px 14px 34px;}
 }
