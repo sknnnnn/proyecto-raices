@@ -53,6 +53,30 @@
   </div>
 </section>
 
+<section class="exp-home" id="experiencias">
+  <div class="wrap">
+    <div class="section-head center">
+      <div class="kicker">Elegí tu aventura</div>
+      <h2>Momentos para vivir distinto</h2>
+      <p>Tours, travesías y paquetes armados para conectar con cada lugar.</p>
+    </div>
+    <div class="filtros center" id="exp-home-filtros">
+      <button type="button" class="filtro-btn active" data-tipo="">Todos</button>
+      <button type="button" class="filtro-btn" data-tipo="tour">Tours</button>
+      <button type="button" class="filtro-btn" data-tipo="travesia">Travesías</button>
+      <button type="button" class="filtro-btn" data-tipo="paquete">Paquetes</button>
+    </div>
+    <div class="exp-carousel" id="exp-home-carousel">
+      <button type="button" class="testi-arrow prev" id="exp-home-prev" aria-label="Ver experiencia anterior">‹</button>
+      <div class="exp-carousel-viewport" id="exp-home-viewport">
+        <div class="exp-carousel-track" id="exp-home-track"></div>
+      </div>
+      <button type="button" class="testi-arrow next" id="exp-home-next" aria-label="Ver experiencia siguiente">›</button>
+    </div>
+    <div class="section-foot"><a href="experiencias.html" class="btn btn-outline on-light">Ver todas las experiencias</a></div>
+  </div>
+</section>
+
 <section class="destinos" id="destinos">
   <div class="wrap">
     <div class="section-head">
@@ -233,6 +257,107 @@
           </div>
         </a>`).join("");
     }
+  });
+</script>
+<script>
+  // Home: carrusel de Experiencias — usa PROPUESTAS (propuestas-data.js)
+  // tal cual, mismo componente .exp-card que el resto del sitio. No crea
+  // datos nuevos: sólo arma el riel y lo duplica para el loop continuo.
+  document.addEventListener("DOMContentLoaded", () => {
+    const track = document.getElementById("exp-home-track");
+    const viewport = document.getElementById("exp-home-viewport");
+    if (!track || !viewport || typeof PROPUESTAS === "undefined") return;
+
+    const carousel = document.getElementById("exp-home-carousel");
+    const filtrosWrap = document.getElementById("exp-home-filtros");
+    const prevBtn = document.getElementById("exp-home-prev");
+    const nextBtn = document.getElementById("exp-home-next");
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    function cardHTML(p) {
+      const tipoInfo = typeof TIPOS_PROPUESTA !== "undefined" ? TIPOS_PROPUESTA[p.tipo] : null;
+      const destino = typeof getDestinoPorSlug === "function" ? getDestinoPorSlug(p.destino) : null;
+      return `
+        <article class="exp-card" data-tipo="${p.tipo}">
+          <div class="img-wrap">
+            ${p.imagen ? `<img src="${p.imagen}" alt="${p.nombre}" loading="lazy">` : `<div class="gal-placeholder" style="height:100%;">Imagen pendiente</div>`}
+            <span class="cat-badge">${tipoInfo ? tipoInfo.label : p.tipo}</span>
+          </div>
+          <div class="body">
+            ${p.esPlaceholder ? `<span class="placeholder-badge">Contenido de ejemplo</span>` : ""}
+            <span class="dest-tag">${destino ? destino.nombre : p.destino}</span>
+            <h3>${p.nombre}</h3>
+            <p class="resumen">${p.resumen}</p>
+            <div class="meta">
+              <span>⏱ ${p.duracion}</span>
+              <span>👥 ${p.modalidad}</span>
+              ${p.precio ? `<span>💲 ${p.precio}</span>` : ""}
+            </div>
+            <div class="actions">
+              <a class="btn btn-sm" href="propuesta.html?id=${p.id}">Ver detalles</a>
+              <a class="btn btn-outline on-light btn-sm" href="contacto.html?propuesta=${encodeURIComponent(p.nombre)}">Consultar</a>
+            </div>
+          </div>
+        </article>`;
+    }
+
+    let setWidth = 0;
+    let tipoActivo = "";
+
+    function render() {
+      const lista = tipoActivo ? PROPUESTAS.filter(p => p.tipo === tipoActivo) : PROPUESTAS.slice();
+      if (!lista.length) {
+        track.innerHTML = `<p class="empty-state">Todavía no hay experiencias cargadas en esta categoría.</p>`;
+        setWidth = 0;
+        return;
+      }
+      // Se duplica la lista filtrada para permitir un auto-scroll continuo
+      // sin corte visible (mismos datos reales, renderizados dos veces).
+      track.innerHTML = lista.map(cardHTML).join("") + lista.map(cardHTML).join("");
+      requestAnimationFrame(() => { setWidth = track.scrollWidth / 2; });
+      viewport.scrollLeft = 0;
+    }
+
+    if (filtrosWrap) {
+      filtrosWrap.querySelectorAll(".filtro-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          filtrosWrap.querySelectorAll(".filtro-btn").forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+          tipoActivo = btn.getAttribute("data-tipo") || "";
+          render();
+        });
+      });
+    }
+
+    render();
+
+    // ---- Auto-scroll continuo y pausado, con loop sin cortes ----
+    let paused = false, resumeTimer = null;
+    function tick() {
+      if (!paused && !reduceMotion && setWidth > 0) {
+        viewport.scrollLeft += 0.45;
+        if (viewport.scrollLeft >= setWidth) viewport.scrollLeft -= setWidth;
+      }
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+
+    function pauseTemporal() {
+      paused = true;
+      clearTimeout(resumeTimer);
+      resumeTimer = setTimeout(() => { paused = false; }, 3000);
+    }
+    ["pointerdown", "wheel", "touchstart"].forEach(ev => viewport.addEventListener(ev, pauseTemporal, { passive: true }));
+    if (carousel) { carousel.addEventListener("mouseenter", () => { paused = true; }); carousel.addEventListener("mouseleave", pauseTemporal); }
+
+    function cardStep() {
+      const card = track.querySelector(".exp-card");
+      if (!card) return 326;
+      const style = getComputedStyle(track);
+      return card.offsetWidth + parseFloat(style.columnGap || style.gap || 26);
+    }
+    if (prevBtn) prevBtn.addEventListener("click", () => { pauseTemporal(); viewport.scrollLeft -= cardStep(); });
+    if (nextBtn) nextBtn.addEventListener("click", () => { pauseTemporal(); viewport.scrollLeft += cardStep(); });
   });
 </script>
 </body>
