@@ -34,11 +34,9 @@
 
 <main id="main">
 
-<section class="destinos-hero">
-  <img class="destinos-hero-bg" src="assets/img/hero-destinos.jpg" alt="Cordillera y lago de montaña, uno de los paisajes que conecta Proyecto Raíces">
-  <div class="destinos-hero-content">
+<section class="page-intro tight">
+  <div class="wrap">
     <div class="breadcrumb"><a href="index.html">Inicio</a> / Destinos</div>
-    <div class="eyebrow">Turismo aventura · Argentina &amp; Perú</div>
   </div>
 </section>
 
@@ -107,19 +105,12 @@
 <script src="assets/js/propuestas-data.js"></script>
 <script src="assets/js/main.js"></script>
 <script>
-  // Composición editorial de Destinos: cada destino tiene su propia
-  // puesta en escena (no una tarjeta repetida) para que la página no
-  // se sienta mecánica. El contenido (nombre/país/texto/link) sale de
-  // DESTINOS, la misma fuente que usa el resto del sitio.
-  //
-  // "ordenPagina" define el orden de ESTA página únicamente (Cusco
-  // primero); no reordena destinos-data.js. Cualquier destino nuevo que
-  // no esté en la lista se agrega solo al final, así la página crece
-  // sin tener que rediseñar nada.
-  //
-  // Para sumar un cuarto destino en el futuro: agregá su objeto a
-  // DESTINOS (como siempre) y, si querés elegir su puesta en escena,
-  // una entrada en "layout" (a, b o c) — si no, usa "b" por defecto.
+  // Destinos — entradas editoriales: fotografía protagonista pero
+  // moderada (no a pantalla completa) + texto propio, alternando el
+  // lado de la foto y su proporción para dar ritmo sin repetir la
+  // misma tarjeta. El contenido (nombre/país/resumen/link) sale de
+  // DESTINOS, la misma fuente que usa el resto del sitio — no se
+  // agrega ni inventa ningún destino nuevo acá.
   document.addEventListener("DOMContentLoaded", () => {
     const cont = document.getElementById("destinos-lista");
     if (!cont || typeof DESTINOS === "undefined") return;
@@ -130,99 +121,35 @@
       .filter(Boolean)
       .concat(DESTINOS.filter(d => !ordenPagina.includes(d.slug)));
 
-    // "a" es ahora la puesta en escena protagonista (Cusco, primero);
-    // "c" la banda amplia (Patagonia, segundo gran bloque); "b" la
-    // contenida y más liviana (Norte Argentino, cierre).
-    const layout = { peru: "a", patagonia: "c", "norte-argentino": "b" };
     const objPos = { peru: "center 55%", patagonia: "center 32%", "norte-argentino": "center" };
+    const ratio  = { peru: "1.3", patagonia: "0.85", "norte-argentino": "1.15" };
 
-    // Fotos adicionales reales del proyecto (no inventadas) para dar,
-    // sólo en Cusco, "varias vistas" del destino protagonista.
-    const galeriaDestino = {
-      peru: ["assets/img/galeria-cusco-calle.jpg", "assets/img/galeria-maras.jpg", "assets/img/galeria-vicunas.jpg"]
-    };
+    const cta = (d) => d.esPlaceholder
+      ? `<span class="destino-entry-flag">Contenido en preparación</span>`
+      : `<span class="destino-entry-cta">Explorar destino →</span>`;
 
-    const cta = (d, nombre) => d.esPlaceholder
-      ? `<span class="destino-feature-flag">Contenido en preparación</span>`
-      : `<a href="catalogo.html?destino=${d.slug}" class="destino-feature-cta">Explorar destino →</a>`;
-
-    const galeriaHtml = (d, nombre) => {
-      const fotos = galeriaDestino[d.slug];
-      if (!fotos || !fotos.length) return "";
-      return `<div class="destino-galeria" role="list" aria-label="Más vistas de ${nombre}">
-        ${fotos.map(src => `<a class="destino-galeria-item" role="listitem" href="catalogo.html?destino=${d.slug}"><img src="${src}" alt="" loading="lazy"></a>`).join("")}
-      </div>`;
-    };
-
-    const bloques = {
-      a: (d, nombre, imagen) => `
-        <article class="destino-a">
-          <a class="destino-a-photo" href="catalogo.html?destino=${d.slug}" aria-label="Ver propuestas en ${nombre}">
-            <img src="${imagen}" alt="${nombre}, ${d.pais}" style="object-position:${objPos[d.slug] || "center"};">
-          </a>
-          <a class="destino-a-card" href="catalogo.html?destino=${d.slug}">
-            <span class="kicker">${d.pais}</span>
-            <h2>${nombre}</h2>
-            <p>${d.resumen}</p>
-          </a>
-        </article>
-        ${galeriaHtml(d, nombre)}`,
-      b: (d, nombre, imagen) => `
-        <article class="destino-b">
-          <div class="destino-b-text">
-            <span class="kicker">${d.pais}</span>
-            <h2>${nombre}</h2>
-            <p>${d.resumen}</p>
-            ${cta(d, nombre)}
-          </div>
-          <a class="destino-b-photo" href="catalogo.html?destino=${d.slug}" aria-label="Ver propuestas en ${nombre}">
-            <img src="${imagen}" alt="${nombre}, ${d.pais}" style="object-position:${objPos[d.slug] || "center"};">
-          </a>
-        </article>`,
-      c: (d, nombre, imagen) => `
-        <article class="destino-c">
-          <a class="destino-c-photo" href="catalogo.html?destino=${d.slug}" aria-label="Ver propuestas en ${nombre}">
-            <img src="${imagen}" alt="${nombre}, ${d.pais}" style="object-position:${objPos[d.slug] || "center"};">
-          </a>
-          <div class="destino-c-text">
-            <span class="kicker">${d.pais}</span>
-            <h2>${nombre}</h2>
-            <p>${d.resumen}</p>
-            ${cta(d, nombre)}
-          </div>
-        </article>`
-    };
-
-    const items = destacados.map(d => {
+    const items = destacados.map((d, i) => {
       const nombre = d.slug === "peru" ? "Cusco" : d.nombre;
-      const imagen = d.imagen;
-      const tipo = layout[d.slug] || "b";
-      return bloques[tipo](d, nombre, imagen);
+      const photo = `<div class="destino-entry-photo" style="aspect-ratio:${ratio[d.slug] || "1.05"};">
+        ${d.imagen ? `<img src="${d.imagen}" alt="${nombre}, ${d.pais}" style="object-position:${objPos[d.slug] || "center"};" loading="lazy">` : `<div class="gal-placeholder">Imagen pendiente</div>`}
+      </div>`;
+      const text = `<div class="destino-entry-text">
+        <span class="tag">${d.pais}</span>
+        <h2>${nombre}</h2>
+        <p>${d.resumen}</p>
+        ${cta(d)}
+      </div>`;
+      const inner = i % 2 === 1 ? text + photo : photo + text;
+      return `<a class="destino-entry" href="catalogo.html?destino=${d.slug}" aria-label="Ver propuestas en ${nombre}">${inner}</a>`;
     });
 
-    // Interludio editorial entre el segundo y el tercer destino: fotos
-    // reales de las tres regiones, recorrido horizontal suave.
-    const inspirate = `
-      <section class="destinos-inspirate" aria-label="Inspiración para tu próximo viaje">
-        <div class="destinos-inspirate-head">
-          <span class="kicker">Inspirate</span>
-          <h2>Cada destino, una forma distinta de viajar</h2>
-        </div>
-        <div class="destinos-inspirate-track">
-          <a class="destinos-inspirate-item" href="catalogo.html?destino=peru"><img src="assets/img/galeria-machupicchu-terrazas.jpg" alt="" loading="lazy"><span>Cusco</span></a>
-          <a class="destinos-inspirate-item" href="catalogo.html?destino=patagonia"><img src="assets/img/hero-travesias-bariloche.jpg" alt="" loading="lazy"><span>Patagonia</span></a>
-          <a class="destinos-inspirate-item" href="catalogo.html?destino=norte-argentino"><img src="assets/img/destino-norte-argentino.jpg" alt="" loading="lazy"><span>Norte Argentino</span></a>
-        </div>
-      </section>`;
-    items.splice(2, 0, inspirate);
-
-    cont.innerHTML = `<h1 class="destinos-lead">Lugares para conocer, <em>recorrer</em> y vivir.</h1>` + items.join("");
+    cont.innerHTML = `<div class="kicker">Destinos</div><h1 class="destinos-lead">Lugares para conocer, <em>recorrer</em> y vivir.</h1>` + items.join("");
 
     // Aparición progresiva al hacer scroll — sutil, una sola vez por
     // elemento, y desactivada por completo si el usuario prefiere menos
     // movimiento.
     if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      const revealEls = cont.querySelectorAll(".destino-a, .destino-b, .destino-c, .destinos-inspirate, .destino-galeria");
+      const revealEls = cont.querySelectorAll(".destino-entry");
       const io = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
