@@ -105,12 +105,12 @@
 <script src="assets/js/propuestas-data.js"></script>
 <script src="assets/js/main.js"></script>
 <script>
-  // Destinos — entradas editoriales: fotografía protagonista pero
-  // moderada (no a pantalla completa) + texto propio, alternando el
-  // lado de la foto y su proporción para dar ritmo sin repetir la
-  // misma tarjeta. El contenido (nombre/país/resumen/link) sale de
-  // DESTINOS, la misma fuente que usa el resto del sitio — no se
-  // agrega ni inventa ningún destino nuevo acá.
+  // Destinos — catálogo editorial agrupado por país/región: escala a
+  // cualquier cantidad de destinos sin volverse una lista vertical
+  // interminable (cada país agrupa sus propios destinos en una grilla
+  // compacta que crece en filas, no en altura de bloque). El contenido
+  // (nombre/país/resumen/link) sale de DESTINOS, la misma fuente que
+  // usa el resto del sitio — no se agrega ni inventa ningún destino.
   document.addEventListener("DOMContentLoaded", () => {
     const cont = document.getElementById("destinos-lista");
     if (!cont || typeof DESTINOS === "undefined") return;
@@ -122,34 +122,47 @@
       .concat(DESTINOS.filter(d => !ordenPagina.includes(d.slug)));
 
     const objPos = { peru: "center 55%", patagonia: "center 32%", "norte-argentino": "center" };
-    const ratio  = { peru: "1.3", patagonia: "0.85", "norte-argentino": "1.15" };
 
-    const cta = (d) => d.esPlaceholder
-      ? `<span class="destino-entry-flag">Contenido en preparación</span>`
-      : `<span class="destino-entry-cta">Explorar destino →</span>`;
-
-    const items = destacados.map((d, i) => {
-      const nombre = d.slug === "peru" ? "Cusco" : d.nombre;
-      const photo = `<div class="destino-entry-photo" style="aspect-ratio:${ratio[d.slug] || "1.05"};">
-        ${d.imagen ? `<img src="${d.imagen}" alt="${nombre}, ${d.pais}" style="object-position:${objPos[d.slug] || "center"};" loading="lazy">` : `<div class="gal-placeholder">Imagen pendiente</div>`}
-      </div>`;
-      const text = `<div class="destino-entry-text">
-        <span class="tag">${d.pais}</span>
-        <h2>${nombre}</h2>
-        <p>${d.resumen}</p>
-        ${cta(d)}
-      </div>`;
-      const inner = i % 2 === 1 ? text + photo : photo + text;
-      return `<a class="destino-entry" href="catalogo.html?destino=${d.slug}" aria-label="Ver propuestas en ${nombre}">${inner}</a>`;
+    // Agrupa por país (d.pais) en el orden en que aparece cada uno por
+    // primera vez en "destacados" — un país nuevo en destinos-data.js
+    // arma su propio grupo solo, sin tocar este archivo.
+    const grupos = [];
+    destacados.forEach(d => {
+      let g = grupos.find(g => g.pais === d.pais);
+      if (!g) { g = { pais: d.pais, items: [] }; grupos.push(g); }
+      g.items.push(d);
     });
 
-    cont.innerHTML = `<div class="kicker">Destinos</div><h1 class="destinos-lead">Lugares para conocer, <em>recorrer</em> y vivir.</h1>` + items.join("");
+    const tarjeta = (d) => {
+      const nombre = d.slug === "peru" ? "Cusco" : d.nombre;
+      const img = d.imagen
+        ? `<img src="${d.imagen}" alt="${nombre}, ${d.pais}" style="object-position:${objPos[d.slug] || "center"};" loading="lazy">`
+        : `<div class="gal-placeholder">Imagen pendiente</div>`;
+      const prep = d.esPlaceholder ? `<span class="destino-card-flag">En preparación</span>` : "";
+      return `
+        <a class="destino-card" href="catalogo.html?destino=${d.slug}" aria-label="Ver propuestas en ${nombre}">
+          ${img}
+          ${prep}
+          <div class="info">
+            <h3>${nombre}</h3>
+            <span class="explorar">Explorar destino →</span>
+          </div>
+        </a>`;
+    };
+
+    const gruposHtml = grupos.map(g => `
+      <div class="destinos-group">
+        <div class="destinos-group-title">${g.pais}</div>
+        <div class="destinos-grid">${g.items.map(tarjeta).join("")}</div>
+      </div>`).join("");
+
+    cont.innerHTML = `<div class="kicker">Destinos</div><h1 class="destinos-lead">Lugares para conocer, <em>recorrer</em> y vivir</h1>` + gruposHtml;
 
     // Aparición progresiva al hacer scroll — sutil, una sola vez por
     // elemento, y desactivada por completo si el usuario prefiere menos
     // movimiento.
     if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      const revealEls = cont.querySelectorAll(".destino-entry");
+      const revealEls = cont.querySelectorAll(".destino-card");
       const io = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
