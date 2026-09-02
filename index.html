@@ -246,7 +246,7 @@
         .map(slug => DESTINOS.find(d => d.slug === slug))
         .filter(Boolean)
         .concat(DESTINOS.filter(d => !ordenInicio.includes(d.slug)));
-      destinosHome.innerHTML = destacados.slice(0, 4).map(d => `
+      destinosHome.innerHTML = destacados.slice(0, 3).map(d => `
         <a class="dest-card ${d.esPlaceholder ? "placeholder" : ""}" href="catalogo.html?destino=${d.slug}">
           ${d.imagen ? `<img src="${d.imagen}" alt="${d.nombre}">` : ""}
           <div class="info">
