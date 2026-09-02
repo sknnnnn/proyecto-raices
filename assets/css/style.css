@@ -293,7 +293,12 @@ body[data-page="inicio"] .nav-toggle span{background:#fdfbf4;}
    centrado sobre el mismo eje que el logo, como un único bloque
    visual — un max-width angosto sin margin:auto desplazaba la caja
    hacia la izquierda en vez de centrarla. */
-.hero-inicio-tagline{display:block; font-family:var(--font-heading); font-weight:500; font-style:italic; letter-spacing:0.02em; font-size:clamp(16px,1.8vw,21px); line-height:1.35; color:rgba(247,244,236,0.92); white-space:normal; width:100%; margin:0; text-shadow:0 2px 10px rgba(0,0,0,0.45);}
+/* El archivo del logo (logo-amarillo.png) no tiene el dibujo centrado
+   en su propio lienzo: le sobra margen a la izquierda, así que su
+   centro visual (la tinta) cae unos px a la derecha del centro real
+   de la caja. Se compensa acá, en el texto, para que ambos queden
+   alineados sobre el mismo eje visual — el logo no se toca. */
+.hero-inicio-tagline{display:block; font-family:var(--font-heading); font-weight:500; font-style:italic; letter-spacing:0.02em; font-size:clamp(16px,1.8vw,21px); line-height:1.35; color:rgba(247,244,236,0.92); white-space:normal; width:100%; margin:0; text-shadow:0 2px 10px rgba(0,0,0,0.45); transform:translateX(0.7%);}
 .hero-inicio-tagline::before, .hero-inicio-tagline::after{content:none;}
 /* CTAs claramente separados del bloque logo+tagline, aprovechando el
    espacio de la foto hacia abajo — misma pareja editorial de antes
