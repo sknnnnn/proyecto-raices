@@ -504,8 +504,18 @@ body[data-page="destinos"] .page-intro{background:transparent; padding-bottom:0;
 .destinos-group:last-child{margin-bottom:0;}
 .destinos-group-title{font-family:var(--font-body); font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.14em; color:var(--color-marron); display:flex; align-items:center; gap:14px; margin-bottom:24px;}
 .destinos-group-title::after{content:""; flex:1; height:1px; background:var(--border-color-strong);}
-.destinos-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(230px, 1fr)); gap:24px;}
+/* Carrusel por país — mismo mecanismo (auto-scroll continuo, pausado
+   al interactuar, flechas + swipe nativo) que ya usa Experiencias en
+   Inicio, acá con una instancia propia por grupo. Sólo se activa
+   (clonado + auto-scroll) cuando el país realmente desborda su fila;
+   con pocos destinos el riel queda quieto y sin flechas. */
+.destinos-carousel{position:relative; display:flex; align-items:center; gap:14px;}
+.destinos-carousel.sin-desborde .destinos-carousel-arrow{display:none;}
+.destinos-carousel-viewport{flex:1; min-width:0; overflow-x:auto; scroll-behavior:smooth; scrollbar-width:none; -ms-overflow-style:none; cursor:grab; padding:20px 20px 34px;}
+.destinos-carousel-viewport::-webkit-scrollbar{display:none;}
+.destinos-carousel-track{display:flex; gap:22px; width:max-content;}
 .destino-card{position:relative; display:block; aspect-ratio:0.88; border-radius:22px 6px 22px 6px; overflow:hidden; box-shadow:var(--shadow-md); text-decoration:none; color:inherit;}
+.destinos-carousel-track .destino-card{flex:0 0 240px; width:240px;}
 .destino-card img, .destino-card .gal-placeholder{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; transition:transform .5s ease;}
 .destino-card:hover img{transform:scale(1.06);}
 .destino-card::after{content:""; position:absolute; inset:0; background:linear-gradient(180deg, transparent 50%, rgba(10,8,4,0.82) 100%);}
@@ -518,7 +528,10 @@ body[data-page="destinos"] .page-intro{background:transparent; padding-bottom:0;
   .destino-card .explorar{opacity:1; transform:none;}
 }
 @media (max-width:700px){
-  .destinos-grid{grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)); gap:14px;}
+  .destinos-carousel-track .destino-card{flex:0 0 160px; width:160px;}
+  .destinos-carousel-track{gap:14px;}
+  .destinos-carousel-viewport{padding:14px 14px 26px;}
+  .destinos-carousel-arrow{display:none;}
   .destino-card{border-radius:16px 6px 16px 6px;}
   .destino-card .info{padding:12px;}
   .destino-card h3{font-size:16px;}

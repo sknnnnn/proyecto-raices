@@ -153,16 +153,79 @@
     const gruposHtml = grupos.map(g => `
       <div class="destinos-group">
         <div class="destinos-group-title">${g.pais}</div>
-        <div class="destinos-grid">${g.items.map(tarjeta).join("")}</div>
+        <div class="destinos-carousel">
+          <button type="button" class="destinos-carousel-arrow testi-arrow prev" aria-label="Ver destino anterior">‹</button>
+          <div class="destinos-carousel-viewport">
+            <div class="destinos-carousel-track">${g.items.map(tarjeta).join("")}</div>
+          </div>
+          <button type="button" class="destinos-carousel-arrow next" aria-label="Ver destino siguiente">›</button>
+        </div>
       </div>`).join("");
 
     cont.innerHTML = `<div class="kicker">Destinos</div><h1 class="destinos-lead">Lugares para conocer, <em>recorrer</em> y vivir</h1>` + gruposHtml;
 
+    // Cada país es un carrusel propio (auto-scroll continuo, pausado al
+    // interactuar; se detiene solo si su fila no llega a desbordar, algo
+    // que va a pasar solo mientras haya pocos destinos cargados). El
+    // duplicado del contenido es sólo para el loop visual — no crea
+    // destinos, son los mismos nodos clonados.
+    function initCarrusel(root) {
+      const viewport = root.querySelector(".destinos-carousel-viewport");
+      const track = root.querySelector(".destinos-carousel-track");
+      const prevBtn = root.querySelector(".prev");
+      const nextBtn = root.querySelector(".next");
+      if (!viewport || !track) return;
+
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      let setWidth = 0;
+
+      function medir() {
+        const desborda = track.scrollWidth > viewport.clientWidth + 4;
+        root.classList.toggle("sin-desborde", !desborda);
+        if (desborda && !track.dataset.doubled) {
+          Array.from(track.children).map(el => el.cloneNode(true)).forEach(c => track.appendChild(c));
+          track.dataset.doubled = "1";
+        }
+        setWidth = track.dataset.doubled ? track.scrollWidth / 2 : 0;
+      }
+      requestAnimationFrame(medir);
+      window.addEventListener("resize", () => requestAnimationFrame(medir));
+
+      function tick() {
+        if (!root.classList.contains("pausado") && !reduceMotion && setWidth > 0) {
+          viewport.scrollLeft += 0.35;
+          if (viewport.scrollLeft >= setWidth) viewport.scrollLeft -= setWidth;
+        }
+        requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+
+      let resumeTimer = null;
+      function pausarTemporal() {
+        root.classList.add("pausado");
+        clearTimeout(resumeTimer);
+        resumeTimer = setTimeout(() => root.classList.remove("pausado"), 3000);
+      }
+      ["pointerdown", "wheel", "touchstart"].forEach(ev => viewport.addEventListener(ev, pausarTemporal, { passive: true }));
+      root.addEventListener("mouseenter", () => root.classList.add("pausado"));
+      root.addEventListener("mouseleave", pausarTemporal);
+
+      function paso() {
+        const card = track.querySelector(".destino-card");
+        if (!card) return 260;
+        const style = getComputedStyle(track);
+        return card.getBoundingClientRect().width + parseFloat(style.columnGap || style.gap || 20);
+      }
+      if (prevBtn) prevBtn.addEventListener("click", () => { pausarTemporal(); viewport.scrollLeft -= paso(); });
+      if (nextBtn) nextBtn.addEventListener("click", () => { pausarTemporal(); viewport.scrollLeft += paso(); });
+    }
+    cont.querySelectorAll(".destinos-carousel").forEach(initCarrusel);
+
     // Aparición progresiva al hacer scroll — sutil, una sola vez por
-    // elemento, y desactivada por completo si el usuario prefiere menos
+    // grupo, y desactivada por completo si el usuario prefiere menos
     // movimiento.
     if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      const revealEls = cont.querySelectorAll(".destino-card");
+      const revealEls = cont.querySelectorAll(".destinos-group");
       const io = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
@@ -170,7 +233,7 @@
             io.unobserve(entry.target);
           }
         });
-      }, { threshold: 0.15 });
+      }, { threshold: 0.1 });
       revealEls.forEach(el => { el.classList.add("reveal"); io.observe(el); });
     }
   });
