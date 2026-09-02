@@ -158,17 +158,18 @@
           <div class="destinos-carousel-viewport">
             <div class="destinos-carousel-track">${g.items.map(tarjeta).join("")}</div>
           </div>
-          <button type="button" class="destinos-carousel-arrow next" aria-label="Ver destino siguiente">›</button>
+          <button type="button" class="destinos-carousel-arrow testi-arrow next" aria-label="Ver destino siguiente">›</button>
         </div>
       </div>`).join("");
 
     cont.innerHTML = `<div class="kicker">Destinos</div><h1 class="destinos-lead">Lugares para conocer, <em>recorrer</em> y vivir</h1>` + gruposHtml;
 
-    // Cada país es un carrusel propio (auto-scroll continuo, pausado al
-    // interactuar; se detiene solo si su fila no llega a desbordar, algo
-    // que va a pasar solo mientras haya pocos destinos cargados). El
-    // duplicado del contenido es sólo para el loop visual — no crea
-    // destinos, son los mismos nodos clonados.
+    // Cada país es un carrusel propio, finito: cada destino aparece una
+    // sola vez (nada se clona ni se duplica), sin auto-scroll ni loop.
+    // Las flechas avanzan/retroceden una card y quedan disabled en cada
+    // punta real del recorrido; el swipe nativo (overflow-x + scroll-snap)
+    // hace lo mismo en mobile. Si la fila no llega a desbordar (pocos
+    // destinos cargados) las flechas se ocultan solas.
     function initCarrusel(root) {
       const viewport = root.querySelector(".destinos-carousel-viewport");
       const track = root.querySelector(".destinos-carousel-track");
@@ -177,47 +178,40 @@
       if (!viewport || !track) return;
 
       const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      let setWidth = 0;
+      const EPS = 2;
 
-      function medir() {
-        const desborda = track.scrollWidth > viewport.clientWidth + 4;
+      function actualizarLimites() {
+        const max = track.scrollWidth - viewport.clientWidth;
+        const desborda = max > EPS;
         root.classList.toggle("sin-desborde", !desborda);
-        if (desborda && !track.dataset.doubled) {
-          Array.from(track.children).map(el => el.cloneNode(true)).forEach(c => track.appendChild(c));
-          track.dataset.doubled = "1";
-        }
-        setWidth = track.dataset.doubled ? track.scrollWidth / 2 : 0;
+        if (prevBtn) prevBtn.disabled = !desborda || viewport.scrollLeft <= EPS;
+        if (nextBtn) nextBtn.disabled = !desborda || viewport.scrollLeft >= max - EPS;
       }
-      requestAnimationFrame(medir);
-      window.addEventListener("resize", () => requestAnimationFrame(medir));
-
-      function tick() {
-        if (!root.classList.contains("pausado") && !reduceMotion && setWidth > 0) {
-          viewport.scrollLeft += 0.35;
-          if (viewport.scrollLeft >= setWidth) viewport.scrollLeft -= setWidth;
-        }
-        requestAnimationFrame(tick);
-      }
-      requestAnimationFrame(tick);
-
-      let resumeTimer = null;
-      function pausarTemporal() {
-        root.classList.add("pausado");
-        clearTimeout(resumeTimer);
-        resumeTimer = setTimeout(() => root.classList.remove("pausado"), 3000);
-      }
-      ["pointerdown", "wheel", "touchstart"].forEach(ev => viewport.addEventListener(ev, pausarTemporal, { passive: true }));
-      root.addEventListener("mouseenter", () => root.classList.add("pausado"));
-      root.addEventListener("mouseleave", pausarTemporal);
 
       function paso() {
         const card = track.querySelector(".destino-card");
-        if (!card) return 260;
+        if (!card) return viewport.clientWidth;
         const style = getComputedStyle(track);
-        return card.getBoundingClientRect().width + parseFloat(style.columnGap || style.gap || 20);
+        return card.getBoundingClientRect().width + parseFloat(style.columnGap || style.gap || 0);
       }
-      if (prevBtn) prevBtn.addEventListener("click", () => { pausarTemporal(); viewport.scrollLeft -= paso(); });
-      if (nextBtn) nextBtn.addEventListener("click", () => { pausarTemporal(); viewport.scrollLeft += paso(); });
+
+      if (prevBtn) prevBtn.addEventListener("click", () => {
+        viewport.scrollBy({ left: -paso(), behavior: reduceMotion ? "auto" : "smooth" });
+      });
+      if (nextBtn) nextBtn.addEventListener("click", () => {
+        viewport.scrollBy({ left: paso(), behavior: reduceMotion ? "auto" : "smooth" });
+      });
+
+      // Cubre swipe/drag manual y el resultado de cada click de flecha
+      // (el scroll dispara este evento igual, sea nativo o por scrollBy).
+      let scrollTimer = null;
+      viewport.addEventListener("scroll", () => {
+        clearTimeout(scrollTimer);
+        scrollTimer = setTimeout(actualizarLimites, 80);
+      }, { passive: true });
+
+      window.addEventListener("resize", () => requestAnimationFrame(actualizarLimites));
+      requestAnimationFrame(actualizarLimites);
     }
     cont.querySelectorAll(".destinos-carousel").forEach(initCarrusel);
 
