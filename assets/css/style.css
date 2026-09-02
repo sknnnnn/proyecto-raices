@@ -590,7 +590,8 @@ body[data-page="destinos"] .destinos-lista{background:transparent;}
    agrega el riel horizontal con auto-scroll continuo, pausado al
    interactuar. Ancho/alto fijos por card para que la simetría se
    sostenga aunque cambie el largo del texto real más adelante. */
-body[data-page="inicio"] .exp-home{padding-top:8px; position:relative;}
+body[data-page="inicio"] .exp-home{padding-top:8px; padding-bottom:32px; position:relative;}
+body[data-page="inicio"] .destinos{padding-top:36px;}
 /* Halo muy sutil detrás del carrusel — misma paleta del lienzo, sólo
    para dar algo de profundidad sin competir con las fotos. */
 body[data-page="inicio"] .exp-carousel{position:relative; display:flex; align-items:center; gap:16px; margin-top:8px;}
