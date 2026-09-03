@@ -96,27 +96,57 @@ function initContactForm(){
   });
 }
 
-/* ---------- Lightbox simple para la galería ---------- */
+/* ---------- Lightbox/carrusel de la galería ---------- */
 function initLightbox(){
   const lightbox = document.getElementById("lightbox");
   if (!lightbox) return;
   const img = lightbox.querySelector("img");
-  document.querySelectorAll("[data-lightbox]").forEach(el => {
-    el.addEventListener("click", () => {
-      img.src = el.getAttribute("data-lightbox");
-      img.alt = el.alt || "";
-      lightbox.classList.add("open");
-    });
+  const prevBtn = lightbox.querySelector(".lightbox-prev");
+  const nextBtn = lightbox.querySelector(".lightbox-next");
+  const items = Array.from(document.querySelectorAll("[data-lightbox]"));
+  if (!items.length) return;
+  let current = 0;
+
+  function show(i){
+    current = (i + items.length) % items.length;
+    const el = items[current];
+    img.src = el.getAttribute("data-lightbox");
+    img.alt = el.alt || "";
+  }
+  function open(i){
+    show(i);
+    lightbox.classList.add("open");
+  }
+  function close(){
+    lightbox.classList.remove("open");
+    img.src = "";
+  }
+
+  items.forEach((el, i) => {
+    el.addEventListener("click", () => open(i));
   });
+
+  if (prevBtn) prevBtn.addEventListener("click", (e) => { e.stopPropagation(); show(current - 1); });
+  if (nextBtn) nextBtn.addEventListener("click", (e) => { e.stopPropagation(); show(current + 1); });
+
   lightbox.addEventListener("click", (e) => {
-    if (e.target === lightbox || e.target.classList.contains("lightbox-close")) {
-      lightbox.classList.remove("open");
-      img.src = "";
-    }
+    if (e.target === lightbox || e.target.classList.contains("lightbox-close")) close();
   });
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") { lightbox.classList.remove("open"); img.src = ""; }
+    if (!lightbox.classList.contains("open")) return;
+    if (e.key === "Escape") close();
+    if (e.key === "ArrowRight") show(current + 1);
+    if (e.key === "ArrowLeft") show(current - 1);
   });
+
+  let touchX = null;
+  lightbox.addEventListener("touchstart", (e) => { touchX = e.touches[0].clientX; }, { passive: true });
+  lightbox.addEventListener("touchend", (e) => {
+    if (touchX === null) return;
+    const dx = e.changedTouches[0].clientX - touchX;
+    if (Math.abs(dx) > 40) { dx < 0 ? show(current + 1) : show(current - 1); }
+    touchX = null;
+  }, { passive: true });
 }
 
 /* =========================================================
