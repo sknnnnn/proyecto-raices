@@ -1028,77 +1028,27 @@ footer li a:hover{opacity:1; color:var(--color-amarillo);}
 }
 
 /* ---------- Experiencias — explorador editorial (Etapa 1) ----------
-   El eje principal es el LUGAR: "¿Por dónde empezamos?" (País → Destino,
-   con foto + reseña real) siempre antes de Tipo. Al elegir un destino,
-   sus experiencias aparecen directamente agrupadas por Tipo (Tours ·
-   Travesías · Paquetes) — sin ningún encabezado conceptual intermedio,
-   sólo un filete sutil que separa ambos bloques. "Para inspirarte" es
-   una puerta secundaria más abajo, con 3 experiencias reales sueltas
-   (sin filtro de país/destino), para quien todavía no decidió a dónde
-   ir. El lienzo de fondo ya está resuelto arriba (body[data-page=
-   "experiencias"] main + section transparent) — acá sólo se agregan
-   los componentes nuevos: los "destino tiles" (foto + nombre + reseña,
-   con estado activo) y los carruseles de Tipo (que reutilizan
-   .exp-card/.testi-arrow tal cual pero necesitan volver .exp-card a
-   un layout de columna, porque esta página ya lo usa en
-   fila alternada para otro contexto — ver bloque más arriba) y las
-   cards mínimas de "Para inspirarte". */
+   El explorador es SOLO selector de lugar: "¿Por dónde empezamos?"
+   (País → Destino, foto + nombre) y termina ahí — no hay Tipo, ni
+   Tours/Travesías/Paquetes, ni ningún encabezado intermedio dentro del
+   explorador (eso se define en una etapa posterior). "Para inspirarte"
+   es una puerta secundaria más abajo, con 3 experiencias reales
+   sueltas, para quien todavía no decidió a dónde ir. El lienzo de
+   fondo ya está resuelto arriba (body[data-page="experiencias"] main +
+   section transparent) — acá sólo se agregan los "destino tiles" (foto
+   + nombre, sin descripción: son punto de entrada visual, no ficha) y
+   las cards mínimas de "Para inspirarte". */
 body[data-page="experiencias"] .page-intro-media{max-width:560px; margin-left:auto;}
 body[data-page="experiencias"] .exp-explorer{padding:var(--space-7) 0 var(--space-8);}
 body[data-page="experiencias"] .exp-explorer-head{margin-bottom:var(--space-6);}
 body[data-page="experiencias"] .exp-explorer-paises{margin-bottom:var(--space-7);}
 
-.exp-explorer-destinos{display:flex; flex-wrap:wrap; gap:var(--space-4); margin-bottom:var(--space-6);}
-.exp-destino-tile{position:relative; flex:0 0 auto; width:260px; aspect-ratio:0.92; display:flex; flex-direction:column; border-radius:var(--radius-lg); overflow:hidden; border:none; padding:0; cursor:pointer; text-align:left; box-shadow:var(--shadow-sm); transition:box-shadow var(--duration-base) var(--ease), transform var(--duration-base) var(--ease);}
+.exp-explorer-destinos{display:flex; flex-wrap:wrap; gap:var(--space-4);}
+.exp-destino-tile{position:relative; flex:0 0 auto; width:220px; aspect-ratio:1; display:block; border-radius:var(--radius-lg); overflow:hidden; box-shadow:var(--shadow-sm); text-decoration:none; transition:box-shadow var(--duration-base) var(--ease), transform var(--duration-base) var(--ease);}
 .exp-destino-tile:hover{transform:translateY(-2px); box-shadow:var(--shadow-md);}
-.exp-destino-tile.active{box-shadow:0 0 0 3px var(--color-naranja), var(--shadow-lg);}
 .exp-destino-tile img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;}
-.exp-destino-tile::after{content:""; position:absolute; inset:0; background:linear-gradient(180deg, transparent 40%, rgba(10,8,4,0.82) 100%);}
-.exp-destino-tile-info{position:relative; z-index:1; display:flex; flex-direction:column; gap:5px; margin-top:auto; padding:16px;}
-.exp-destino-tile-label{font-family:var(--font-heading); font-weight:700; font-size:18px; color:#fff; text-shadow:0 2px 8px rgba(0,0,0,0.5);}
-.exp-destino-tile-resumen{font-size:12.5px; line-height:1.4; color:rgba(255,255,255,0.85); display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;}
-
-.exp-explorer-ubicacion{display:flex; align-items:center; gap:8px; font-family:var(--font-body); font-size:12.5px; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted); margin-bottom:var(--space-5);}
-.exp-explorer-ubicacion .sep{opacity:0.5;}
-
-/* Del destino a sus experiencias sin ningún encabezado intermedio
-   ("¿Cómo querés vivir X?" quedó afuera a propósito): sólo un filete
-   sutil que separa el bloque de lugar del de Tipo, sin agregar texto
-   ni un nivel de navegación nuevo. */
-.exp-explorer-resultado{padding-top:var(--space-5); border-top:1px solid var(--border-color);}
-
-.exp-tipo-grupo{margin-bottom:var(--space-7);}
-.exp-tipo-grupo:last-child{margin-bottom:0;}
-.exp-tipo-grupo-head{display:flex; align-items:baseline; justify-content:space-between; gap:16px; margin-bottom:var(--space-4);}
-.exp-tipo-grupo-head h4{font-family:var(--font-heading); font-weight:700; font-size:15px; text-transform:uppercase; letter-spacing:0.06em; color:var(--color-marron);}
-.exp-tipo-grupo-link{font-family:var(--font-heading); font-weight:700; font-size:13px; color:var(--color-verde); white-space:nowrap; text-decoration:none;}
-
-.exp-tipo-carousel{position:relative; display:flex; align-items:center; gap:16px;}
-.exp-tipo-carousel.sin-desborde .testi-arrow{display:none;}
-.exp-tipo-carousel::before{content:""; position:absolute; inset:-40px -24px; z-index:0; background:radial-gradient(60% 75% at 50% 48%, rgba(141,75,18,0.16) 0%, rgba(141,75,18,0.07) 55%, transparent 100%); pointer-events:none;}
-.exp-tipo-viewport{position:relative; z-index:1; flex:1; min-width:0; overflow-x:auto; scroll-behavior:smooth; scrollbar-width:none; -ms-overflow-style:none; padding:6px 4px 34px;}
-.exp-tipo-viewport::-webkit-scrollbar{display:none;}
-.exp-tipo-track{display:flex; gap:26px; width:max-content;}
-
-body[data-page="experiencias"] .exp-tipo-track .exp-card,
-body[data-page="experiencias"] .exp-tipo-track .exp-card[data-tipo="tour"],
-body[data-page="experiencias"] .exp-tipo-track .exp-card[data-tipo="travesia"],
-body[data-page="experiencias"] .exp-tipo-track .exp-card[data-tipo="paquete"]{
-  display:flex; flex-direction:column; flex:0 0 300px; width:300px; min-height:460px; height:auto;
-  gap:0; background:transparent; border:none; border-radius:0; transition:transform .25s ease;
-}
-body[data-page="experiencias"] .exp-tipo-track .exp-card:hover{transform:translateY(-3px);}
-body[data-page="experiencias"] .exp-tipo-track .exp-card .img-wrap,
-body[data-page="experiencias"] .exp-tipo-track .exp-card[data-tipo="tour"] .img-wrap,
-body[data-page="experiencias"] .exp-tipo-track .exp-card[data-tipo="travesia"] .img-wrap,
-body[data-page="experiencias"] .exp-tipo-track .exp-card[data-tipo="paquete"] .img-wrap{
-  height:auto; aspect-ratio:1.15; border-radius:36px 10px 36px 10px; order:0; max-width:none; margin-left:0;
-}
-body[data-page="experiencias"] .exp-tipo-track .exp-card .body,
-body[data-page="experiencias"] .exp-tipo-track .exp-card[data-tipo="travesia"] .body{padding:16px 2px 4px; order:0; text-align:left; display:flex; flex-direction:column; align-items:flex-start; flex:1;}
-body[data-page="experiencias"] .exp-tipo-track .exp-card .resumen{display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;}
-body[data-page="experiencias"] .exp-tipo-track .exp-card .meta{display:flex;}
-body[data-page="experiencias"] .exp-tipo-track .exp-card .actions{margin-top:auto; padding-top:10px; justify-content:flex-start;}
+.exp-destino-tile::after{content:""; position:absolute; inset:0; background:linear-gradient(180deg, transparent 45%, rgba(10,8,4,0.78) 100%);}
+.exp-destino-tile-label{position:absolute; left:0; right:0; bottom:0; z-index:1; padding:16px; font-family:var(--font-heading); font-weight:700; font-size:18px; color:#fff; text-shadow:0 2px 8px rgba(0,0,0,0.5);}
 
 /* "Para inspirarte" — deliberadamente chica y secundaria: sin kicker
    grande ni h2, sin carrusel (son sólo 3), tarjetas más chicas que las
@@ -1130,13 +1080,7 @@ body[data-page="experiencias"] .exp-inspirate{padding:0 0 var(--space-8);}
 }
 @media (max-width:640px){
   .exp-explorer-destinos{gap:var(--space-3);}
-  .exp-destino-tile{width:78vw; max-width:280px;}
-  .exp-tipo-viewport{padding:6px 4px 26px;}
-  .exp-tipo-track{gap:16px;}
-  body[data-page="experiencias"] .exp-tipo-track .exp-card,
-  body[data-page="experiencias"] .exp-tipo-track .exp-card[data-tipo="tour"],
-  body[data-page="experiencias"] .exp-tipo-track .exp-card[data-tipo="travesia"],
-  body[data-page="experiencias"] .exp-tipo-track .exp-card[data-tipo="paquete"]{width:76vw; flex-basis:76vw; min-height:420px;}
+  .exp-destino-tile{width:45vw; max-width:200px;}
   .exp-inspirate-grid{grid-template-columns:1fr; gap:var(--space-3); max-width:340px;}
   .exp-inspirate-card{aspect-ratio:1.3;}
 }
