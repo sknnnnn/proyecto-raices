@@ -37,17 +37,27 @@
 <section class="page-intro">
   <div class="wrap">
     <div class="breadcrumb"><a href="index.html">Inicio</a> / Experiencias</div>
-    <div class="page-intro-text">
-      <h1>Experiencias</h1>
-      <p>Elegí tu próxima aventura.</p>
+    <div class="page-intro-grid" style="--intro-cols:1.05fr 0.95fr;">
+      <div class="page-intro-text compact">
+        <div class="kicker">Elegí cómo viajar</div>
+        <h1>Experiencias</h1>
+        <p>Un mismo lugar se recorre de formas distintas: en un día, en varios, o con todo resuelto de principio a fin. Explorá por país, destino y tipo de experiencia.</p>
+      </div>
+      <div class="page-intro-media">
+        <img src="assets/img/historia-camino.jpg" alt="Caminando hacia una ciudadela inca entre las montañas, el ritmo despacio que define cada salida" style="object-position:center 30%;">
+      </div>
     </div>
   </div>
 </section>
 
-<section>
+<section class="exp-explorer">
   <div class="wrap">
-    <div class="filtros" id="prop-filtros"></div>
-    <div class="exp-grid" id="prop-grid"></div>
+    <div class="section-head exp-explorer-head">
+      <div class="kicker">Explorá por destino</div>
+      <h2>¿Por dónde empezamos?</h2>
+    </div>
+    <div class="filtros exp-explorer-paises" id="exp-paises"></div>
+    <div id="exp-stage"></div>
   </div>
 </section>
 
@@ -112,5 +122,168 @@
 <script src="assets/js/destinos-data.js"></script>
 <script src="assets/js/propuestas-data.js"></script>
 <script src="assets/js/main.js"></script>
+<script>
+  /* Explorador de Experiencias — Etapa 1 (arquitectura + composición).
+     País → Destino → Tipo, construido en vivo a partir de PROPUESTAS y
+     DESTINOS reales (assets/js/propuestas-data.js y destinos-data.js,
+     sin tocar ninguno de los dos): no hay contenido inventado ni una
+     lista paralela — sólo se agrupa lo que ya existe. Hoy PROPUESTAS
+     tiene 3 entradas de ejemplo (tour + travesía en Patagonia, paquete
+     en Perú) y eso alcanza para probar el árbol completo; cuando se
+     cargue el contenido real, este mismo código arma solo las ramas
+     que correspondan, sin rediseñar nada.
+
+     "prop-grid"/"prop-filtros" (la grilla plana que usaban antes esta
+     página y Tours/Travesías/Paquetes/Catálogo) ya no están en el DOM
+     de esta página: renderPropuestasGrid() en main.js no encuentra su
+     contenedor acá y no hace nada, así que esas otras páginas siguen
+     funcionando exactamente igual que antes. */
+  document.addEventListener("DOMContentLoaded", () => {
+    const stage = document.getElementById("exp-stage");
+    const paisesWrap = document.getElementById("exp-paises");
+    if (!stage || !paisesWrap || typeof PROPUESTAS === "undefined" || typeof DESTINOS === "undefined") return;
+
+    // Mismo criterio que ya usa destinos.html: el slug "peru" se
+    // muestra como "Cusco" (la región real que se ofrece hoy; Machu
+    // Picchu y Choquequirao son parte de Cusco, no destinos aparte).
+    function nombreDestino(d){
+      return d.slug === "peru" ? "Cusco" : d.nombre;
+    }
+
+    const arbol = {};
+    PROPUESTAS.forEach(p => {
+      const d = getDestinoPorSlug(p.destino);
+      if (!d) return;
+      arbol[d.pais] = arbol[d.pais] || {};
+      arbol[d.pais][d.slug] = arbol[d.pais][d.slug] || { destino: d, tipos: {} };
+      const tipos = arbol[d.pais][d.slug].tipos;
+      tipos[p.tipo] = tipos[p.tipo] || [];
+      tipos[p.tipo].push(p);
+    });
+
+    const paises = Object.keys(arbol);
+    if (!paises.length) {
+      stage.innerHTML = `<p class="empty-state">Todavía no hay experiencias cargadas.</p>`;
+      return;
+    }
+
+    let paisActivo = paises[0];
+    let destinoActivo = null;
+
+    function render(){
+      paisesWrap.innerHTML = paises.map(pais =>
+        `<button type="button" class="filtro-btn ${pais === paisActivo ? "active" : ""}" data-pais="${pais}">${pais}</button>`
+      ).join("");
+      paisesWrap.querySelectorAll("[data-pais]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          if (btn.getAttribute("data-pais") === paisActivo) return;
+          paisActivo = btn.getAttribute("data-pais");
+          destinoActivo = null;
+          render();
+        });
+      });
+
+      const destinosPais = Object.values(arbol[paisActivo]);
+      if (!destinoActivo || !arbol[paisActivo][destinoActivo]) {
+        destinoActivo = destinosPais[0].destino.slug;
+      }
+
+      const destinosHtml = destinosPais.map(({ destino: d }) => {
+        const nombre = nombreDestino(d);
+        const activo = d.slug === destinoActivo;
+        return `
+          <button type="button" class="exp-destino-tile ${activo ? "active" : ""}" data-destino="${d.slug}" aria-pressed="${activo}">
+            <img src="${d.imagen}" alt="${nombre}, ${d.pais}" loading="lazy">
+            <span class="exp-destino-tile-label">${nombre}</span>
+          </button>`;
+      }).join("");
+
+      const destinoObj = arbol[paisActivo][destinoActivo].destino;
+      const ubicacionHtml = `<span>${paisActivo}</span><span class="sep">/</span><span>${nombreDestino(destinoObj)}</span>`;
+
+      const tipos = arbol[paisActivo][destinoActivo].tipos;
+      const tiposHtml = Object.keys(TIPOS_PROPUESTA).filter(t => tipos[t] && tipos[t].length).map(tipo => {
+        const info = TIPOS_PROPUESTA[tipo];
+        const items = tipos[tipo];
+        return `
+          <div class="exp-tipo-grupo">
+            <div class="exp-tipo-grupo-head">
+              <h3>${info.labelPlural}</h3>
+              <a class="exp-tipo-grupo-link" href="${info.pagina}?destino=${destinoActivo}">Ver todas →</a>
+            </div>
+            <div class="exp-tipo-carousel">
+              <button type="button" class="testi-arrow prev" aria-label="Ver experiencia anterior">‹</button>
+              <div class="exp-tipo-viewport">
+                <div class="exp-tipo-track">${items.map(propuestaCardHtml).join("")}</div>
+              </div>
+              <button type="button" class="testi-arrow next" aria-label="Ver experiencia siguiente">›</button>
+            </div>
+          </div>`;
+      }).join("");
+
+      stage.innerHTML = `
+        <div class="exp-explorer-destinos">${destinosHtml}</div>
+        <div class="exp-explorer-ubicacion" aria-live="polite">${ubicacionHtml}</div>
+        <div class="exp-explorer-resultado">${tiposHtml}</div>`;
+
+      stage.querySelectorAll("[data-destino]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          if (btn.getAttribute("data-destino") === destinoActivo) return;
+          destinoActivo = btn.getAttribute("data-destino");
+          render();
+        });
+      });
+
+      stage.querySelectorAll(".exp-tipo-carousel").forEach(initExpTipoCarousel);
+    }
+
+    // Carrusel finito con límites reales — misma lógica ya verificada
+    // en el carrusel por país de Destinos (destinos.html): sin clonado,
+    // sin auto-scroll, flechas con disabled real en cada punta.
+    function initExpTipoCarousel(root){
+      const viewport = root.querySelector(".exp-tipo-viewport");
+      const track = root.querySelector(".exp-tipo-track");
+      const prevBtn = root.querySelector(".prev");
+      const nextBtn = root.querySelector(".next");
+      if (!viewport || !track) return;
+
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const EPS = 2;
+
+      function actualizarLimites(){
+        const max = track.scrollWidth - viewport.clientWidth;
+        const desborda = max > EPS;
+        root.classList.toggle("sin-desborde", !desborda);
+        if (prevBtn) prevBtn.disabled = !desborda || viewport.scrollLeft <= EPS;
+        if (nextBtn) nextBtn.disabled = !desborda || viewport.scrollLeft >= max - EPS;
+      }
+
+      function paso(){
+        const card = track.querySelector(".exp-card");
+        if (!card) return viewport.clientWidth;
+        const style = getComputedStyle(track);
+        return card.getBoundingClientRect().width + parseFloat(style.columnGap || style.gap || 0);
+      }
+
+      if (prevBtn) prevBtn.addEventListener("click", () => {
+        viewport.scrollBy({ left: -paso(), behavior: reduceMotion ? "auto" : "smooth" });
+      });
+      if (nextBtn) nextBtn.addEventListener("click", () => {
+        viewport.scrollBy({ left: paso(), behavior: reduceMotion ? "auto" : "smooth" });
+      });
+
+      let scrollTimer = null;
+      viewport.addEventListener("scroll", () => {
+        clearTimeout(scrollTimer);
+        scrollTimer = setTimeout(actualizarLimites, 80);
+      }, { passive: true });
+
+      window.addEventListener("resize", () => requestAnimationFrame(actualizarLimites));
+      requestAnimationFrame(actualizarLimites);
+    }
+
+    render();
+  });
+</script>
 </body>
 </html>
