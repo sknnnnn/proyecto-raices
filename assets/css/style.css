@@ -1084,3 +1084,33 @@ body[data-page="experiencias"] .exp-inspirate{padding:0 0 var(--space-8);}
   .exp-inspirate-grid{grid-template-columns:1fr; gap:var(--space-3); max-width:340px;}
   .exp-inspirate-card{aspect-ratio:1.3;}
 }
+
+/* ---------- Nosotros — página editorial ----------
+   La página tenía estilos sueltos inline (fondo blanco fijo en .about,
+   un "var(--crema)" que no es un token real, tamaños/colores de texto
+   hardcodeados) que rompían la superficie continua del resto del
+   sitio. Acá se pasa todo a tokens existentes: sin fondo propio por
+   sección (el fondo base ya es crema, no blanco), con la misma foto
+   orgánica que ya usa Inicio en su .about pero con su propio radio
+   asimétrico (ya usado en destinos.html) para no clonar la composición. */
+body[data-page="nosotros"] .about{background:transparent;}
+body[data-page="nosotros"] .about-photo{border-radius:12px 40px 12px 40px; overflow:hidden; aspect-ratio:0.86; box-shadow:var(--shadow-sm);}
+body[data-page="nosotros"] .about-photo img{width:100%; height:100%; object-fit:cover; display:block;}
+body[data-page="nosotros"] .about-lead{margin-top:var(--space-5); font-size:var(--text-lg); color:var(--text-primary); line-height:1.7; max-width:460px;}
+body[data-page="nosotros"] .about-lead + p{margin-top:var(--space-4); font-size:var(--text-md); color:var(--text-secondary); line-height:1.7; max-width:460px;}
+
+/* Los .valor-card de esta sección son los únicos en el sitio que no
+   son enlaces (a.valor-card, en Inicio, ya tiene borde/hover propio):
+   sin ese borde quedaban del mismo color que el fondo transparente de
+   la sección y desaparecían visualmente. Reutiliza el mismo tono de
+   borde que ya usa a.valor-card. */
+body[data-page="nosotros"] .valor-card{border:1.5px solid rgba(141,75,18,0.16); box-shadow:var(--shadow-sm);}
+
+@media (max-width:860px){
+  body[data-page="nosotros"] .about-photo{aspect-ratio:1.15;}
+}
+@media (max-width:640px){
+  body[data-page="nosotros"] .about-photo{aspect-ratio:1.3; border-radius:12px 36px 12px 36px;}
+  body[data-page="nosotros"] .about-lead,
+  body[data-page="nosotros"] .about-lead + p{max-width:none;}
+}
