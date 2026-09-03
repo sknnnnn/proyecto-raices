@@ -53,11 +53,19 @@
 <section class="exp-explorer">
   <div class="wrap">
     <div class="section-head exp-explorer-head">
-      <div class="kicker">Explorá por destino</div>
+      <div class="kicker">Elegí tu destino</div>
       <h2>¿Por dónde empezamos?</h2>
     </div>
     <div class="filtros exp-explorer-paises" id="exp-paises"></div>
     <div id="exp-stage"></div>
+  </div>
+</section>
+
+<section class="exp-inspirate">
+  <div class="wrap">
+    <div class="kicker">Para inspirarte</div>
+    <h3>¿Todavía no sabés qué destino elegir?</h3>
+    <div class="exp-inspirate-grid" id="exp-inspirate"></div>
   </div>
 </section>
 
@@ -124,14 +132,22 @@
 <script src="assets/js/main.js"></script>
 <script>
   /* Explorador de Experiencias — Etapa 1 (arquitectura + composición).
-     País → Destino → Tipo, construido en vivo a partir de PROPUESTAS y
-     DESTINOS reales (assets/js/propuestas-data.js y destinos-data.js,
-     sin tocar ninguno de los dos): no hay contenido inventado ni una
-     lista paralela — sólo se agrupa lo que ya existe. Hoy PROPUESTAS
-     tiene 3 entradas de ejemplo (tour + travesía en Patagonia, paquete
-     en Perú) y eso alcanza para probar el árbol completo; cuando se
-     cargue el contenido real, este mismo código arma solo las ramas
-     que correspondan, sin rediseñar nada.
+
+     El eje principal es el LUGAR, no el tipo: País → Destino primero
+     (con foto y reseña real, "¿Por dónde empezamos?"); recién al elegir
+     un destino aparece "¿Cómo querés vivir [Destino]?" con Tours /
+     Travesías / Paquetes como forma de recorrerlo — nunca antes.
+
+     Todo sale en vivo de PROPUESTAS y DESTINOS reales (propuestas-data.js
+     y destinos-data.js, sin tocar ninguno de los dos): no hay contenido
+     inventado ni una lista paralela. Hoy destinos-data.js no modela una
+     región intermedia entre país y destino (Patagonia y "Perú"/Cusco son
+     el nivel más granular que existe) — cuando se agregue ese campo,
+     agrupar por región antes de destino es un cambio de esta misma
+     función, no un rediseño. Hoy PROPUESTAS tiene 3 entradas de ejemplo
+     (tour + travesía en Patagonia, paquete en Perú) y eso alcanza para
+     probar el árbol completo; cuando se cargue el contenido real, este
+     mismo código arma solo las ramas que correspondan.
 
      "prop-grid"/"prop-filtros" (la grilla plana que usaban antes esta
      página y Tours/Travesías/Paquetes/Catálogo) ya no están en el DOM
@@ -194,12 +210,16 @@
         return `
           <button type="button" class="exp-destino-tile ${activo ? "active" : ""}" data-destino="${d.slug}" aria-pressed="${activo}">
             <img src="${d.imagen}" alt="${nombre}, ${d.pais}" loading="lazy">
-            <span class="exp-destino-tile-label">${nombre}</span>
+            <span class="exp-destino-tile-info">
+              <span class="exp-destino-tile-label">${nombre}</span>
+              <span class="exp-destino-tile-resumen">${d.resumen}</span>
+            </span>
           </button>`;
       }).join("");
 
       const destinoObj = arbol[paisActivo][destinoActivo].destino;
-      const ubicacionHtml = `<span>${paisActivo}</span><span class="sep">/</span><span>${nombreDestino(destinoObj)}</span>`;
+      const nombreDestActivo = nombreDestino(destinoObj);
+      const ubicacionHtml = `<span>${paisActivo}</span><span class="sep">/</span><span>${nombreDestActivo}</span>`;
 
       const tipos = arbol[paisActivo][destinoActivo].tipos;
       const tiposHtml = Object.keys(TIPOS_PROPUESTA).filter(t => tipos[t] && tipos[t].length).map(tipo => {
@@ -208,7 +228,7 @@
         return `
           <div class="exp-tipo-grupo">
             <div class="exp-tipo-grupo-head">
-              <h3>${info.labelPlural}</h3>
+              <h4>${info.labelPlural}</h4>
               <a class="exp-tipo-grupo-link" href="${info.pagina}?destino=${destinoActivo}">Ver todas →</a>
             </div>
             <div class="exp-tipo-carousel">
@@ -224,6 +244,10 @@
       stage.innerHTML = `
         <div class="exp-explorer-destinos">${destinosHtml}</div>
         <div class="exp-explorer-ubicacion" aria-live="polite">${ubicacionHtml}</div>
+        <div class="exp-explorer-vivir">
+          <div class="kicker">Explorá</div>
+          <h3>¿Cómo querés vivir ${nombreDestActivo}?</h3>
+        </div>
         <div class="exp-explorer-resultado">${tiposHtml}</div>`;
 
       stage.querySelectorAll("[data-destino]").forEach(btn => {
@@ -235,6 +259,31 @@
       });
 
       stage.querySelectorAll(".exp-tipo-carousel").forEach(initExpTipoCarousel);
+    }
+
+    // "Para inspirarte" — puerta de entrada secundaria para quien
+    // todavía no eligió destino: no depende de país/destino activo,
+    // siempre muestra las mismas propuestas reales (hoy, las únicas 3
+    // que existen en PROPUESTAS — una de cada tipo, sin elegir al azar).
+    function inspirateCardHtml(p){
+      const d = getDestinoPorSlug(p.destino);
+      const nombreD = d ? nombreDestino(d) : p.destino;
+      const tipoInfo = TIPOS_PROPUESTA[p.tipo];
+      return `
+        <a class="exp-inspirate-card" href="propuesta.html?id=${p.id}">
+          ${p.imagen ? `<img src="${p.imagen}" alt="${p.nombre}" loading="lazy">` : `<div class="gal-placeholder" style="height:100%;">Imagen pendiente</div>`}
+          <span class="cat-badge">${tipoInfo ? tipoInfo.label : p.tipo}</span>
+          <span class="exp-inspirate-card-info">
+            ${p.esPlaceholder ? `<span class="placeholder-badge">Contenido de ejemplo</span>` : ""}
+            <span class="exp-inspirate-card-dest">${nombreD}</span>
+            <span class="exp-inspirate-card-name">${p.nombre}</span>
+            <span class="exp-inspirate-card-cta">Ver detalles →</span>
+          </span>
+        </a>`;
+    }
+    const inspirateWrap = document.getElementById("exp-inspirate");
+    if (inspirateWrap) {
+      inspirateWrap.innerHTML = PROPUESTAS.slice(0, 3).map(inspirateCardHtml).join("");
     }
 
     // Carrusel finito con límites reales — misma lógica ya verificada
