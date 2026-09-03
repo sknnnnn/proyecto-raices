@@ -29,6 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
   renderPropuestaDetalle();
   renderDestinosGrid();
   initTestimoniosCarousel(); // sólo actúa si la página tiene #testi-track (Inicio)
+  initGaleriaJustify(); // sólo actúa si la página tiene .gal-row (galeria.html)
   renderGuiasGrid(); // sólo actúa si la página tiene #guias-grid (guias.html, oculta del menú)
 });
 
@@ -476,6 +477,70 @@ function renderDestinosGrid(){
    automático no compita con el usuario. Respeta
    prefers-reduced-motion desactivando el autoplay.
    ========================================================= */
+
+/* ---------- Galería: filas justificadas (sin recortar ni deformar) ----------
+   .gal-row trae las fotos en flexbox simple (fallback si falla JS).
+   Acá las agrupamos en filas que ocupan todo el ancho, dándole a cada
+   foto de la fila la misma altura y respetando su proporción real
+   (nada de object-fit:cover). Se recalcula en resize. */
+function initGaleriaJustify(){
+  const row = document.querySelector(".gal-row");
+  if (!row) return;
+  const imgs = Array.from(row.querySelectorAll("img"));
+  if (!imgs.length) return;
+
+  function targetHeight(){
+    const w = window.innerWidth;
+    if (w <= 640) return 130;
+    if (w <= 960) return 200;
+    return 300;
+  }
+
+  function justify(){
+    const gap = 12;
+    const contW = row.clientWidth;
+    const targetH = targetHeight();
+    const maxH = targetH * 1.35;
+    let group = [], sumAr = 0;
+
+    imgs.forEach((img, i) => {
+      const ar = (img.naturalWidth && img.naturalHeight) ? img.naturalWidth / img.naturalHeight : 1.5;
+      group.push({ img, ar });
+      sumAr += ar;
+      const isLast = i === imgs.length - 1;
+      const rowW = sumAr * targetH + (group.length - 1) * gap;
+      if (rowW >= contW || isLast) {
+        let rowH = (contW - (group.length - 1) * gap) / sumAr;
+        if (isLast && rowH > maxH) rowH = targetH;
+        rowH = Math.min(rowH, maxH);
+        group.forEach(g => {
+          g.img.style.height = rowH + "px";
+          g.img.style.width = (g.ar * rowH) + "px";
+        });
+        group = []; sumAr = 0;
+      }
+    });
+  }
+
+  let pending = imgs.filter(img => !img.complete);
+  if (!pending.length) {
+    justify();
+  } else {
+    let left = pending.length;
+    pending.forEach(img => {
+      img.addEventListener("load", () => { left--; if (left <= 0) justify(); });
+      img.addEventListener("error", () => { left--; if (left <= 0) justify(); });
+    });
+    justify(); // resultado provisorio mientras cargan
+  }
+
+  let resizeTimer;
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(justify, 150);
+  });
+}
+
 function initTestimoniosCarousel(){
   const carousel = document.getElementById("testi-carousel");
   const track = document.getElementById("testi-track");

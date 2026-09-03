@@ -709,7 +709,8 @@ body[data-page="experiencias"] main,
 body[data-page="tours"] main,
 body[data-page="travesias"] main,
 body[data-page="paquetes"] main,
-body[data-page="nosotros"] main{
+body[data-page="nosotros"] main,
+body[data-page="galeria"] main{
   background-color:var(--exp-canvas-base);
   background-repeat:no-repeat;
   background-image:
@@ -725,7 +726,8 @@ body[data-page="experiencias"] main section:not(.cta-band),
 body[data-page="tours"] main section:not(.cta-band),
 body[data-page="travesias"] main section:not(.cta-band),
 body[data-page="paquetes"] main section:not(.cta-band),
-body[data-page="nosotros"] main section:not(.cta-band){background:transparent;}
+body[data-page="nosotros"] main section:not(.cta-band),
+body[data-page="galeria"] main section:not(.cta-band):not(.comunidad){background:transparent;}
 
 /* Experiencias — catálogo visual: mismas tarjetas/datos que Tours,
    Travesías, Paquetes y Catálogo, sólo con más presencia fotográfica
@@ -817,7 +819,11 @@ body[data-tipo-fijo] .exp-card h3{font-size:22px;}
    variado entre vertical/horizontal). object-fit:cover + esquinas y
    sombra ya usadas en el resto del sitio (--radius-md, --shadow-sm),
    sin overlays de color sobre las fotos. */
-.galeria{background:var(--bg-primary);}
+.galeria-head{max-width:640px; margin-bottom:var(--space-6);}
+.galeria-head p{color:var(--text-secondary); font-size:var(--text-md); line-height:1.6; margin-top:var(--space-2);}
+.gal-row{display:flex; flex-wrap:wrap; align-items:flex-end; gap:var(--space-3);}
+.gal-row img{height:300px; width:auto; max-width:100%; border-radius:var(--radius-sm); box-shadow:var(--shadow-sm); cursor:zoom-in; display:block; transition:transform var(--duration-base) var(--ease);}
+.gal-row img:hover{transform:translateY(-4px);}
 /* Collage por columnas CSS (masonry real): cada foto conserva su
    proporción original — nada se recorta a la fuerza para encajar en
    una celda — así que verticales, horizontales y cuadradas conviven
@@ -826,11 +832,6 @@ body[data-tipo-fijo] .exp-card h3{font-size:22px;}
    cerrar"). Una foto protagonista arriba a todo el ancho y, más abajo
    en el flujo, una segunda (.gc-span) que corta las columnas para dar
    otro momento de protagonismo sin romper el masonry. */
-.gc-feature{width:100%; height:auto; max-height:64vh; object-fit:cover; display:block; border-radius:var(--radius-md); box-shadow:var(--shadow-sm); margin-bottom:var(--space-4);}
-.gal-collage-cols{column-count:4; column-gap:var(--space-4);}
-.gal-collage-cols img{width:100%; height:auto; display:block; margin-bottom:var(--space-4); border-radius:var(--radius-md); box-shadow:var(--shadow-sm); cursor:zoom-in; break-inside:avoid; transition:transform var(--duration-base) var(--ease);}
-.gal-collage-cols img:hover{transform:scale(1.015);}
-.gal-collage-cols img.gc-span{column-span:all; max-height:56vh; object-fit:cover;}
 .gal-placeholder{display:flex; align-items:center; justify-content:center; background:#e7e3d3; border-radius:6px; color:var(--text-muted); font-size:13px; text-align:center; padding:10px;}
 .lightbox{position:fixed; inset:0; background:rgba(20,18,12,0.92); display:none; align-items:center; justify-content:center; z-index:200; padding:32px;}
 .lightbox.open{display:flex;}
@@ -970,7 +971,7 @@ footer li a:hover{opacity:1; color:var(--color-amarillo);}
   body[data-page="experiencias"] .exp-card .body,
   body[data-page="experiencias"] .exp-card[data-tipo="travesia"] .body{order:0; padding-right:0;}
   body[data-page="experiencias"] .exp-card[data-tipo="paquete"] .img-wrap{aspect-ratio:1.7;}
-  .gal-collage-cols{column-count:3;}
+  .gal-row img{height:220px;}
   .testi-grid, .guias-grid, .valores-grid{grid-template-columns:1fr;}
   body[data-page="inicio"] .catalogo-home .valores-grid{grid-template-columns:1fr;}
   body[data-page="inicio"] .catalogo-home .dest-card:nth-child(2),
@@ -1009,9 +1010,8 @@ footer li a:hover{opacity:1; color:var(--color-amarillo);}
   .exp-grid{grid-template-columns:1fr;}
   body[data-tipo-fijo] .exp-grid{grid-template-columns:1fr; gap:var(--space-6);}
   body[data-tipo-fijo] .exp-card .img-wrap{height:220px;}
-  .gal-collage-cols{column-count:2; column-gap:var(--space-3);}
-  .gal-collage-cols img{margin-bottom:var(--space-3);}
-  .gc-feature{max-height:42vh;}
+  .gal-row{gap:var(--space-2);}
+  .gal-row img{height:140px;}
   body[data-page="experiencias"] .exp-grid{gap:44px;}
   body[data-page="experiencias"] .exp-card,
   body[data-page="experiencias"] .exp-card[data-tipo="tour"],
