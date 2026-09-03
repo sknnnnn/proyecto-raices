@@ -134,9 +134,10 @@
   /* Explorador de Experiencias — Etapa 1 (arquitectura + composición).
 
      El eje principal es el LUGAR, no el tipo: País → Destino primero
-     (con foto y reseña real, "¿Por dónde empezamos?"); recién al elegir
-     un destino aparece "¿Cómo querés vivir [Destino]?" con Tours /
-     Travesías / Paquetes como forma de recorrerlo — nunca antes.
+     (con foto y reseña real, "¿Por dónde empezamos?"); al elegir un
+     destino, sus Tours / Travesías / Paquetes aparecen directamente
+     agrupados por tipo, sin ningún encabezado conceptual intermedio —
+     el tipo nunca aparece antes de elegir destino.
 
      Todo sale en vivo de PROPUESTAS y DESTINOS reales (propuestas-data.js
      y destinos-data.js, sin tocar ninguno de los dos): no hay contenido
@@ -244,10 +245,6 @@
       stage.innerHTML = `
         <div class="exp-explorer-destinos">${destinosHtml}</div>
         <div class="exp-explorer-ubicacion" aria-live="polite">${ubicacionHtml}</div>
-        <div class="exp-explorer-vivir">
-          <div class="kicker">Explorá</div>
-          <h3>¿Cómo querés vivir ${nombreDestActivo}?</h3>
-        </div>
         <div class="exp-explorer-resultado">${tiposHtml}</div>`;
 
       stage.querySelectorAll("[data-destino]").forEach(btn => {
