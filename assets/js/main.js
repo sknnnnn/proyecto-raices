@@ -167,23 +167,34 @@ function renderPropuestasGrid(){
   const filtrosWrap = document.getElementById("prop-filtros");
   if (filtrosWrap) {
     if (tipoFijo) {
-      // Dentro de una página de tipo fijo (Tours/Travesías/Paquetes):
-      // los chips filtran por destino.
-      const base = getPropuestasPorTipo(tipoFijo);
-      const destinosDisponibles = [...new Set(base.map(p => p.destino))]
-        .map(slug => getDestinoPorSlug(slug)).filter(Boolean);
-      let html = `<button class="filtro-btn ${!destinoFiltro ? "active" : ""}" data-destino="">Todos los destinos</button>`;
-      destinosDisponibles.forEach(d => {
-        html += `<button class="filtro-btn ${destinoFiltro === d.slug ? "active" : ""}" data-destino="${d.slug}">${d.nombre}</button>`;
-      });
-      filtrosWrap.innerHTML = html;
-      filtrosWrap.querySelectorAll(".filtro-btn").forEach(btn => {
-        btn.addEventListener("click", () => {
-          const slug = btn.getAttribute("data-destino");
-          const p = new URLSearchParams(window.location.search);
-          if (slug) p.set("destino", slug); else p.delete("destino");
-          aplicarFiltroSuave(p);
+      // Dentro de una página de tipo fijo (Tours/Travesías/Paquetes): un
+      // único selector "Destino" agrupado por país, en vez de una fila de
+      // chips (con Argentina + Perú separados en sus destinos reales, una
+      // fila plana se vuelve interminable). Mismo control y misma lista
+      // completa de DESTINOS en las tres páginas — no depende de qué
+      // destinos ya tengan contenido para este tipo, así el selector queda
+      // listo para Paquetes aunque hoy no tenga propuestas cargadas.
+      const paises = [...new Set(DESTINOS.map(d => d.pais))];
+      let optionsHtml = `<option value="">Todos los destinos</option>`;
+      paises.forEach(pais => {
+        optionsHtml += `<optgroup label="${pais}">`;
+        DESTINOS.filter(d => d.pais === pais).forEach(d => {
+          const nombre = d.slug === "peru" ? "Cusco" : d.nombre;
+          optionsHtml += `<option value="${d.slug}"${destinoFiltro === d.slug ? " selected" : ""}>${nombre}</option>`;
         });
+        optionsHtml += `</optgroup>`;
+      });
+      filtrosWrap.innerHTML = `
+        <div class="filtro-destino-group">
+          <label class="filtro-destino-label" for="prop-destino-select">Destino</label>
+          <select class="filtro-destino-select" id="prop-destino-select">${optionsHtml}</select>
+        </div>`;
+      const select = document.getElementById("prop-destino-select");
+      select.addEventListener("change", () => {
+        const slug = select.value;
+        const p = new URLSearchParams(window.location.search);
+        if (slug) p.set("destino", slug); else p.delete("destino");
+        aplicarFiltroSuave(p);
       });
     } else {
       // catalogo.html (explorando por destino): los chips filtran por tipo.
@@ -319,16 +330,19 @@ function renderPropuestaDetalle(){
   if (bcEl) {
     let volverHref = tipoInfo ? tipoInfo.pagina : "destinos.html";
     let volverLabel = tipoInfo ? tipoInfo.labelPlural : "Propuestas";
-    // Si se llegó desde el catálogo filtrado por destino
-    // (catalogo.html?destino=...), "volver" respeta ese mismo destino/
-    // filtro en vez de mandar siempre a la grilla plana de Tours/
-    // Travesías/Paquetes — evita perder el contexto de navegación.
+    // Si se llegó desde un catálogo filtrado por destino —ya sea
+    // catalogo.html?destino=... o la propia página de tipo fijo
+    // (tours.html/travesias.html/paquetes.html) con ?destino=...—,
+    // "volver" respeta ese mismo destino/filtro en vez de mandar siempre
+    // a la grilla plana sin filtrar — evita perder el contexto.
     try {
       const ref = new URL(document.referrer);
       if (ref.origin === window.location.origin && /\/catalogo\.html$/.test(ref.pathname)) {
         volverHref = "catalogo.html" + ref.search;
         const refDestino = getDestinoPorSlug(ref.searchParams.get("destino"));
         volverLabel = refDestino ? refDestino.nombre : "Catálogo";
+      } else if (tipoInfo && ref.pathname === "/" + tipoInfo.pagina && ref.search) {
+        volverHref = tipoInfo.pagina + ref.search;
       }
     } catch (e) { /* sin referrer válido: se usa el destino por defecto */ }
     bcEl.innerHTML = `<a href="index.html">Inicio</a> / <a href="${volverHref}">${volverLabel}</a> / ${p.nombre}`;

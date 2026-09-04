@@ -643,6 +643,11 @@ body[data-page="destinos"] .page-intro{background:transparent; padding-bottom:0;
 .filtro-btn:hover{border-color:var(--color-naranja);}
 .filtro-btn.active{background:var(--color-verde); border-color:var(--color-verde); color:#fff;}
 
+.filtro-destino-group{display:flex; align-items:center; gap:10px; flex-wrap:wrap; max-width:100%;}
+.filtro-destino-label{font-family:var(--font-body); font-size:13px; color:var(--text-primary);}
+.filtro-destino-select{font-family:var(--font-body); font-size:13px; padding:9px 34px 9px 18px; border-radius:999px; border:1.5px solid #d9d4c4; background:#fff; color:var(--text-primary); cursor:pointer; max-width:100%; appearance:none; background-image:url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%234a463c' d='M5.5 7.5l4.5 4.5 4.5-4.5z'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; background-size:14px;}
+.filtro-destino-select:hover{border-color:var(--color-naranja);}
+
 .exp-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:40px 28px;}
 /* Catálogo — mismo lenguaje ya usado en Tours/Travesías/Paquetes/
    Experiencias: sin caja blanca, foto con esquina orgánica y chip
