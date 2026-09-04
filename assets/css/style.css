@@ -648,9 +648,9 @@ body[data-page="destinos"] .page-intro{background:transparent; padding-bottom:0;
    Experiencias: sin caja blanca, foto con esquina orgánica y chip
    discreto en vez de card genérica. Base de .exp-card para cualquier
    página que no tenga su propia composición (hoy, sólo Catálogo). */
-.exp-card{background:transparent; border-radius:0; overflow:visible; border:none; display:flex; flex-direction:column; transition:transform .25s ease;}
+.exp-card{min-width:0; background:transparent; border-radius:0; overflow:visible; border:none; display:flex; flex-direction:column; transition:transform .25s ease;}
 .exp-card:hover{transform:translateY(-3px);}
-.exp-card .img-wrap{position:relative; height:auto; aspect-ratio:1.1; overflow:hidden; border-radius:36px 10px 36px 10px; box-shadow:0 14px 30px rgba(33,29,22,.14);}
+.exp-card .img-wrap{display:block; position:relative; height:auto; aspect-ratio:1.1; overflow:hidden; border-radius:36px 10px 36px 10px; box-shadow:0 14px 30px rgba(33,29,22,.14);}
 .exp-card:nth-child(3n+1) .img-wrap{aspect-ratio:1.7;}
 .exp-card .img-wrap img{width:100%; height:100%; object-fit:cover; transition:transform .6s ease;}
 .exp-card:hover .img-wrap img{transform:scale(1.055);}
@@ -780,8 +780,11 @@ body[data-tipo-fijo] .exp-card .img-wrap{height:300px; border-radius:var(--radiu
 /* La página ya está filtrada a un único tipo (Tours/Travesías/Paquetes):
    repetir esa misma etiqueta en cada card es redundante, así que se oculta acá. */
 body[data-tipo-fijo] .exp-card .cat-badge{display:none;}
-body[data-tipo-fijo] .exp-card .body{padding:var(--space-4) 0 0;}
-body[data-tipo-fijo] .exp-card h3{font-size:22px;}
+body[data-tipo-fijo] .exp-card .body{padding:var(--space-4) 0 0; gap:10px;}
+body[data-tipo-fijo] .exp-card .dest-tag{font-size:12.5px; letter-spacing:0.1em;}
+body[data-tipo-fijo] .exp-card h3{font-size:24px; line-height:1.22;}
+body[data-tipo-fijo] .exp-card .resumen{font-size:14.5px; line-height:1.5; -webkit-line-clamp:3;}
+body[data-tipo-fijo] .exp-card .meta{font-size:12.5px; gap:16px;}
 
 .placeholder-badge{display:inline-block; font-size:11px; text-transform:uppercase; letter-spacing:0.06em; background:var(--color-amarillo); color:var(--text-primary); padding:3px 9px; border-radius:999px; margin-bottom:6px; font-family:var(--font-body);}
 .empty-state{text-align:center; padding:60px 20px; color:var(--text-muted);}

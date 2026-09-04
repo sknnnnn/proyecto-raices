@@ -253,10 +253,10 @@ function propuestaCardHtml(p){
   const tipoInfo = TIPOS_PROPUESTA[p.tipo];
   return `
     <article class="exp-card" data-tipo="${p.tipo}">
-      <div class="img-wrap">
+      <a class="img-wrap" href="propuesta.html?id=${p.id}" aria-label="Ver detalles de ${p.nombre}">
         ${p.imagen ? `<img src="${p.imagen}" alt="${p.nombre}" loading="lazy">` : `<div class="gal-placeholder" style="height:100%;">Imagen pendiente</div>`}
         <span class="cat-badge">${tipoInfo ? tipoInfo.label : p.tipo}</span>
-      </div>
+      </a>
       <div class="body">
         ${p.esPlaceholder ? `<span class="placeholder-badge">Contenido de ejemplo</span>` : ""}
         <span class="dest-tag">${destino ? destino.nombre : p.destino}</span>
@@ -408,8 +408,12 @@ function renderDetalleTour(d){
   bodyHtml += itinerarioSiHay(d.itinerarioCombinado);
 
   let asideHtml = "";
+  asideHtml += infoRowSiHay("Dificultad", d.dificultad);
+  asideHtml += infoRowSiHay("Distancia", d.distancia);
+  asideHtml += infoRowSiHay("Desnivel", d.desnivel);
   asideHtml += infoRowSiHay("Fecha", d.fecha);
-  asideHtml += infoRowSiHay("Horario", d.horario);
+  asideHtml += infoRowSiHay("Salida", d.salida);
+  asideHtml += infoRowSiHay("Regreso", d.regreso);
   asideHtml += infoRowSiHay("Punto de encuentro", d.puntoDeEncuentro);
   if (d.seConvierteEnTravesiaAlCombinar) {
     asideHtml += infoRowSiHay("Duración combinada", d.duracionCombinada);
