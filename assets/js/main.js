@@ -317,9 +317,21 @@ function renderPropuestaDetalle(){
 
   const bcEl = document.getElementById("exp-breadcrumb");
   if (bcEl) {
-    const paginaTipo = tipoInfo ? tipoInfo.pagina : "destinos.html";
-    const labelTipo = tipoInfo ? tipoInfo.labelPlural : "Propuestas";
-    bcEl.innerHTML = `<a href="index.html">Inicio</a> / <a href="${paginaTipo}">${labelTipo}</a> / ${p.nombre}`;
+    let volverHref = tipoInfo ? tipoInfo.pagina : "destinos.html";
+    let volverLabel = tipoInfo ? tipoInfo.labelPlural : "Propuestas";
+    // Si se llegó desde el catálogo filtrado por destino
+    // (catalogo.html?destino=...), "volver" respeta ese mismo destino/
+    // filtro en vez de mandar siempre a la grilla plana de Tours/
+    // Travesías/Paquetes — evita perder el contexto de navegación.
+    try {
+      const ref = new URL(document.referrer);
+      if (ref.origin === window.location.origin && /\/catalogo\.html$/.test(ref.pathname)) {
+        volverHref = "catalogo.html" + ref.search;
+        const refDestino = getDestinoPorSlug(ref.searchParams.get("destino"));
+        volverLabel = refDestino ? refDestino.nombre : "Catálogo";
+      }
+    } catch (e) { /* sin referrer válido: se usa el destino por defecto */ }
+    bcEl.innerHTML = `<a href="index.html">Inicio</a> / <a href="${volverHref}">${volverLabel}</a> / ${p.nombre}`;
   }
 
   const consultaHref = `contacto.html?propuesta=${encodeURIComponent(p.nombre)}`;
