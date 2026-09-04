@@ -711,7 +711,8 @@ body[data-page="travesias"] main,
 body[data-page="paquetes"] main,
 body[data-page="nosotros"] main,
 body[data-page="galeria"] main,
-body[data-page="contacto"] main{
+body[data-page="contacto"] main,
+body[data-page="propuesta"] main{
   background-color:var(--exp-canvas-base);
   background-repeat:no-repeat;
   background-image:
@@ -729,7 +730,8 @@ body[data-page="travesias"] main section:not(.cta-band),
 body[data-page="paquetes"] main section:not(.cta-band),
 body[data-page="nosotros"] main section:not(.cta-band),
 body[data-page="galeria"] main section:not(.cta-band):not(.comunidad),
-body[data-page="contacto"] main section:not(.cta-band){background:transparent;}
+body[data-page="contacto"] main section:not(.cta-band),
+body[data-page="propuesta"] main section{background:transparent;}
 
 /* Experiencias — catálogo visual: mismas tarjetas/datos que Tours,
    Travesías, Paquetes y Catálogo, sólo con más presencia fotográfica
@@ -775,7 +777,9 @@ body[data-tipo-fijo] .exp-grid{grid-template-columns:repeat(2,1fr); gap:var(--sp
 body[data-tipo-fijo] .exp-card{background:transparent; border:none; border-radius:0; box-shadow:none; transition:none;}
 body[data-tipo-fijo] .exp-card:hover{transform:none; box-shadow:none;}
 body[data-tipo-fijo] .exp-card .img-wrap{height:300px; border-radius:var(--radius-lg);}
-body[data-tipo-fijo] .exp-card .cat-badge{background:rgba(20,18,12,0.55); font-family:var(--font-body); font-weight:600; letter-spacing:0.1em; font-size:10.5px; padding:6px 12px;}
+/* La página ya está filtrada a un único tipo (Tours/Travesías/Paquetes):
+   repetir esa misma etiqueta en cada card es redundante, así que se oculta acá. */
+body[data-tipo-fijo] .exp-card .cat-badge{display:none;}
 body[data-tipo-fijo] .exp-card .body{padding:var(--space-4) 0 0;}
 body[data-tipo-fijo] .exp-card h3{font-size:22px;}
 
