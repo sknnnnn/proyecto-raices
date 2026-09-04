@@ -30,7 +30,6 @@ document.addEventListener("DOMContentLoaded", () => {
   renderDestinosGrid();
   initTestimoniosCarousel(); // sólo actúa si la página tiene #testi-track (Inicio)
   initGaleriaJustify(); // sólo actúa si la página tiene .gal-row (galeria.html)
-  renderGuiasGrid(); // sólo actúa si la página tiene #guias-grid (guias.html, oculta del menú)
 });
 
 /* ---------- Navegación mobile + link activo ---------- */
