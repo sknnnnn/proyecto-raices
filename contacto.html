@@ -48,11 +48,11 @@
   <div class="wrap contact-wrap">
     <div class="contact-info">
       <div class="kicker">Hablemos</div>
-      <h2 style="margin-bottom:22px;">Canales de contacto</h2>
+      <h2>Canales de contacto</h2>
 
       <div id="whatsapp-cta-holder"></div>
 
-      <div class="item" style="margin-top:30px;">
+      <div class="item">
         <div class="ico">✉</div>
         <div><b>Email</b><a href="mailto:proyectoraicestravel@gmail.com">proyectoraicestravel@gmail.com</a></div>
       </div>
@@ -70,23 +70,25 @@
       </div>
     </div>
 
-    <form id="contact-form">
-      <div class="form-row">
-        <div><label for="nombre">Nombre</label><input id="nombre" name="nombre" type="text" placeholder="Tu nombre" required></div>
-        <div><label for="email">Email</label><input id="email" name="email" type="email" placeholder="tu@email.com" required></div>
-      </div>
-      <div>
-        <label for="destino">Destino de interés</label>
-        <select id="destino" name="destino"></select>
-      </div>
-      <div>
-        <label for="mensaje">Mensaje</label>
-        <textarea id="mensaje" name="mensaje" placeholder="Contanos qué estás buscando..."></textarea>
-      </div>
-      <p class="form-note">Este formulario es una demostración: todavía no está conectado a un servicio de envío automático. Al enviarlo, además se va a abrir tu correo para que la consulta no se pierda.</p>
-      <button type="submit" class="btn">Enviar consulta</button>
-      <div id="form-status" class="form-status"></div>
-    </form>
+    <div class="contact-form-panel">
+      <form id="contact-form">
+        <div class="form-row">
+          <div><label for="nombre">Nombre</label><input id="nombre" name="nombre" type="text" placeholder="Tu nombre" required></div>
+          <div><label for="email">Email</label><input id="email" name="email" type="email" placeholder="tu@email.com" required></div>
+        </div>
+        <div>
+          <label for="destino">Destino de interés</label>
+          <select id="destino" name="destino"></select>
+        </div>
+        <div>
+          <label for="mensaje">Mensaje</label>
+          <textarea id="mensaje" name="mensaje" placeholder="Contanos qué estás buscando..."></textarea>
+        </div>
+        <p class="form-note">Este formulario es una demostración: todavía no está conectado a un servicio de envío automático. Al enviarlo, además se va a abrir tu correo para que la consulta no se pierda.</p>
+        <button type="submit" class="btn">Enviar consulta</button>
+        <div id="form-status" class="form-status"></div>
+      </form>
+    </div>
   </div>
 </section>
 

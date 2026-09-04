@@ -12,11 +12,8 @@ const SITE_CONFIG = {
   // Datos de contacto reales provistos por el cliente.
   email: "proyectoraicestravel@gmail.com",
 
-  // Número de WhatsApp: TODAVÍA NO PROVISTO.
-  // Cuando lo tengas, completalo en formato internacional,
-  // ej: "5491122334455" (sin +, espacios ni guiones).
-  // Mientras esté vacío ("") el botón de WhatsApp permanece oculto.
-  whatsapp: "",
+  // Número de WhatsApp oficial: +54 9 280 497-1939.
+  whatsapp: "5492804971939",
 
   instagram: "@proyectotravesia",
   instagramUrl: "https://instagram.com/proyectotravesia",

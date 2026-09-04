@@ -710,7 +710,8 @@ body[data-page="tours"] main,
 body[data-page="travesias"] main,
 body[data-page="paquetes"] main,
 body[data-page="nosotros"] main,
-body[data-page="galeria"] main{
+body[data-page="galeria"] main,
+body[data-page="contacto"] main{
   background-color:var(--exp-canvas-base);
   background-repeat:no-repeat;
   background-image:
@@ -727,7 +728,8 @@ body[data-page="tours"] main section:not(.cta-band),
 body[data-page="travesias"] main section:not(.cta-band),
 body[data-page="paquetes"] main section:not(.cta-band),
 body[data-page="nosotros"] main section:not(.cta-band),
-body[data-page="galeria"] main section:not(.cta-band):not(.comunidad){background:transparent;}
+body[data-page="galeria"] main section:not(.cta-band):not(.comunidad),
+body[data-page="contacto"] main section:not(.cta-band){background:transparent;}
 
 /* Experiencias — catálogo visual: mismas tarjetas/datos que Tours,
    Travesías, Paquetes y Catálogo, sólo con más presencia fotográfica
@@ -904,25 +906,32 @@ body[data-page="inicio"] .testi{background:transparent;}
 }
 
 /* ---------- Contacto ---------- */
-.contacto{background:#fff;}
-.contact-wrap{display:grid; grid-template-columns:0.9fr 1.1fr; gap:64px;}
-.contact-info .item{display:flex; gap:16px; margin-bottom:26px; align-items:flex-start;}
-.contact-info .item .ico{width:40px; height:40px; border-radius:50%; background:var(--color-celeste); display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:16px;}
-.contact-info .item b{display:block; font-family:var(--font-heading); font-size:15px;}
-.contact-info .item span, .contact-info .item a{font-size:13px; color:var(--text-muted); text-decoration:none;}
+.contact-wrap{display:grid; grid-template-columns:0.8fr 1.2fr; gap:var(--space-9); align-items:start;}
+#whatsapp-cta-holder{margin-bottom:var(--space-5);}
+.contact-info .item{display:flex; gap:var(--space-4); align-items:flex-start; padding:var(--space-4) 0; border-top:1px solid var(--border-color);}
+.contact-info .item:first-of-type{border-top:none; padding-top:0;}
+.contact-info .item .ico{width:40px; height:40px; border-radius:50%; background:rgba(255,91,40,0.12); color:var(--color-naranja); display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:16px;}
+.contact-info .item b{display:block; font-family:var(--font-heading); font-size:15px; margin-bottom:2px;}
+.contact-info .item span, .contact-info .item a{font-size:13.5px; color:var(--text-muted); text-decoration:none;}
 .contact-info .item a:hover{color:var(--color-naranja);}
-.contact-info .horarios-list{font-size:13px; color:var(--text-muted); line-height:1.8;}
-form{display:grid; gap:18px;}
-.form-row{display:grid; grid-template-columns:1fr 1fr; gap:18px;}
-label{font-size:12px; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted); margin-bottom:6px; display:block;}
-input, select, textarea{width:100%; padding:13px 14px; border:1.5px solid #d9d4c4; border-radius:6px; font-family:var(--font-body); font-size:14px; background:#fbf9f3;}
-input:focus, select:focus, textarea:focus{outline:none; border-color:var(--color-naranja);}
-textarea{resize:vertical; min-height:110px;}
-form .btn{justify-self:start; margin-top:6px;}
-.form-note{font-size:12px; color:#8a8470; margin-top:-6px;}
-.form-status{font-size:14px; padding:12px 14px; border-radius:6px; display:none;}
+
+.contact-form-panel{background:var(--bg-surface); border-radius:var(--radius-lg); box-shadow:var(--shadow-md); padding:var(--space-7);}
+form{display:grid; gap:var(--space-5);}
+.form-row{display:grid; grid-template-columns:1fr 1fr; gap:var(--space-5);}
+label{font-size:12px; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted); margin-bottom:var(--space-2); display:block;}
+input, select, textarea{width:100%; padding:14px 16px; border:1.5px solid var(--border-color-strong); border-radius:var(--radius-md); font-family:var(--font-body); font-size:14px; background:#fff; color:var(--text-primary); transition:border-color var(--duration-fast) var(--ease), box-shadow var(--duration-fast) var(--ease);}
+input:focus, select:focus, textarea:focus{outline:none; border-color:var(--color-naranja); box-shadow:0 0 0 3px rgba(255,91,40,0.14);}
+textarea{resize:vertical; min-height:130px;}
+form .btn{justify-self:start; margin-top:var(--space-2); padding:14px 34px;}
+.form-note{font-size:12px; color:var(--text-muted); margin-top:-8px; line-height:1.5;}
+.form-status{font-size:14px; padding:12px 14px; border-radius:var(--radius-sm); display:none;}
 .form-status.show{display:block;}
 .form-status.ok{background:#e3ecdb; color:var(--color-verde);}
+
+@media (max-width:640px){
+  .contact-form-panel{padding:var(--space-5);}
+  form .btn{justify-self:stretch; text-align:center;}
+}
 
 /* CTA final genérico */
 .cta-band{background:var(--bg-dark); color:#fff; text-align:center;}
