@@ -319,6 +319,11 @@ function renderPropuestaDetalle(){
   }
 
   const consultaHref = `contacto.html?propuesta=${encodeURIComponent(p.nombre)}`;
+  // Tours: el CTA principal va directo a WhatsApp con el nombre del Tour
+  // precargado (whatsappLink ya arma la URL con el mensaje codificado).
+  const tourWaHref = p.tipo === "tour" && typeof whatsappLink === "function"
+    ? whatsappLink(`Hola, quiero consultar por el Tour "${p.nombre}".`)
+    : null;
 
   // Bloques específicos según el tipo (leídos de p.detalle)
   const especifico = renderDetalleEspecifico(p);
@@ -362,8 +367,10 @@ function renderPropuestaDetalle(){
         <div class="info-row"><span>Modalidad</span><b>${p.modalidad}</b></div>`}
         ${p.precio ? `<div class="info-row"><span>Precio</span><b>${p.precio}</b></div>` : ""}
         ${especifico.asideHtml}
-        <a class="btn" href="${consultaHref}">${p.tipo === "tour" ? "Consultar este Tour" : "Consultar disponibilidad"}</a>
-        <a class="btn btn-outline on-light btn-block" style="margin-top:10px;" href="${consultaHref}">Solicitar información</a>
+        ${p.tipo === "tour"
+          ? `<a class="btn" href="${tourWaHref || consultaHref}"${tourWaHref ? ` target="_blank" rel="noopener"` : ""}>Consultar este Tour</a>`
+          : `<a class="btn" href="${consultaHref}">Consultar disponibilidad</a>
+        <a class="btn btn-outline on-light btn-block" style="margin-top:10px;" href="${consultaHref}">Solicitar información</a>`}
       </aside>
     </div>
   `;
