@@ -260,12 +260,12 @@
 <script src="assets/js/main.js"></script>
 <script>
   // Home: destinos destacados — Cusco (protagonista) primero, después
-  // Patagonia y Norte Argentino. Sólo cambia el orden de presentación acá;
-  // destinos-data.js no se modifica.
+  // Bariloche y Ushuaia (los otros dos destinos con contenido real hoy).
+  // Sólo cambia el orden de presentación acá; destinos-data.js no se modifica.
   document.addEventListener("DOMContentLoaded", () => {
     const destinosHome = document.getElementById("destinos-home");
     if (destinosHome) {
-      const ordenInicio = ["peru", "patagonia", "norte-argentino"];
+      const ordenInicio = ["peru", "bariloche", "ushuaia"];
       const destacados = ordenInicio
         .map(slug => DESTINOS.find(d => d.slug === slug))
         .filter(Boolean)
