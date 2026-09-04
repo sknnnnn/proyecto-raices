@@ -343,7 +343,11 @@
     let tipoActivo = "";
 
     function render() {
-      const lista = tipoActivo ? PROPUESTAS.filter(p => p.tipo === tipoActivo) : PROPUESTAS.slice();
+      // No mostrar propuestas de ejemplo (esPlaceholder) en el carrusel del
+      // Inicio: acá conviven todos los tipos y un placeholder se vería como
+      // contenido real.
+      const reales = PROPUESTAS.filter(p => !p.esPlaceholder);
+      const lista = tipoActivo ? reales.filter(p => p.tipo === tipoActivo) : reales;
       if (!lista.length) {
         track.innerHTML = `<p class="empty-state">Todavía no hay experiencias cargadas en esta categoría.</p>`;
         setWidth = 0;

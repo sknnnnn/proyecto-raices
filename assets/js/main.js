@@ -205,7 +205,11 @@ function renderPropuestasGrid(){
   }
 
   // ---- Lista filtrada ----
-  let lista = PROPUESTAS.slice();
+  // En catalogo.html (sin tipo fijo) se mezclan tours, travesías y paquetes
+  // por destino: ahí no mostramos propuestas de ejemplo (esPlaceholder) para
+  // no confundirlas con contenido real. En una página de tipo fijo (por
+  // ejemplo paquetes.html) sí puede mostrarse, ya marcada con su badge.
+  let lista = tipoFijo ? PROPUESTAS.slice() : PROPUESTAS.filter(p => !p.esPlaceholder);
   if (tipoFiltro) lista = lista.filter(p => p.tipo === tipoFiltro);
   if (destinoFiltro) lista = lista.filter(p => p.destino === destinoFiltro);
 
