@@ -448,10 +448,14 @@ function renderDetalleTravesia(d){
   // campos, en el mismo orden — cuando un dato no está confirmado en la
   // fuente, se usa "Consultar" en vez de ocultar la fila o inventar un valor.
   let asideHtml = "";
-  asideHtml += infoRowSiHay("Distancia total", d.distanciaTotal || "Consultar");
+  asideHtml += infoRowSiHay("Distancia", d.distanciaTotal || "Consultar");
   asideHtml += infoRowSiHay("Dificultad", d.dificultad || "Consultar");
   asideHtml += infoRowSiHay("Alojamiento", d.alojamiento || "Consultar");
-  asideHtml += infoRowSiHay("Próximas fechas", (d.fechas && d.fechas.length) ? d.fechas.join(" · ") : "Consultar");
+  // d.fechasNota es una aclaración corta y discreta (ej. "A confirmar")
+  // que va debajo de la fecha, separada del dato principal.
+  const fechasValor = (d.fechas && d.fechas.length) ? d.fechas.join(" · ") : "Consultar";
+  const fechasNotaHtml = d.fechasNota ? `<small class="nota">${d.fechasNota}</small>` : "";
+  asideHtml += `<div class="info-row"><span>Fechas</span><b>${fechasValor}${fechasNotaHtml}</b></div>`;
 
   return { bodyHtml, asideHtml, badgeHtml: personalizableBadge(d.personalizable) };
 }

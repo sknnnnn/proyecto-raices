@@ -39,7 +39,9 @@
 
    TRAVESÍA (varios días, personalizable):
      - dificultad                   string | null
-     - fechas                       array de string  (fechas/salidas disponibles)
+     - distanciaTotal               string | null
+     - fechas                       array de string  (fechas/salidas disponibles, formato compacto)
+     - fechasNota                   string | null  (aclaración corta, ej. "A confirmar")
      - itinerario                   array de { dia, titulo, descripcion }
      - alojamiento                  string | null
      - comidas                      string | null
@@ -1275,7 +1277,7 @@ const PROPUESTAS = [
     detalle: {
       dificultad: "Media",
       distanciaTotal: "130 km · 70% gravel · 20% senderos · 10% asfalto",
-      fechas: ["14 al 17 de enero de 2027"],
+      fechas: ["14 – 17 ene 2027"],
       itinerario: [
         { dia: 1, titulo: "Estepa", descripcion: "35 km junto a las vías del tren hasta la estación Perito Moreno, con regreso y transferencia de aproximadamente 1 hora." },
         { dia: 2, titulo: "Valle del Manso", descripcion: "20 km por el sector sur del Parque Nacional, entre ríos y bosque. Transferencia total aproximada de 3 horas." },
@@ -1317,7 +1319,7 @@ const PROPUESTAS = [
     detalle: {
       dificultad: "Baja +",
       distanciaTotal: "135 km · 15% gravel · 85% asfalto",
-      fechas: ["10 al 13 de diciembre de 2026", "18 al 21 de febrero de 2027", "18 al 21 de marzo de 2027"],
+      fechas: ["10 – 13 dic 2026", "18 – 21 feb 2027", "18 – 21 mar 2027"],
       itinerario: [
         { dia: 1, titulo: "Bariloche", descripcion: "Encuentro por la tarde en el alojamiento, presentación con los guías, prueba de bicicletas y cena de bienvenida." },
         { dia: 2, titulo: "Bariloche → Hostería 7 Lagos / Lago Correntoso", descripcion: "42 km en e-bike combinados con un cruce en catamarán hacia Arrayanes y 12 km por sendero de bosque, pasando por Villa La Angostura y el lago Espejo hasta Correntoso. Noche en carpa (carpa y aislante incluidos)." },
@@ -1359,7 +1361,7 @@ const PROPUESTAS = [
     detalle: {
       dificultad: "Baja +",
       distanciaTotal: "207 km · 20% gravel · 80% asfalto",
-      fechas: ["10 al 14 de marzo de 2027"],
+      fechas: ["10 – 14 mar 2027"],
       itinerario: [
         { dia: 1, titulo: "Bariloche", descripcion: "Encuentro por la tarde en el alojamiento, presentación con los guías, prueba de bicicletas y cena de bienvenida." },
         { dia: 2, titulo: "Circuito Chico + Arrayanes", descripcion: "45 km por el Circuito Chico, con almuerzo y cruce en catamarán hacia Arrayanes y la Península Quetrihué." },
@@ -1402,7 +1404,7 @@ const PROPUESTAS = [
     detalle: {
       dificultad: "Media +",
       distanciaTotal: "200 km · 75% gravel · 25% asfalto",
-      fechas: ["24 al 28 de febrero de 2027"],
+      fechas: ["24 – 28 feb 2027"],
       itinerario: [
         { dia: 1, titulo: "San Martín de los Andes", descripcion: "Encuentro por la tarde en el alojamiento, presentación con los guías y prueba de bicicletas." },
         { dia: 2, titulo: "San Martín → Hua Hum", descripcion: "48 km por senderos de comunidad mapuche y camino de gravel, dentro del Parque Nacional Lanín." },
@@ -1446,7 +1448,7 @@ const PROPUESTAS = [
     detalle: {
       dificultad: "Media +",
       distanciaTotal: "250 km · 80% asfalto · 20% gravel",
-      fechas: ["3 al 8 de diciembre de 2026"],
+      fechas: ["3 – 8 dic 2026"],
       itinerario: [
         { dia: 1, titulo: "Bariloche", descripcion: "Encuentro por la tarde en el alojamiento, prueba de bicicletas y cena de bienvenida." },
         { dia: 2, titulo: "Bariloche → Puerto Blest → Petrohué", descripcion: "33 km en bicicleta combinados con una navegación inicial hasta Puerto Blest, 3 km más hasta Puerto Frías y una navegación de aproximadamente 40 minutos cruzando a Chile. Luego, 30 km hasta Peulla navegando el lago Todos los Santos. Noche en Petrohué." },
@@ -1490,7 +1492,7 @@ const PROPUESTAS = [
     detalle: {
       dificultad: "Media +",
       distanciaTotal: "220 km · 50% gravel · 50% asfalto",
-      fechas: ["24 al 29 de noviembre de 2026 (fecha confirmada)"],
+      fechas: ["24 – 29 nov 2026"],
       itinerario: [
         { dia: 1, titulo: "San Martín → Villa Pehuenia", descripcion: "Encuentro después del mediodía y traslado de aproximadamente 5 horas, con presentación de los guías y prueba de bicicletas." },
         { dia: 2, titulo: "Laguna Corazón", descripcion: "60 km con un desnivel aproximado de +600 m: un desvío hacia el Paso El Arco de unos 11 km y un ascenso de 15 km por gravel hasta la laguna, donde se almuerza antes de descender por el mismo camino." },
@@ -1535,7 +1537,8 @@ const PROPUESTAS = [
     detalle: {
       dificultad: "Media +",
       distanciaTotal: "290 km · 70% gravel · 30% asfalto",
-      fechas: ["27 de marzo al 2 de abril de 2027 (a confirmar)"],
+      fechas: ["27 mar — 2 abr 2027"],
+      fechasNota: "A confirmar",
       itinerario: [
         { dia: 1, titulo: "Chos Malal", descripcion: "Encuentro después del mediodía, presentación del guía, prueba de bicicletas y cena de bienvenida." },
         { dia: 2, titulo: "Chos Malal → Andacollo → Mallín Malal", descripcion: "Traslado de aproximadamente 1 hora hasta Andacollo y ruta en bicicleta de unos 43 km junto al río Nahueve (asfalto y gravel, desnivel +600/-250 m) hasta Mallín Malal. Distancia total del día: 53 km." },

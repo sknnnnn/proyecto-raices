@@ -802,6 +802,7 @@ body[data-tipo-fijo] .exp-card .meta{font-size:12.5px; gap:16px;}
 .exp-info-card .info-row:last-of-type{border-bottom:none;}
 .exp-info-card .info-row span{flex:0 0 auto;}
 .exp-info-card .info-row b{flex:1 1 auto; min-width:0; text-align:right; font-family:var(--font-heading); overflow-wrap:break-word;}
+.exp-info-card .info-row .nota{display:block; font-family:var(--font-detail); font-weight:400; font-size:11px; color:var(--text-muted); margin-top:2px;}
 .exp-info-card .btn{width:100%; text-align:center; margin-top:18px;}
 .exp-body h2{font-size:24px; margin:40px 0 14px;}
 .exp-body h2:first-child{margin-top:0;}
