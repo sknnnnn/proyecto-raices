@@ -130,24 +130,23 @@
 <script src="assets/js/propuestas-data.js"></script>
 <script src="assets/js/main.js"></script>
 <script>
-  /* Explorador de Experiencias — Etapa 1 (arquitectura + composición).
+  /* Explorador de Experiencias — País → Destino → catálogo del destino.
 
      El explorador es SOLO selector de lugar: País → Destino. Termina
      ahí — no muestra Tours/Travesías/Paquetes ni ningún otro nivel de
-     navegación; cómo mostrar las experiencias de cada destino se
-     define en una etapa posterior. Cada destino tile linkea a
-     catalogo.html?destino=slug (ruta real que ya existe y ya filtra
-     por destino, la misma que usan las cards de Destinos) — no se
-     inventa ninguna página nueva.
+     navegación; eso se resuelve en catalogo.html. Cada destino tile
+     linkea a catalogo.html?destino=slug (ruta real que ya existe y ya
+     filtra por destino + tipo, la misma que usan las cards de
+     Destinos) — no se inventa ninguna página nueva.
 
-     Todo sale en vivo de PROPUESTAS y DESTINOS reales (propuestas-data.js
-     y destinos-data.js, sin tocar ninguno de los dos): sólo se listan
-     los destinos que hoy tienen al menos una propuesta real cargada
-     (Patagonia, Cusco) — no hay contenido inventado ni una lista
-     paralela. Hoy destinos-data.js no modela una región intermedia
-     entre país y destino — cuando se agregue ese campo, agrupar por
-     región antes de destino es un cambio de esta misma función, no un
-     rediseño.
+     Los destinos salen de DESTINOS completo (destinos-data.js), igual
+     que destinos.html: se listan TODOS los destinos reales agrupados
+     por país, no sólo los que ya tienen una propuesta cargada — así
+     los dos puntos de entrada (Experiencias y Destinos) muestran el
+     mismo árbol de lugares. El que todavía no tiene propuestas reales
+     se marca "En preparación" (mismo flag que ya usa destinos.html) y
+     su link igual lleva a catalogo.html, que muestra el estado vacío
+     correspondiente. No hay contenido inventado ni una lista paralela.
 
      "Para inspirarte" es una sección aparte, más abajo: no depende de
      este explorador, siempre muestra las mismas 3 propuestas reales de
@@ -171,9 +170,7 @@
     }
 
     const arbol = {};
-    PROPUESTAS.forEach(p => {
-      const d = getDestinoPorSlug(p.destino);
-      if (!d) return;
+    DESTINOS.forEach(d => {
       arbol[d.pais] = arbol[d.pais] || {};
       arbol[d.pais][d.slug] = d;
     });
@@ -200,9 +197,11 @@
 
       const destinosHtml = Object.values(arbol[paisActivo]).map(d => {
         const nombre = nombreDestino(d);
+        const prep = d.esPlaceholder ? `<span class="destino-card-flag">En preparación</span>` : "";
         return `
           <a class="exp-destino-tile" href="catalogo.html?destino=${d.slug}">
             <img src="${d.imagen}" alt="${nombre}, ${d.pais}" loading="lazy">
+            ${prep}
             <span class="exp-destino-tile-label">${nombre}</span>
           </a>`;
       }).join("");
