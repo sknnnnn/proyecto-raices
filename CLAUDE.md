@@ -982,3 +982,27 @@ Proyecto Raíces debe sentirse como una marca construida por personas que aman v
 
 
 
+---
+
+
+
+\## CONTEXTO DEL PROYECTO
+
+
+
+\* Antes de realizar cualquier trabajo sobre Proyecto Raíces, consultar `PROJECT-CONTEXT.md` cuando la tarea dependa de decisiones de contenido, estructura, identidad, UX o estado del proyecto.
+
+\* `PROJECT-CONTEXT.md` funciona como documento de contexto del proyecto y complementa estas instrucciones.
+
+\* `CLAUDE.md` define cómo trabajar.
+
+\* `PROJECT-CONTEXT.md` define qué es el proyecto y cuáles son sus decisiones actuales.
+
+\* Si existe una decisión específica y actualizada en `PROJECT-CONTEXT.md`, respetarla.
+
+\* No duplicar innecesariamente en `CLAUDE.md` información que ya esté documentada en `PROJECT-CONTEXT.md`.
+
+\* Si ambos archivos parecen entrar en conflicto, priorizar las instrucciones explícitas de `CLAUDE.md` para la forma de trabajo y señalar cualquier conflicto de contexto antes de realizar un cambio importante.
+
+
+
