@@ -319,10 +319,14 @@ function renderPropuestaDetalle(){
   }
 
   const consultaHref = `contacto.html?propuesta=${encodeURIComponent(p.nombre)}`;
-  // Tours: el CTA principal va directo a WhatsApp con el nombre del Tour
-  // precargado (whatsappLink ya arma la URL con el mensaje codificado).
+  // Tours y Travesías: el CTA principal va directo a WhatsApp con el
+  // nombre de la propuesta precargado (whatsappLink ya arma la URL con
+  // el mensaje codificado).
   const tourWaHref = p.tipo === "tour" && typeof whatsappLink === "function"
     ? whatsappLink(`Hola, quiero consultar por el Tour "${p.nombre}".`)
+    : null;
+  const travesiaWaHref = p.tipo === "travesia" && typeof whatsappLink === "function"
+    ? whatsappLink(`Hola, quiero consultar por la Travesía "${p.nombre}".`)
     : null;
 
   // Bloques específicos según el tipo (leídos de p.detalle)
@@ -360,7 +364,7 @@ function renderPropuestaDetalle(){
         ${especifico.badgeHtml}
         <div class="info-row"><span>Destino</span><b>${destino ? destino.nombre : p.destino}</b></div>
         <div class="info-row"><span>Ubicación</span><b>${p.ubicacion}</b></div>
-        ${p.tipo === "tour" ? `
+        ${p.tipo === "tour" || p.tipo === "travesia" ? `
         <div class="info-row"><span>Modalidad</span><b>${p.modalidad}</b></div>
         <div class="info-row"><span>Duración</span><b>${p.duracion}</b></div>` : `
         <div class="info-row"><span>Duración</span><b>${p.duracion}</b></div>
@@ -369,6 +373,8 @@ function renderPropuestaDetalle(){
         ${especifico.asideHtml}
         ${p.tipo === "tour"
           ? `<a class="btn" href="${tourWaHref || consultaHref}"${tourWaHref ? ` target="_blank" rel="noopener"` : ""}>Consultar este Tour</a>`
+          : p.tipo === "travesia"
+          ? `<a class="btn" href="${travesiaWaHref || consultaHref}"${travesiaWaHref ? ` target="_blank" rel="noopener"` : ""}>Consultar esta Travesía</a>`
           : `<a class="btn" href="${consultaHref}">Consultar disponibilidad</a>
         <a class="btn btn-outline on-light btn-block" style="margin-top:10px;" href="${consultaHref}">Solicitar información</a>`}
       </aside>
@@ -439,13 +445,12 @@ function renderDetalleTravesia(d){
   bodyHtml += listaSiHay("Qué no cubre la logística", d.logisticaNoIncluida, "cross-list");
 
   let asideHtml = "";
-  asideHtml += infoRowSiHay("Dificultad", d.dificultad);
   asideHtml += infoRowSiHay("Distancia total", d.distanciaTotal);
-  asideHtml += infoRowSiHay("Alojamiento", d.alojamiento);
-  asideHtml += infoRowSiHay("Comidas", d.comidas);
+  asideHtml += infoRowSiHay("Dificultad", d.dificultad);
   if (d.fechas && d.fechas.length) {
     asideHtml += infoRowSiHay("Próximas fechas", d.fechas.join(" · "));
   }
+  asideHtml += infoRowSiHay("Alojamiento", d.alojamiento);
 
   return { bodyHtml, asideHtml, badgeHtml: personalizableBadge(d.personalizable) };
 }

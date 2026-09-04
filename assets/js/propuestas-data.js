@@ -1102,7 +1102,7 @@ const PROPUESTAS = [
     modalidad: "Servicio compartido",
     ubicacion: "Cusco, Perú",
     infoImportante: "La entrada a Machupicchu está incluida; los detalles finales del ingreso se confirman antes de la salida.",
-    precio: "Precio a confirmar",
+    precio: null,
     destacada: true,
 
     detalle: {
@@ -1116,7 +1116,7 @@ const PROPUESTAS = [
         { dia: 4, titulo: "Santa Teresa → Aguas Calientes", descripcion: "Recorrido por zona tropical, con caminata de aproximadamente 7 horas hasta Aguas Calientes pasando por Hidroeléctrica (existe la opción de tomar el tren desde ahí). En el trayecto se observan cascadas provenientes de los glaciares. Noche en hostel en Aguas Calientes." },
         { dia: 5, titulo: "Machupicchu → Cusco", descripcion: "Ascenso a Machupicchu alrededor de las 04:30 y visita guiada de aproximadamente 2 horas, con tiempo libre después (opción de subir a Inti Punku o recorrer Aguas Calientes). Regreso a Cusco en tren, según el horario asignado (14:55, 15:20, 16:43, 18:20 o 21:50)." }
       ],
-      alojamiento: "Camping los primeros días y hostel en Aguas Calientes la última noche",
+      alojamiento: "Camping + hostel",
       comidas: "4 desayunos, 4 almuerzos y 4 cenas",
       personalizable: true,
       logisticaNoIncluida: [
@@ -1145,7 +1145,7 @@ const PROPUESTAS = [
     modalidad: "Salida con reserva previa",
     ubicacion: "Cusco, Perú",
     infoImportante: "Salidas disponibles cualquier fecha, con reserva previa. El caballo y el arriero no están incluidos.",
-    precio: "Precio a confirmar",
+    precio: null,
     destacada: false,
 
     detalle: {
@@ -1158,7 +1158,7 @@ const PROPUESTAS = [
         { dia: 3, titulo: "Marampata → Choquequirao → Santa Rosa o Chikiska", descripcion: "Desayuno antes del amanecer y caminata de aproximadamente 1,5 h (4,5 km) hasta el sitio arqueológico: las terrazas de las Llamas, la plaza central (3068 m) y el sector Hanan (3136 m), con restos aún sin excavar y vistas panorámicas. Almuerzo en el campamento y regreso por sendero rocoso hacia Marampata y Santa Rosa (3140 m máx. / 2200 m mín., 9 km, 5 h). Cena y alojamiento en cabañas dobles." },
         { dia: 4, titulo: "Santa Rosa → Capuliyoc → Cusco", descripcion: "Descenso por terreno rocoso hasta el Apurímac y ascenso por Chiquisca y Cocamasana hasta Capuliyoc (2950 m máx. / 1530 m mín., 7 km, 5–6 h), con almuerzo y descanso. Transporte de aproximadamente 4,5 horas de regreso a Cusco." }
       ],
-      alojamiento: "Alojamiento rural y en cabañas (habitaciones dobles/twin, duchas frías y baños compartidos)",
+      alojamiento: "Rural + cabañas",
       comidas: "3 desayunos, 4 almuerzos y 3 cenas (no incluye el primer desayuno)",
       personalizable: true,
       logisticaNoIncluida: [
@@ -1187,7 +1187,7 @@ const PROPUESTAS = [
     modalidad: "Servicio compartido",
     ubicacion: "Cusco, Perú",
     infoImportante: null,
-    precio: "Precio a confirmar",
+    precio: null,
     destacada: false,
 
     detalle: {
@@ -1227,7 +1227,7 @@ const PROPUESTAS = [
     modalidad: "Servicio privado",
     ubicacion: "Cusco, Perú",
     infoImportante: "Opciones de tren de retorno sujetas a disponibilidad: Vistadome Observatory (15:20 o 16:22), Expedition (14:55) o Vistadome (15:48).",
-    precio: "Precio a confirmar",
+    precio: null,
     destacada: false,
 
     detalle: {
@@ -1269,12 +1269,12 @@ const PROPUESTAS = [
     modalidad: "Salida grupal",
     ubicacion: "Bariloche, Río Negro, Argentina",
     infoImportante: null,
-    precio: "Precio a confirmar",
+    precio: null,
     destacada: false,
 
     detalle: {
       dificultad: "Media",
-      distanciaTotal: "130 km aprox. (70% gravel, 10% asfalto, 20% senderos)",
+      distanciaTotal: "130 km · 70% gravel · 20% senderos · 10% asfalto",
       fechas: ["14 al 17 de enero de 2027"],
       itinerario: [
         { dia: 1, titulo: "Estepa", descripcion: "35 km junto a las vías del tren hasta la estación Perito Moreno, con regreso y transferencia de aproximadamente 1 hora." },
@@ -1311,12 +1311,12 @@ const PROPUESTAS = [
     modalidad: "Salida grupal",
     ubicacion: "Bariloche → San Martín de los Andes, Argentina",
     infoImportante: null,
-    precio: "Precio a confirmar",
+    precio: null,
     destacada: false,
 
     detalle: {
       dificultad: "Baja +",
-      distanciaTotal: "135 km aprox. (15% gravel, 85% asfalto)",
+      distanciaTotal: "135 km · 15% gravel · 85% asfalto",
       fechas: ["10 al 13 de diciembre de 2026", "18 al 21 de febrero de 2027", "18 al 21 de marzo de 2027"],
       itinerario: [
         { dia: 1, titulo: "Bariloche", descripcion: "Encuentro por la tarde en el alojamiento, presentación con los guías, prueba de bicicletas y cena de bienvenida." },
@@ -1353,12 +1353,12 @@ const PROPUESTAS = [
     modalidad: "Salida grupal",
     ubicacion: "Bariloche → San Martín de los Andes, Argentina",
     infoImportante: null,
-    precio: "Precio a confirmar",
+    precio: null,
     destacada: false,
 
     detalle: {
       dificultad: "Baja +",
-      distanciaTotal: "207 km aprox. (20% gravel, 80% asfalto)",
+      distanciaTotal: "207 km · 20% gravel · 80% asfalto",
       fechas: ["10 al 14 de marzo de 2027"],
       itinerario: [
         { dia: 1, titulo: "Bariloche", descripcion: "Encuentro por la tarde en el alojamiento, presentación con los guías, prueba de bicicletas y cena de bienvenida." },
@@ -1396,12 +1396,12 @@ const PROPUESTAS = [
     modalidad: "Salida grupal",
     ubicacion: "San Martín de los Andes, Argentina — Chile",
     infoImportante: null,
-    precio: "Precio a confirmar",
+    precio: null,
     destacada: true,
 
     detalle: {
       dificultad: "Media +",
-      distanciaTotal: "200 km aprox. (75% gravel, 25% asfalto)",
+      distanciaTotal: "200 km · 75% gravel · 25% asfalto",
       fechas: ["24 al 28 de febrero de 2027"],
       itinerario: [
         { dia: 1, titulo: "San Martín de los Andes", descripcion: "Encuentro por la tarde en el alojamiento, presentación con los guías y prueba de bicicletas." },
@@ -1430,6 +1430,7 @@ const PROPUESTAS = [
     destino: "patagonia",
     categoria: "E-bike",
     imagen: "assets/img/experiencias/Lago Moreno, Colonia Suiza.jpeg",
+    imagenPos: "center 5%",
     galeria: ["assets/img/experiencias/Lago Moreno, Colonia Suiza.jpeg"],
     resumen: "6 días combinando e-bike y navegación entre Bariloche y los lagos chilenos, con Termas de Puyehue y regreso a Argentina.",
     descripcion: "El clásico Cruce Andino combinado con e-bike: navegación desde Bariloche hasta Puerto Blest y Puerto Frías, cruce a Chile y descenso hacia Peulla navegando el lago Todos los Santos. Del otro lado, ciclovías junto al lago Llanquihue, caminos entre lagos y campos hasta Puerto Octay y el lago Rupanco, con una parada en las Termas de Puyehue antes de cruzar de regreso a Bariloche. Seis días, unos 250 km en e-bike combinados con varias navegaciones.",
@@ -1439,12 +1440,12 @@ const PROPUESTAS = [
     modalidad: "Salida grupal",
     ubicacion: "Bariloche, Argentina — Chile",
     infoImportante: null,
-    precio: "Precio a confirmar",
+    precio: null,
     destacada: false,
 
     detalle: {
       dificultad: "Media +",
-      distanciaTotal: "250 km aprox. (80% asfalto, 20% gravel)",
+      distanciaTotal: "250 km · 80% asfalto · 20% gravel",
       fechas: ["3 al 8 de diciembre de 2026"],
       itinerario: [
         { dia: 1, titulo: "Bariloche", descripcion: "Encuentro por la tarde en el alojamiento, prueba de bicicletas y cena de bienvenida." },
@@ -1483,12 +1484,12 @@ const PROPUESTAS = [
     modalidad: "Salida grupal",
     ubicacion: "Villa Pehuenia, Neuquén, Argentina — Chile",
     infoImportante: null,
-    precio: "Precio a confirmar",
+    precio: null,
     destacada: false,
 
     detalle: {
       dificultad: "Media +",
-      distanciaTotal: "220 km aprox. (50% gravel, 50% asfalto)",
+      distanciaTotal: "220 km · 50% gravel · 50% asfalto",
       fechas: ["24 al 29 de noviembre de 2026 (fecha confirmada)"],
       itinerario: [
         { dia: 1, titulo: "San Martín → Villa Pehuenia", descripcion: "Encuentro después del mediodía y traslado de aproximadamente 5 horas, con presentación de los guías y prueba de bicicletas." },
@@ -1518,21 +1519,22 @@ const PROPUESTAS = [
     destino: "patagonia",
     categoria: "E-bike",
     imagen: "assets/img/trekking.jpg",
+    imagenPos: "center 20%",
     galeria: ["assets/img/trekking.jpg"],
     resumen: "Travesía en e-bike por el norte neuquino, con base en Varvarco: volcanes, lagunas glaciares, cavernas y aguas termales.",
     descripcion: "Una travesía en e-bike por el norte neuquino, con base en el entorno de Varvarco, atravesando paisajes de montaña, zonas de trashumancia, volcanes, aguas termales y valles glaciares. El recorrido incluye las lagunas glaciares de Epulaufquen, cascadas junto al río, formaciones geológicas en Los Bolillos y un cierre en cavernas y aguas termales naturales en el Cajón del Covunco y el Cajón del Atreuco, con base en Chos Malal.",
     incluye: ["E-bike", "Traslados", "Guías", "Vehículo de apoyo", "7 noches", "Cena el día 1", "Todas las comidas de los días siguientes"],
     noIncluye: ["Alcohol", "Propinas"],
-    duracion: "8 días (a confirmar)",
+    duracion: "8 días / 7 noches",
     modalidad: "Salida grupal",
-    ubicacion: "Norte neuquino (Chos Malal – Varvarco), Argentina",
-    infoImportante: "La fuente indica una duración de 8 días, pero el rango de fechas provisto (27 de marzo al 2 de abril de 2027) abarca 7 días de calendario. Duración y fechas sujetas a confirmación final antes de la salida.",
-    precio: "Precio a confirmar",
+    ubicacion: "Norte neuquino · Neuquén",
+    infoImportante: "La duración confirmada según el itinerario es de 8 días / 7 noches. El rango de fechas indicado (27 de marzo al 2 de abril de 2027) cubre 7 días de calendario: la fecha final está sujeta a confirmación.",
+    precio: null,
     destacada: false,
 
     detalle: {
       dificultad: "Media +",
-      distanciaTotal: "290 km aprox. (70% gravel, 30% asfalto)",
+      distanciaTotal: "290 km · 70% gravel · 30% asfalto",
       fechas: ["27 de marzo al 2 de abril de 2027 (a confirmar)"],
       itinerario: [
         { dia: 1, titulo: "Chos Malal", descripcion: "Encuentro después del mediodía, presentación del guía, prueba de bicicletas y cena de bienvenida." },
