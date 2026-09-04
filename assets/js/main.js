@@ -341,11 +341,9 @@ function renderPropuestaDetalle(){
 
           ${especifico.bodyHtml}
 
-          <h2>Qué incluye</h2>
-          <ul class="check-list">${p.incluye.map(i => `<li>${i}</li>`).join("")}</ul>
+          ${p.incluye && p.incluye.length ? `<h2>Qué incluye</h2><ul class="check-list">${p.incluye.map(i => `<li>${i}</li>`).join("")}</ul>` : ""}
 
-          <h2>Qué no incluye</h2>
-          <ul class="cross-list">${p.noIncluye.map(i => `<li>${i}</li>`).join("")}</ul>
+          ${p.noIncluye && p.noIncluye.length ? `<h2>Qué no incluye</h2><ul class="cross-list">${p.noIncluye.map(i => `<li>${i}</li>`).join("")}</ul>` : ""}
 
           ${p.infoImportante ? `<h2>Información importante</h2><p>${p.infoImportante}</p>` : ""}
         </div>
@@ -406,6 +404,7 @@ function renderDetalleTour(d){
   if (d.combinableConOtrosTours) {
     bodyHtml += `<div class="notice-box">Este tour se puede combinar con otros tours.${d.seConvierteEnTravesiaAlCombinar ? " Al combinarlo, la salida se convierte en una travesía de varios días." : ""}</div>`;
   }
+  bodyHtml += listaSiHay("Recorrido", d.recorrido, "check-list");
   bodyHtml += itinerarioSiHay(d.itinerarioCombinado);
 
   let asideHtml = "";
