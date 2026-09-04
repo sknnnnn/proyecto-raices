@@ -657,6 +657,11 @@ body[data-page="destinos"] .page-intro{background:transparent; padding-bottom:0;
 .exp-card:hover{transform:translateY(-3px);}
 .exp-card .img-wrap{display:block; position:relative; height:auto; aspect-ratio:1.1; overflow:hidden; border-radius:36px 10px 36px 10px; box-shadow:0 14px 30px rgba(33,29,22,.14);}
 .exp-card:nth-child(3n+1) .img-wrap{aspect-ratio:1.7;}
+/* Catálogo (destino): mismo formato de card para las 3 columnas — sin
+   esta excepción, la foto más ancha de cada 1º card por fila quedaba
+   con una card más baja que el resto. La imagen se adapta con
+   object-fit, la card no cambia de tamaño. */
+body[data-page="catalogo"] .exp-card:nth-child(3n+1) .img-wrap{aspect-ratio:1.1;}
 .exp-card .img-wrap img{width:100%; height:100%; object-fit:cover; transition:transform .6s ease;}
 .exp-card:hover .img-wrap img{transform:scale(1.055);}
 .exp-card .cat-badge{position:absolute; top:12px; left:12px; background:rgba(20,18,12,0.55); font-family:var(--font-body); font-weight:600; color:#fff; font-size:10.5px; text-transform:uppercase; letter-spacing:0.1em; padding:6px 12px; border-radius:999px;}
@@ -664,6 +669,12 @@ body[data-page="destinos"] .page-intro{background:transparent; padding-bottom:0;
 .exp-card .dest-tag{font-size:11.5px; text-transform:uppercase; letter-spacing:0.08em; color:var(--color-marron);}
 .exp-card h3{font-size:19px; line-height:1.2;}
 .exp-card .resumen{font-size:13.5px; color:var(--text-secondary); flex:1; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;}
+/* Catálogo (destino): título y resumen reservan siempre el mismo alto
+   (2 líneas), en vez de encogerse con texto corto — la card mezcla
+   Tours/Travesías/Paquetes de un mismo destino y con esto queda pareja
+   sin importar el largo del título o la foto de cada propuesta. */
+body[data-page="catalogo"] .exp-card h3{display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; min-height:46px;}
+body[data-page="catalogo"] .exp-card .resumen{min-height:63px;}
 .exp-card .meta{display:flex; gap:14px; font-size:11.5px; color:var(--text-muted); flex-wrap:wrap;}
 .exp-card .meta span{display:flex; align-items:center; gap:5px;}
 .exp-card .actions{display:flex; gap:10px; margin-top:4px; flex-wrap:wrap;}
@@ -703,13 +714,12 @@ body[data-page="inicio"] .exp-carousel .exp-card .actions{margin-top:auto; paddi
   body[data-page="inicio"] .exp-carousel-viewport{padding:18px 14px 34px;}
 }
 
-/* Experiencias + Tours + Travesías + Paquetes + Nosotros — misma
-   familia de página, mismo lienzo continuo (sin fondo propio por
-   sección), tercera combinación de color propia del sitio. Nosotros
-   se suma acá (en vez de tener su propia combinación) porque ya
-   comparte tipografía/composición con esta familia y evita que su
-   fondo vuelva a leerse como blanco plano. Catálogo NO está incluido
-   acá todavía (queda para una próxima ronda). */
+/* Experiencias + Tours + Travesías + Paquetes + Nosotros + Catálogo —
+   misma familia de página, mismo lienzo continuo (sin fondo propio por
+   sección), tercera combinación de color propia del sitio. Nosotros y
+   Catálogo se suman acá (en vez de tener su propia combinación) porque
+   ya comparten tipografía/composición con esta familia y evita que su
+   fondo vuelva a leerse como blanco plano. */
 body[data-page="experiencias"] main,
 body[data-page="tours"] main,
 body[data-page="travesias"] main,
@@ -717,6 +727,7 @@ body[data-page="paquetes"] main,
 body[data-page="nosotros"] main,
 body[data-page="galeria"] main,
 body[data-page="contacto"] main,
+body[data-page="catalogo"] main,
 body[data-page="propuesta"] main{
   background-color:var(--exp-canvas-base);
   background-repeat:no-repeat;
@@ -736,6 +747,7 @@ body[data-page="paquetes"] main section:not(.cta-band),
 body[data-page="nosotros"] main section:not(.cta-band),
 body[data-page="galeria"] main section:not(.cta-band):not(.comunidad),
 body[data-page="contacto"] main section:not(.cta-band),
+body[data-page="catalogo"] main section:not(.cta-band),
 body[data-page="propuesta"] main section{background:transparent;}
 
 /* Experiencias — catálogo visual: mismas tarjetas/datos que Tours,

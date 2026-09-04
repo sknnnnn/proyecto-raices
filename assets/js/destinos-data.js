@@ -98,7 +98,7 @@ const DESTINOS = [
     pais: "Perú",
     grupo: "internacional",
     imagen: "assets/img/Refugio Frey base.jpg",
-    resumen: "Contenido de ejemplo — información real próximamente.",
+    resumen: "La ciudad inca hermana de Machupicchu, cruzando el Cañón del Apurímac: trekking exigente entre pasos de montaña, bosques nublados y valles verdes.",
     esPlaceholder: true
   },
   {
