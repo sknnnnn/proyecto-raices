@@ -440,6 +440,7 @@ function renderDetalleTravesia(d){
 
   let asideHtml = "";
   asideHtml += infoRowSiHay("Dificultad", d.dificultad);
+  asideHtml += infoRowSiHay("Distancia total", d.distanciaTotal);
   asideHtml += infoRowSiHay("Alojamiento", d.alojamiento);
   asideHtml += infoRowSiHay("Comidas", d.comidas);
   if (d.fechas && d.fechas.length) {
