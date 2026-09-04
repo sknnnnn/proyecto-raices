@@ -444,13 +444,14 @@ function renderDetalleTravesia(d){
   bodyHtml += itinerarioSiHay(d.itinerario);
   bodyHtml += listaSiHay("Qué no cubre la logística", d.logisticaNoIncluida, "cross-list");
 
+  // Ficha rápida uniforme: las 11 Travesías muestran siempre estos 4
+  // campos, en el mismo orden — cuando un dato no está confirmado en la
+  // fuente, se usa "Consultar" en vez de ocultar la fila o inventar un valor.
   let asideHtml = "";
-  asideHtml += infoRowSiHay("Distancia total", d.distanciaTotal);
-  asideHtml += infoRowSiHay("Dificultad", d.dificultad);
-  if (d.fechas && d.fechas.length) {
-    asideHtml += infoRowSiHay("Próximas fechas", d.fechas.join(" · "));
-  }
-  asideHtml += infoRowSiHay("Alojamiento", d.alojamiento);
+  asideHtml += infoRowSiHay("Distancia total", d.distanciaTotal || "Consultar");
+  asideHtml += infoRowSiHay("Dificultad", d.dificultad || "Consultar");
+  asideHtml += infoRowSiHay("Alojamiento", d.alojamiento || "Consultar");
+  asideHtml += infoRowSiHay("Próximas fechas", (d.fechas && d.fechas.length) ? d.fechas.join(" · ") : "Consultar");
 
   return { bodyHtml, asideHtml, badgeHtml: personalizableBadge(d.personalizable) };
 }
