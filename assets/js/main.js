@@ -254,7 +254,7 @@ function propuestaCardHtml(p){
   return `
     <article class="exp-card" data-tipo="${p.tipo}">
       <a class="img-wrap" href="propuesta.html?id=${p.id}" aria-label="Ver detalles de ${p.nombre}">
-        ${p.imagen ? `<img src="${p.imagen}" alt="${p.nombre}" loading="lazy">` : `<div class="gal-placeholder" style="height:100%;">Imagen pendiente</div>`}
+        ${p.imagen ? `<img src="${p.imagen}" alt="${p.nombre}" loading="lazy"${p.imagenPos ? ` style="object-position:${p.imagenPos};"` : ""}>` : `<div class="gal-placeholder" style="height:100%;">Imagen pendiente</div>`}
         <span class="cat-badge">${tipoInfo ? tipoInfo.label : p.tipo}</span>
       </a>
       <div class="body">
@@ -328,7 +328,7 @@ function renderPropuestaDetalle(){
     <div class="exp-detail-grid" style="margin-top:28px;">
       <div>
         <div class="exp-gallery-main">
-          ${principal ? `<img src="${principal}" alt="${p.nombre}" id="exp-main-img">` : `<div class="gal-placeholder" style="height:100%;">Imagen pendiente</div>`}
+          ${principal ? `<img src="${principal}" alt="${p.nombre}" id="exp-main-img"${p.imagenPos ? ` style="object-position:${p.imagenPos};"` : ""}>` : `<div class="gal-placeholder" style="height:100%;">Imagen pendiente</div>`}
         </div>
         ${galeria.length > 1 ? `
         <div class="exp-gallery-thumbs">
@@ -355,11 +355,14 @@ function renderPropuestaDetalle(){
         ${especifico.badgeHtml}
         <div class="info-row"><span>Destino</span><b>${destino ? destino.nombre : p.destino}</b></div>
         <div class="info-row"><span>Ubicación</span><b>${p.ubicacion}</b></div>
-        <div class="info-row"><span>Duración</span><b>${p.duracion}</b></div>
+        ${p.tipo === "tour" ? `
         <div class="info-row"><span>Modalidad</span><b>${p.modalidad}</b></div>
+        <div class="info-row"><span>Duración</span><b>${p.duracion}</b></div>` : `
+        <div class="info-row"><span>Duración</span><b>${p.duracion}</b></div>
+        <div class="info-row"><span>Modalidad</span><b>${p.modalidad}</b></div>`}
         ${p.precio ? `<div class="info-row"><span>Precio</span><b>${p.precio}</b></div>` : ""}
         ${especifico.asideHtml}
-        <a class="btn" href="${consultaHref}">Consultar disponibilidad</a>
+        <a class="btn" href="${consultaHref}">${p.tipo === "tour" ? "Consultar este Tour" : "Consultar disponibilidad"}</a>
         <a class="btn btn-outline on-light btn-block" style="margin-top:10px;" href="${consultaHref}">Solicitar información</a>
       </aside>
     </div>
@@ -407,14 +410,14 @@ function renderDetalleTour(d){
   bodyHtml += listaSiHay("Recorrido", d.recorrido, "check-list");
   bodyHtml += itinerarioSiHay(d.itinerarioCombinado);
 
+  // Ficha técnica uniforme: los 29 Tours muestran siempre estos 4 campos,
+  // en el mismo orden — cuando un dato no está disponible en la info
+  // original, se usa "Consultar" en vez de ocultar la fila o inventar un valor.
   let asideHtml = "";
-  asideHtml += infoRowSiHay("Dificultad", d.dificultad);
-  asideHtml += infoRowSiHay("Distancia", d.distancia);
-  asideHtml += infoRowSiHay("Desnivel", d.desnivel);
-  asideHtml += infoRowSiHay("Fecha", d.fecha);
-  asideHtml += infoRowSiHay("Salida", d.salida);
-  asideHtml += infoRowSiHay("Regreso", d.regreso);
-  asideHtml += infoRowSiHay("Punto de encuentro", d.puntoDeEncuentro);
+  asideHtml += infoRowSiHay("Distancia", d.distancia || "Consultar");
+  asideHtml += infoRowSiHay("Salida", d.salida || "Consultar");
+  asideHtml += infoRowSiHay("Regreso", d.regreso || "Consultar");
+  asideHtml += infoRowSiHay("Punto de encuentro", d.puntoDeEncuentro || "Consultar");
   if (d.seConvierteEnTravesiaAlCombinar) {
     asideHtml += infoRowSiHay("Duración combinada", d.duracionCombinada);
   }
