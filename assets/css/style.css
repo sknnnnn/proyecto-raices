@@ -1021,6 +1021,9 @@ footer li a:hover{opacity:1; color:var(--color-amarillo);}
   .page-intro-grid{grid-template-columns:1fr; gap:36px; padding-bottom:36px;}
   .page-intro-text h1{font-size:clamp(38px,8vw,64px);}
   .page-intro-media{aspect-ratio:1.3;}
+  body[data-page="catalogo"] .page-intro{padding:36px 0 4px;}
+  body[data-page="catalogo"] .page-intro-grid{gap:24px; padding-bottom:24px;}
+  body[data-page="catalogo"] .page-intro-media{aspect-ratio:1.7;}
   .page-intro-media.duo{grid-template-columns:1.2fr 1fr; gap:14px;}
   .page-intro-media.duo .secondary{transform:translateY(14px);}
   .page-intro-lead img{max-height:38vh;}
@@ -1086,6 +1089,13 @@ footer li a:hover{opacity:1; color:var(--color-amarillo);}
   .page-intro-text p{font-size:16px;}
   .page-intro-grid{gap:28px; padding-bottom:28px;}
   .page-intro-media{aspect-ratio:1.05;}
+  /* Destino (catalogo.html): hero más bajo que el de Nosotros/Galería —
+     acá abajo hay una grilla de experiencias esperando, así que la
+     imagen no necesita tanta altura como en una página de una sola
+     sección. */
+  body[data-page="catalogo"] .page-intro{padding:28px 0 4px;}
+  body[data-page="catalogo"] .page-intro-grid{gap:18px; padding-bottom:20px;}
+  body[data-page="catalogo"] .page-intro-media{aspect-ratio:1.9;}
   .page-intro-media.duo{grid-template-columns:1fr; gap:14px;}
   .page-intro-media.duo .primary{aspect-ratio:1.3;}
   .page-intro-media.duo .secondary{width:58%; margin-left:auto; transform:none; aspect-ratio:1;}
