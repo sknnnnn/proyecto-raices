@@ -63,6 +63,14 @@ Dentro de Experiencias existen tres tipos:
 
 Estas categorías deben mantenerse diferenciadas tanto en contenido como en interfaz.
 
+### Navegación validada (no rediseñar)
+
+* Experiencias → País → Destino → Experiencias
+* Destinos → Destino → filtros → Experiencias
+* Desde cada destino: Destino → Tours / Travesías / Paquetes
+
+Esta arquitectura es funcional y reutilizable. No crear un sistema de navegación nuevo si esto ya resuelve el caso.
+
 ## 3. Experiencias
 
 La dirección actual es evitar que Tours, Travesías y Paquetes se sientan como tres sitios separados.
@@ -83,20 +91,27 @@ Si el usuario está dentro de Tours, no mostrar filtros de Travesías y Paquetes
 
 ## 4. Destinos
 
-Destinos actuales:
+Destinos actuales (estado real en `destinos-data.js`, corregido 2026-09-05 — "Patagonia" ya no es un destino navegable, se dividió en destinos reales):
 
 **Argentina**
 
-* Patagonia
-* Norte Argentino
+* Bariloche
+* Ushuaia
+* San Martín de los Andes
+* Villa Pehuenia
+* Norte Neuquino
+* Norte Argentino (en preparación, sin contenido real todavía)
 
 **Perú**
 
-* Cusco
-* Paracas
-* Huacachina
-* Arequipa
-* Lima
+* Cusco (destino "peru" en los datos)
+* Choquequirao
+* Paracas (en preparación)
+* Huacachina (en preparación)
+* Arequipa (en preparación)
+* Lima (en preparación)
+
+No reintroducir "Patagonia" como destino navegable. Sigue siendo válida solo como referencia geográfica en textos.
 
 La tarjeta de Perú debe poder comunicar claramente que incluye destinos como Cusco, entre otros.
 
@@ -106,14 +121,14 @@ La información debe mantenerse clara y no sobrecargar las tarjetas.
 
 ## 5. Identidad visual
 
-### Paleta actual
+### Paleta actual (jerarquía aprobada 2026-09-05)
 
-* Azul: `#8ba6b7`
-* Marrón: `#8d4b12`
-* Naranja: `#ff5b28`
-* Amarillo: `#e9e073`
-* Verde: `#43612f`
-* Verde oliva: `#6a7133`
+* Verde `#013020` — **color base** de la identidad visual. No implica fondo verde plano ni grandes superficies verdes oscuras: debe integrarse con superficies, fotografía y espacio en una composición equilibrada.
+* Naranja `#ff5b28` — **acento principal / CTA** y acciones importantes.
+* Amarillo `#e9e073` — **acento secundario**, detalles puntuales.
+* Azul `#8ba6b7`, Marrón `#8d4b12`, Verde `#43612f`, Verde oliva `#6a7133` — colores complementarios, se mantienen y se usan cuando corresponda.
+
+No es obligatorio usar los tres colores jerárquicos constantemente en cada sección.
 
 ### Logo
 
@@ -274,6 +289,8 @@ La prioridad actual es refinar la experiencia visual y la organización del cont
 * navegación
 
 El objetivo no es agregar complejidad, sino conseguir una web visualmente sólida, clara y coherente.
+
+Se exploraron 2 rondas de direcciones visuales comparativas (3 propuestas cada una); ninguna fue aprobada (detalle y criterios en `CLAUDE.md` §19-20). No hay todavía una dirección visual nueva aprobada más allá de la jerarquía de color de §5.
 
 ## 14. Regla de oro
 
