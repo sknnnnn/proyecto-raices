@@ -43,7 +43,7 @@
         <h1 id="cat-titulo">Propuestas por destino</h1>
         <p id="cat-resumen">Tours, travesías y paquetes disponibles, pensados para grupos chicos y con guías locales.</p>
       </div>
-      <div class="page-intro-media">
+      <div class="page-intro-media" id="cat-media">
         <img id="cat-img" src="assets/img/trekking.jpg" alt="" style="object-position:center 38%;">
       </div>
     </div>
@@ -136,8 +136,19 @@
       if (kicker) kicker.textContent = d.pais;
       const resumen = document.getElementById("cat-resumen");
       if (resumen) resumen.textContent = d.resumen;
-      const img = document.getElementById("cat-img");
-      if (img && d.imagen) { img.src = d.imagen; img.alt = nombre; img.style.objectPosition = "center"; }
+      const media = document.getElementById("cat-media");
+      if (media) {
+        if (d.imagen) {
+          media.innerHTML = `<img id="cat-img" src="${d.imagen}" alt="${nombre}" style="object-position:center;">`;
+        } else {
+          // Sin foto propia todavía: se muestra el mismo estado "Imagen
+          // pendiente" que ya usan las cards de destinos.html, en vez de
+          // mostrar la imagen genérica por defecto (que no corresponde a
+          // este destino).
+          media.innerHTML = `<div class="gal-placeholder">Imagen pendiente</div>`;
+        }
+        if (d.esPlaceholder) media.innerHTML += `<span class="destino-card-flag">En preparación</span>`;
+      }
       const bc = document.getElementById("cat-breadcrumb");
       if (bc) bc.innerHTML = `<a href="index.html">Inicio</a> / <a href="destinos.html">Destinos</a> / ${nombre}`;
       const expTitulo = document.getElementById("cat-exp-titulo");

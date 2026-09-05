@@ -97,7 +97,7 @@ const DESTINOS = [
     nombre: "Choquequirao",
     pais: "Perú",
     grupo: "internacional",
-    imagen: "assets/img/Refugio Frey base.jpg",
+    imagen: "assets/img/experiencias/pexels-teresita-ramirez-583628649-17043331.jpg",
     resumen: "La ciudad inca hermana de Machupicchu, cruzando el Cañón del Apurímac: trekking exigente entre pasos de montaña, bosques nublados y valles verdes.",
     esPlaceholder: true
   },
@@ -106,7 +106,7 @@ const DESTINOS = [
     nombre: "Paracas",
     pais: "Perú",
     grupo: "internacional",
-    imagen: "assets/img/San Carlos de Bariloche desde Brazo Huemul.jpg",
+    imagen: null,
     resumen: "Contenido de ejemplo — información real próximamente.",
     esPlaceholder: true
   },
@@ -115,7 +115,7 @@ const DESTINOS = [
     nombre: "Huacachina",
     pais: "Perú",
     grupo: "internacional",
-    imagen: "assets/img/Valle del Manso.jpeg",
+    imagen: null,
     resumen: "Contenido de ejemplo — información real próximamente.",
     esPlaceholder: true
   },
@@ -124,7 +124,7 @@ const DESTINOS = [
     nombre: "Arequipa",
     pais: "Perú",
     grupo: "internacional",
-    imagen: "assets/img/circuito chico - .jpeg",
+    imagen: null,
     resumen: "Contenido de ejemplo — información real próximamente.",
     esPlaceholder: true
   },
@@ -133,7 +133,7 @@ const DESTINOS = [
     nombre: "Lima",
     pais: "Perú",
     grupo: "internacional",
-    imagen: "assets/img/Brazo tristeza.jpg",
+    imagen: null,
     resumen: "Contenido de ejemplo — información real próximamente.",
     esPlaceholder: true
   }
