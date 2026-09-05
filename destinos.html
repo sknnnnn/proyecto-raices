@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Destinos — Proyecto Raíces</title>
-<meta name="description" content="Descubrí los destinos de Proyecto Raíces: Patagonia y Norte Argentino en Argentina, y Cusco (Perú) a nivel internacional.">
+<meta name="description" content="Descubrí los destinos de Proyecto Raíces: Bariloche, Ushuaia, San Martín de los Andes, Villa Pehuenia, Norte Neuquino y Norte Argentino en Argentina, y Cusco (Perú) a nivel internacional.">
 <link rel="canonical" href="https://proyectoraices.com.ar/destinos.html">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cascadia+Mono:wght@400;600;700&display=swap" rel="stylesheet">
@@ -114,13 +114,13 @@
     const cont = document.getElementById("destinos-lista");
     if (!cont || typeof DESTINOS === "undefined") return;
 
-    const ordenPagina = ["peru", "patagonia", "norte-argentino"];
+    const ordenPagina = ["peru", "bariloche", "ushuaia", "norte-argentino"];
     const destacados = ordenPagina
       .map(slug => DESTINOS.find(d => d.slug === slug))
       .filter(Boolean)
       .concat(DESTINOS.filter(d => !ordenPagina.includes(d.slug)));
 
-    const objPos = { peru: "center 55%", patagonia: "center 32%", "norte-argentino": "center" };
+    const objPos = { peru: "center 55%", bariloche: "center 32%", "norte-neuquino": "center 20%", "norte-argentino": "center" };
 
     // Agrupa por país (d.pais) en el orden en que aparece cada uno por
     // primera vez en "destacados" — un país nuevo en destinos-data.js

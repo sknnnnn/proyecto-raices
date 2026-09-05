@@ -138,6 +138,10 @@ No quiero que reduzcas la calidad del trabajo para ahorrar recursos. Quiero que 
 
 
 
+Nota vigente desde 2026-09-05: el límite semanal se reinició y debe alcanzar como mínimo hasta el viernes por la tarde (reinicio siguiente: sábado 11:00 AM). Mientras esto aplique, priorizar estrictamente evitar lecturas/exploraciones innecesarias y no generar implementaciones no aprobadas.
+
+
+
 \# PROYECTO RAÍCES — GUÍA DE DISEÑO Y DESARROLLO
 
 
@@ -412,7 +416,23 @@ Evitar deliberadamente:
 
 \* estructuras típicas de landing pages generadas automáticamente;
 
-\* diseño que parezca una plantilla de agencia de viajes.
+\* diseño que parezca una plantilla de agencia de viajes;
+
+\* estética SaaS;
+
+\* estética de dashboard/app;
+
+\* estética genérica producida por IA;
+
+\* cards blancas repetitivas con sombras genéricas;
+
+\* exceso de pills;
+
+\* exceso de bordes redondeados sin propósito;
+
+\* layouts excesivamente uniformes;
+
+\* interfaces donde el color sea prácticamente el único elemento distintivo entre secciones o propuestas.
 
 
 
@@ -521,6 +541,26 @@ Paleta principal del proyecto:
 \* `#43612f`
 
 \* `#6a7133`
+
+\* `#013020` — verde, color base
+
+
+
+\*\*Jerarquía aprobada (decisión vigente):\*\*
+
+
+
+\* VERDE `#013020` = color base de la identidad visual.
+
+\* NARANJA `#ff5b28` = acento principal / CTA y acciones importantes.
+
+\* AMARILLO `#e9e073` = acento secundario / detalles puntuales.
+
+\* El resto de la paleta se mantiene como colores complementarios cuando corresponda.
+
+
+
+Que el verde sea la base NO significa convertir la web en grandes superficies verdes oscuras ni usar un fondo verde plano permanentemente. Debe integrarse con superficies, fotografía, espacios y el resto de la paleta en una composición equilibrada y legible. Ver paleta y jerarquía también en `PROJECT-CONTEXT.md` §5.
 
 
 
@@ -942,6 +982,14 @@ Si el resultado parece una plantilla genérica, replantear la composición antes
 
 
 
+Una dirección visual nueva debe diferenciarse de forma perceptible (viendo la página completa) en: composición; jerarquía visual; ritmo de las secciones; tratamiento de fotografía; estructura y tratamiento de cards; header y navegación; jerarquía tipográfica; relación entre imagen, texto y espacio; fondos y superficies; proporción y escala de los elementos; tratamiento de CTA; comportamiento de filtros y controles; microinteracciones cuando correspondan.
+
+
+
+NO alcanza como exploración suficientemente distinta: cambiar colores; cambiar border-radius; cambiar sombras; cambiar ligeramente la tipografía; cambiar botones; modificar pequeños detalles decorativos.
+
+
+
 ---
 
 
@@ -979,6 +1027,66 @@ por encima de cantidad de efectos o elementos.
 
 
 Proyecto Raíces debe sentirse como una marca construida por personas que aman viajar, explorar y conectar con otros, no como una interfaz generada automáticamente.
+
+
+
+---
+
+
+
+\# 19. EXPLORACIONES VISUALES — HISTORIAL
+
+
+
+Se realizaron dos rondas de exploración visual comparativa (3 direcciones cada una, vía Artifact, sin tocar el proyecto real). Ninguna de las direcciones propuestas en ninguna de las dos rondas fue aprobada, incluyendo "Bitácora de viaje". Ninguna debe tomarse como referencia definitiva ni como base para simplemente modificar/ajustar.
+
+
+
+Motivo del descarte: las propuestas se mantuvieron demasiado cerca de la estética existente y no lograron una diferencia visual suficientemente significativa (ver criterios de diferenciación en §17).
+
+
+
+La próxima exploración visual debe partir prácticamente desde cero, sin arrastrar decisiones de esas propuestas descartadas.
+
+
+
+---
+
+
+
+\# 20. PROCESO PARA FUTURAS EXPLORACIONES VISUALES
+
+
+
+Antes de implementar una nueva dirección visual importante en el proyecto real:
+
+
+
+1\. Crear primero un preview/Artifact navegable (no modificar el proyecto real todavía).
+
+2\. Usar contenido y fotografías reales existentes — no inventar.
+
+3\. Mantener la arquitectura y navegación actualmente validada (ver `PROJECT-CONTEXT.md` §2/§3).
+
+4\. Mostrar una propuesta suficientemente desarrollada para evaluar como mínimo: header; hero/home; destinos; cards de experiencias; filtros; CTA; footer; comportamiento responsive/mobile.
+
+5\. No implementar cambios definitivos en el proyecto real hasta recibir validación explícita.
+
+
+
+No generar múltiples implementaciones completas innecesariamente. Primero explorar de forma acotada, después validar, y recién entonces implementar.
+
+
+
+---
+
+
+
+\# 21. SKILLS DE DISEÑO DISPONIBLES
+
+
+
+El proyecto tiene disponibles, entre otras: `design-taste-frontend`, `redesign-existing-projects`, `image-to-code`, `impeccable`, `ui-ux-pro-max`, `web-design-guidelines`. Usarlas de forma complementaria según la tarea puntual, evitando análisis redundantes — no es necesario invocarlas todas si una tarea puede resolverse con menos consumo de recursos.
 
 
 

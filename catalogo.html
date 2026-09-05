@@ -34,19 +34,28 @@
 
 <main id="main">
 
-<section class="page-hero" style="aspect-ratio:0.95;">
-  <img class="bg" src="assets/img/trekking.jpg" alt="" style="object-position:center 38%;">
+<section class="page-intro">
   <div class="wrap">
     <div class="breadcrumb" id="cat-breadcrumb"><a href="index.html">Inicio</a> / <a href="destinos.html">Destinos</a> / Catálogo</div>
-    <div class="eyebrow">Por destino</div>
-    <h1 id="cat-titulo" style="font-size:clamp(36px,6vw,64px);">Propuestas por destino</h1>
-    <p>Tours, travesías y paquetes disponibles, pensados para grupos chicos y con guías locales.</p>
+    <div class="page-intro-grid" style="--intro-cols:1fr 0.95fr;">
+      <div class="page-intro-text compact">
+        <div class="kicker" id="cat-kicker">Destinos</div>
+        <h1 id="cat-titulo">Propuestas por destino</h1>
+        <p id="cat-resumen">Tours, travesías y paquetes disponibles, pensados para grupos chicos y con guías locales.</p>
+      </div>
+      <div class="page-intro-media" id="cat-media">
+        <img id="cat-img" src="assets/img/trekking.jpg" alt="" style="object-position:center 38%;">
+      </div>
+    </div>
   </div>
 </section>
 
 <section>
   <div class="wrap">
-    <div id="prop-filtro-activo" style="display:none; margin-bottom:20px; font-size:14px; color:#4a463c;"></div>
+    <div class="section-head">
+      <div class="kicker">Experiencias</div>
+      <h2 id="cat-exp-titulo">Todas las experiencias</h2>
+    </div>
     <div class="filtros" id="prop-filtros"></div>
     <div class="exp-grid" id="prop-grid"></div>
   </div>
@@ -119,11 +128,31 @@
     const slug = params.get("destino");
     const d = slug ? getDestinoPorSlug(slug) : null;
     if (d) {
-      document.title = `${d.nombre} — Proyecto Raíces`;
+      const nombre = d.slug === "peru" ? "Cusco" : d.nombre;
+      document.title = `${nombre} — Proyecto Raíces`;
       const h1 = document.getElementById("cat-titulo");
-      if (h1) h1.textContent = d.nombre;
+      if (h1) h1.textContent = nombre;
+      const kicker = document.getElementById("cat-kicker");
+      if (kicker) kicker.textContent = d.pais;
+      const resumen = document.getElementById("cat-resumen");
+      if (resumen) resumen.textContent = d.resumen;
+      const media = document.getElementById("cat-media");
+      if (media) {
+        if (d.imagen) {
+          media.innerHTML = `<img id="cat-img" src="${d.imagen}" alt="${nombre}" style="object-position:center;">`;
+        } else {
+          // Sin foto propia todavía: se muestra el mismo estado "Imagen
+          // pendiente" que ya usan las cards de destinos.html, en vez de
+          // mostrar la imagen genérica por defecto (que no corresponde a
+          // este destino).
+          media.innerHTML = `<div class="gal-placeholder">Imagen pendiente</div>`;
+        }
+        if (d.esPlaceholder) media.innerHTML += `<span class="destino-card-flag">En preparación</span>`;
+      }
       const bc = document.getElementById("cat-breadcrumb");
-      if (bc) bc.innerHTML = `<a href="index.html">Inicio</a> / <a href="destinos.html">Destinos</a> / ${d.nombre}`;
+      if (bc) bc.innerHTML = `<a href="index.html">Inicio</a> / <a href="destinos.html">Destinos</a> / ${nombre}`;
+      const expTitulo = document.getElementById("cat-exp-titulo");
+      if (expTitulo) expTitulo.textContent = `Experiencias en ${nombre}`;
     }
   });
 </script>

@@ -167,23 +167,34 @@ function renderPropuestasGrid(){
   const filtrosWrap = document.getElementById("prop-filtros");
   if (filtrosWrap) {
     if (tipoFijo) {
-      // Dentro de una página de tipo fijo (Tours/Travesías/Paquetes):
-      // los chips filtran por destino.
-      const base = getPropuestasPorTipo(tipoFijo);
-      const destinosDisponibles = [...new Set(base.map(p => p.destino))]
-        .map(slug => getDestinoPorSlug(slug)).filter(Boolean);
-      let html = `<button class="filtro-btn ${!destinoFiltro ? "active" : ""}" data-destino="">Todos los destinos</button>`;
-      destinosDisponibles.forEach(d => {
-        html += `<button class="filtro-btn ${destinoFiltro === d.slug ? "active" : ""}" data-destino="${d.slug}">${d.nombre}</button>`;
-      });
-      filtrosWrap.innerHTML = html;
-      filtrosWrap.querySelectorAll(".filtro-btn").forEach(btn => {
-        btn.addEventListener("click", () => {
-          const slug = btn.getAttribute("data-destino");
-          const p = new URLSearchParams(window.location.search);
-          if (slug) p.set("destino", slug); else p.delete("destino");
-          aplicarFiltroSuave(p);
+      // Dentro de una página de tipo fijo (Tours/Travesías/Paquetes): un
+      // único selector "Destino" agrupado por país, en vez de una fila de
+      // chips (con Argentina + Perú separados en sus destinos reales, una
+      // fila plana se vuelve interminable). Mismo control y misma lista
+      // completa de DESTINOS en las tres páginas — no depende de qué
+      // destinos ya tengan contenido para este tipo, así el selector queda
+      // listo para Paquetes aunque hoy no tenga propuestas cargadas.
+      const paises = [...new Set(DESTINOS.map(d => d.pais))];
+      let optionsHtml = `<option value="">Todos los destinos</option>`;
+      paises.forEach(pais => {
+        optionsHtml += `<optgroup label="${pais}">`;
+        DESTINOS.filter(d => d.pais === pais).forEach(d => {
+          const nombre = d.slug === "peru" ? "Cusco" : d.nombre;
+          optionsHtml += `<option value="${d.slug}"${destinoFiltro === d.slug ? " selected" : ""}>${nombre}</option>`;
         });
+        optionsHtml += `</optgroup>`;
+      });
+      filtrosWrap.innerHTML = `
+        <div class="filtro-destino-group">
+          <label class="filtro-destino-label" for="prop-destino-select">Destino</label>
+          <select class="filtro-destino-select" id="prop-destino-select">${optionsHtml}</select>
+        </div>`;
+      const select = document.getElementById("prop-destino-select");
+      select.addEventListener("change", () => {
+        const slug = select.value;
+        const p = new URLSearchParams(window.location.search);
+        if (slug) p.set("destino", slug); else p.delete("destino");
+        aplicarFiltroSuave(p);
       });
     } else {
       // catalogo.html (explorando por destino): los chips filtran por tipo.
@@ -205,7 +216,11 @@ function renderPropuestasGrid(){
   }
 
   // ---- Lista filtrada ----
-  let lista = PROPUESTAS.slice();
+  // En catalogo.html (sin tipo fijo) se mezclan tours, travesías y paquetes
+  // por destino: ahí no mostramos propuestas de ejemplo (esPlaceholder) para
+  // no confundirlas con contenido real. En una página de tipo fijo (por
+  // ejemplo paquetes.html) sí puede mostrarse, ya marcada con su badge.
+  let lista = tipoFijo ? PROPUESTAS.slice() : PROPUESTAS.filter(p => !p.esPlaceholder);
   if (tipoFiltro) lista = lista.filter(p => p.tipo === tipoFiltro);
   if (destinoFiltro) lista = lista.filter(p => p.destino === destinoFiltro);
 
@@ -313,16 +328,35 @@ function renderPropuestaDetalle(){
 
   const bcEl = document.getElementById("exp-breadcrumb");
   if (bcEl) {
-    const paginaTipo = tipoInfo ? tipoInfo.pagina : "destinos.html";
-    const labelTipo = tipoInfo ? tipoInfo.labelPlural : "Propuestas";
-    bcEl.innerHTML = `<a href="index.html">Inicio</a> / <a href="${paginaTipo}">${labelTipo}</a> / ${p.nombre}`;
+    let volverHref = tipoInfo ? tipoInfo.pagina : "destinos.html";
+    let volverLabel = tipoInfo ? tipoInfo.labelPlural : "Propuestas";
+    // Si se llegó desde un catálogo filtrado por destino —ya sea
+    // catalogo.html?destino=... o la propia página de tipo fijo
+    // (tours.html/travesias.html/paquetes.html) con ?destino=...—,
+    // "volver" respeta ese mismo destino/filtro en vez de mandar siempre
+    // a la grilla plana sin filtrar — evita perder el contexto.
+    try {
+      const ref = new URL(document.referrer);
+      if (ref.origin === window.location.origin && /\/catalogo\.html$/.test(ref.pathname)) {
+        volverHref = "catalogo.html" + ref.search;
+        const refDestino = getDestinoPorSlug(ref.searchParams.get("destino"));
+        volverLabel = refDestino ? refDestino.nombre : "Catálogo";
+      } else if (tipoInfo && ref.pathname === "/" + tipoInfo.pagina && ref.search) {
+        volverHref = tipoInfo.pagina + ref.search;
+      }
+    } catch (e) { /* sin referrer válido: se usa el destino por defecto */ }
+    bcEl.innerHTML = `<a href="index.html">Inicio</a> / <a href="${volverHref}">${volverLabel}</a> / ${p.nombre}`;
   }
 
   const consultaHref = `contacto.html?propuesta=${encodeURIComponent(p.nombre)}`;
-  // Tours: el CTA principal va directo a WhatsApp con el nombre del Tour
-  // precargado (whatsappLink ya arma la URL con el mensaje codificado).
+  // Tours y Travesías: el CTA principal va directo a WhatsApp con el
+  // nombre de la propuesta precargado (whatsappLink ya arma la URL con
+  // el mensaje codificado).
   const tourWaHref = p.tipo === "tour" && typeof whatsappLink === "function"
     ? whatsappLink(`Hola, quiero consultar por el Tour "${p.nombre}".`)
+    : null;
+  const travesiaWaHref = p.tipo === "travesia" && typeof whatsappLink === "function"
+    ? whatsappLink(`Hola, quiero consultar por la Travesía "${p.nombre}".`)
     : null;
 
   // Bloques específicos según el tipo (leídos de p.detalle)
@@ -360,7 +394,7 @@ function renderPropuestaDetalle(){
         ${especifico.badgeHtml}
         <div class="info-row"><span>Destino</span><b>${destino ? destino.nombre : p.destino}</b></div>
         <div class="info-row"><span>Ubicación</span><b>${p.ubicacion}</b></div>
-        ${p.tipo === "tour" ? `
+        ${p.tipo === "tour" || p.tipo === "travesia" ? `
         <div class="info-row"><span>Modalidad</span><b>${p.modalidad}</b></div>
         <div class="info-row"><span>Duración</span><b>${p.duracion}</b></div>` : `
         <div class="info-row"><span>Duración</span><b>${p.duracion}</b></div>
@@ -369,6 +403,8 @@ function renderPropuestaDetalle(){
         ${especifico.asideHtml}
         ${p.tipo === "tour"
           ? `<a class="btn" href="${tourWaHref || consultaHref}"${tourWaHref ? ` target="_blank" rel="noopener"` : ""}>Consultar este Tour</a>`
+          : p.tipo === "travesia"
+          ? `<a class="btn" href="${travesiaWaHref || consultaHref}"${travesiaWaHref ? ` target="_blank" rel="noopener"` : ""}>Consultar esta Travesía</a>`
           : `<a class="btn" href="${consultaHref}">Consultar disponibilidad</a>
         <a class="btn btn-outline on-light btn-block" style="margin-top:10px;" href="${consultaHref}">Solicitar información</a>`}
       </aside>
@@ -438,13 +474,18 @@ function renderDetalleTravesia(d){
   bodyHtml += itinerarioSiHay(d.itinerario);
   bodyHtml += listaSiHay("Qué no cubre la logística", d.logisticaNoIncluida, "cross-list");
 
+  // Ficha rápida uniforme: las 11 Travesías muestran siempre estos 4
+  // campos, en el mismo orden — cuando un dato no está confirmado en la
+  // fuente, se usa "Consultar" en vez de ocultar la fila o inventar un valor.
   let asideHtml = "";
-  asideHtml += infoRowSiHay("Dificultad", d.dificultad);
-  asideHtml += infoRowSiHay("Alojamiento", d.alojamiento);
-  asideHtml += infoRowSiHay("Comidas", d.comidas);
-  if (d.fechas && d.fechas.length) {
-    asideHtml += infoRowSiHay("Próximas fechas", d.fechas.join(" · "));
-  }
+  asideHtml += infoRowSiHay("Distancia", d.distanciaTotal || "Consultar");
+  asideHtml += infoRowSiHay("Dificultad", d.dificultad || "Consultar");
+  asideHtml += infoRowSiHay("Alojamiento", d.alojamiento || "Consultar");
+  // d.fechasNota es una aclaración corta y discreta (ej. "A confirmar")
+  // que va debajo de la fecha, separada del dato principal.
+  const fechasValor = (d.fechas && d.fechas.length) ? d.fechas.join(" · ") : "Consultar";
+  const fechasNotaHtml = d.fechasNota ? `<small class="nota">${d.fechasNota}</small>` : "";
+  asideHtml += `<div class="info-row"><span>Fechas</span><b>${fechasValor}${fechasNotaHtml}</b></div>`;
 
   return { bodyHtml, asideHtml, badgeHtml: personalizableBadge(d.personalizable) };
 }

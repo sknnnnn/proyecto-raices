@@ -150,24 +150,21 @@
         <div class="equipo-mini-foto"><img src="assets/img/santi.png" alt="Santiago, parte del equipo de Proyecto Raíces" style="object-position:center 25%;" loading="lazy"></div>
         <figcaption>
           <h3>Santiago</h3>
-          <span class="equipo-mini-rol">Rol pendiente</span>
-          <p class="equipo-mini-desc">Descripción pendiente.</p>
+          <span class="equipo-mini-pendiente">Perfil en preparación</span>
         </figcaption>
       </figure>
       <figure class="equipo-mini-persona">
         <div class="equipo-mini-foto"><img src="assets/img/trekking.jpg" alt="Belén, parte del equipo de Proyecto Raíces" style="object-position:center 20%;" loading="lazy"></div>
         <figcaption>
           <h3>Belén</h3>
-          <span class="equipo-mini-rol">Rol pendiente</span>
-          <p class="equipo-mini-desc">Descripción pendiente.</p>
+          <span class="equipo-mini-pendiente">Perfil en preparación</span>
         </figcaption>
       </figure>
       <figure class="equipo-mini-persona">
         <div class="equipo-mini-foto"><img src="assets/img/IMG_3755.JPEG" alt="Ignacio, parte del equipo de Proyecto Raíces" style="object-position:center 30%;" loading="lazy"></div>
         <figcaption>
           <h3>Ignacio</h3>
-          <span class="equipo-mini-rol">Rol pendiente</span>
-          <p class="equipo-mini-desc">Descripción pendiente.</p>
+          <span class="equipo-mini-pendiente">Perfil en preparación</span>
         </figcaption>
       </figure>
     </div>
@@ -260,12 +257,12 @@
 <script src="assets/js/main.js"></script>
 <script>
   // Home: destinos destacados — Cusco (protagonista) primero, después
-  // Patagonia y Norte Argentino. Sólo cambia el orden de presentación acá;
-  // destinos-data.js no se modifica.
+  // Bariloche y Ushuaia (los otros dos destinos con contenido real hoy).
+  // Sólo cambia el orden de presentación acá; destinos-data.js no se modifica.
   document.addEventListener("DOMContentLoaded", () => {
     const destinosHome = document.getElementById("destinos-home");
     if (destinosHome) {
-      const ordenInicio = ["peru", "patagonia", "norte-argentino"];
+      const ordenInicio = ["peru", "bariloche", "ushuaia"];
       const destacados = ordenInicio
         .map(slug => DESTINOS.find(d => d.slug === slug))
         .filter(Boolean)
@@ -343,7 +340,11 @@
     let tipoActivo = "";
 
     function render() {
-      const lista = tipoActivo ? PROPUESTAS.filter(p => p.tipo === tipoActivo) : PROPUESTAS.slice();
+      // No mostrar propuestas de ejemplo (esPlaceholder) en el carrusel del
+      // Inicio: acá conviven todos los tipos y un placeholder se vería como
+      // contenido real.
+      const reales = PROPUESTAS.filter(p => !p.esPlaceholder);
+      const lista = tipoActivo ? reales.filter(p => p.tipo === tipoActivo) : reales;
       if (!lista.length) {
         track.innerHTML = `<p class="empty-state">Todavía no hay experiencias cargadas en esta categoría.</p>`;
         setWidth = 0;

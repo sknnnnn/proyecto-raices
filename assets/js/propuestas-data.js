@@ -39,7 +39,9 @@
 
    TRAVESÍA (varios días, personalizable):
      - dificultad                   string | null
-     - fechas                       array de string  (fechas/salidas disponibles)
+     - distanciaTotal               string | null
+     - fechas                       array de string  (fechas/salidas disponibles, formato compacto)
+     - fechasNota                   string | null  (aclaración corta, ej. "A confirmar")
      - itinerario                   array de { dia, titulo, descripcion }
      - alojamiento                  string | null
      - comidas                      string | null
@@ -678,7 +680,7 @@ const PROPUESTAS = [
     esPlaceholder: false,
     tipo: "tour",
     nombre: "Canoas Experience",
-    destino: "patagonia",
+    destino: "ushuaia",
     categoria: "Remo",
     imagen: "assets/img/experiencias/pexels-vinegarcias-18789208.jpg",
     galeria: ["assets/img/experiencias/pexels-vinegarcias-18789208.jpg"],
@@ -712,7 +714,7 @@ const PROPUESTAS = [
     esPlaceholder: false,
     tipo: "tour",
     nombre: "Trekking y Canoas",
-    destino: "patagonia",
+    destino: "ushuaia",
     categoria: "Trekking & remo",
     imagen: "assets/img/camping.jpg",
     galeria: ["assets/img/camping.jpg"],
@@ -746,7 +748,7 @@ const PROPUESTAS = [
     esPlaceholder: false,
     tipo: "tour",
     nombre: "Ushuaia Sunset",
-    destino: "patagonia",
+    destino: "ushuaia",
     categoria: "Trekking",
     imagen: "assets/img/experiencias/_MG_9700_Original.jpg",
     galeria: ["assets/img/experiencias/_MG_9700_Original.jpg"],
@@ -780,7 +782,7 @@ const PROPUESTAS = [
     esPlaceholder: false,
     tipo: "tour",
     nombre: "Estancia Túnel — Trekking",
-    destino: "patagonia",
+    destino: "ushuaia",
     categoria: "Trekking",
     imagen: "assets/img/vista-lago.jpg",
     imagenPos: "center 68%",
@@ -815,7 +817,7 @@ const PROPUESTAS = [
     esPlaceholder: false,
     tipo: "tour",
     nombre: "Balcones del Susana",
-    destino: "patagonia",
+    destino: "ushuaia",
     categoria: "Trekking",
     imagen: "assets/img/fauna-montana.jpg",
     galeria: ["assets/img/fauna-montana.jpg"],
@@ -849,7 +851,7 @@ const PROPUESTAS = [
     esPlaceholder: false,
     tipo: "tour",
     nombre: "Lagunas Gemelas",
-    destino: "patagonia",
+    destino: "ushuaia",
     categoria: "Trekking",
     imagen: "assets/img/patagonia.jpg",
     galeria: ["assets/img/patagonia.jpg"],
@@ -883,7 +885,7 @@ const PROPUESTAS = [
     esPlaceholder: false,
     tipo: "tour",
     nombre: "Lagunas Gemelas Full Day",
-    destino: "patagonia",
+    destino: "ushuaia",
     categoria: "Trekking",
     imagen: "assets/img/patagonia.jpg",
     galeria: ["assets/img/patagonia.jpg"],
@@ -917,7 +919,7 @@ const PROPUESTAS = [
     esPlaceholder: false,
     tipo: "tour",
     nombre: "Trek Andino",
-    destino: "patagonia",
+    destino: "ushuaia",
     categoria: "Trekking",
     imagen: "assets/img/experiencias/pexels-anastasiakasina-36865249.JPG",
     galeria: ["assets/img/experiencias/pexels-anastasiakasina-36865249.JPG"],
@@ -951,7 +953,7 @@ const PROPUESTAS = [
     esPlaceholder: false,
     tipo: "tour",
     nombre: "Urban Landscape",
-    destino: "patagonia",
+    destino: "ushuaia",
     categoria: "E-bike",
     imagen: "assets/img/experiencias/Urban E-bike 2_Original.jpg",
     galeria: ["assets/img/experiencias/Urban E-bike 2_Original.jpg"],
@@ -985,7 +987,7 @@ const PROPUESTAS = [
     esPlaceholder: false,
     tipo: "tour",
     nombre: "Mirador del Beagle",
-    destino: "patagonia",
+    destino: "ushuaia",
     categoria: "E-bike",
     imagen: "assets/img/experiencias/MiradorBeagle1_Original.jpg",
     galeria: ["assets/img/experiencias/MiradorBeagle1_Original.jpg"],
@@ -1019,7 +1021,7 @@ const PROPUESTAS = [
     esPlaceholder: false,
     tipo: "tour",
     nombre: "Estancia Túnel — E-bike",
-    destino: "patagonia",
+    destino: "ushuaia",
     categoria: "E-bike",
     imagen: "assets/img/experiencias/Ea Tunel E-bike 5_Original.jpg",
     galeria: ["assets/img/experiencias/Ea Tunel E-bike 5_Original.jpg"],
@@ -1053,7 +1055,7 @@ const PROPUESTAS = [
     esPlaceholder: false,
     tipo: "tour",
     nombre: "Cascada Beban",
-    destino: "patagonia",
+    destino: "ushuaia",
     categoria: "E-bike",
     imagen: "assets/img/experiencias/Beban E-bike  5_Original.jpg",
     galeria: ["assets/img/experiencias/Beban E-bike  5_Original.jpg", "assets/img/experiencias/Beban E-bike 4_Original.jpg"],
@@ -1083,36 +1085,472 @@ const PROPUESTAS = [
     }
   },
 
-  /* ---------------- TRAVESÍA (ejemplo) ---------------- */
+  /* ---------------- TRAVESÍAS — PERÚ ---------------- */
   {
-    id: "camping-patagonia-ejemplo",
-    esPlaceholder: true,
+    id: "peru-salkantay-trek",
+    esPlaceholder: false,
     tipo: "travesia",
-    nombre: "[Ejemplo] Camping & naturaleza",
-    destino: "patagonia",
-    categoria: "Camping",
-    imagen: "assets/img/IMG_0270.JPEG",
-    galeria: ["assets/img/IMG_0270.JPEG", "assets/img/fauna-montana.jpg"],
-    resumen: "Descripción breve de ejemplo. Reemplazar por la bajada real de la propuesta.",
-    descripcion: "Texto de ejemplo. Acá va la descripción completa y real de la travesía de camping: ubicación, entorno, actividades incluidas y dinámica del grupo a lo largo de los días.",
-    incluye: ["[Completar] Ítem incluido 1", "[Completar] Ítem incluido 2"],
-    noIncluye: ["[Completar] Ítem no incluido 1"],
-    duracion: "[Completar] · varios días",
-    modalidad: "Salida grupal",
-    ubicacion: "Patagonia, Argentina",
-    infoImportante: "Texto de ejemplo para recomendaciones o información importante.",
+    nombre: "Salkantay Trek",
+    destino: "peru",
+    categoria: "Trekking",
+    imagen: "assets/img/experiencias/pexels-davidexpedition-30228477.jpg",
+    imagenPos: "center 68%",
+    galeria: ["assets/img/experiencias/pexels-davidexpedition-30228477.jpg"],
+    resumen: "Trekking de 5 días junto al nevado Salkantay, desde Cusco hasta Machupicchu, cruzando valles, selva alta y pueblos andinos.",
+    descripcion: "Cinco días de caminata desde Mollepata hasta Machupicchu bordeando el nevado Salkantay: alta montaña el primer tramo, valles y ceja de selva después, con cascadas, orquídeas y vistas sobre el Urubamba en el camino. Se avanza en campamento y en alojamientos locales hasta Aguas Calientes, desde donde se sube a visitar la ciudadela con guía antes de regresar a Cusco en tren.",
+    incluye: ["Transporte Cusco–Mollepata", "Guía profesional", "4 desayunos, 4 almuerzos y 4 cenas", "Caballos para equipo, alimentos y hasta 5 kg de equipaje por pasajero", "Equipo de camping", "Entrada a Machupicchu", "Transporte Hidroeléctrica–Cusco (si el regreso es por Hidroeléctrica)"],
+    noIncluye: ["Tren de regreso a Cusco (según horario elegido)", "Propinas", "Gastos personales"],
+    duracion: "5 días / 4 noches",
+    modalidad: "Servicio compartido",
+    ubicacion: "Cusco, Perú",
+    infoImportante: "La entrada a Machupicchu está incluida; los detalles finales del ingreso se confirman antes de la salida.",
     precio: null,
     destacada: true,
 
     detalle: {
-      dificultad: "[Completar] ej. Media",
-      fechas: [],                          // ej: ["12 oct", "9 nov"]
+      dificultad: null,
+      distanciaTotal: null,
+      fechas: [],
       itinerario: [
-        { dia: 1, titulo: "[Completar] título del día 1", descripcion: "[Completar] descripción del día 1" },
-        { dia: 2, titulo: "[Completar] título del día 2", descripcion: "[Completar] descripción del día 2" }
+        { dia: 1, titulo: "Cusco → Soraypampa", descripcion: "Recojo en el hostel entre 04:15 y 04:30, salida 05:00 y traslado por Izcuchaca, Limatambo y Mollepata, con desayuno en el camino. Caminata hacia Cruz Pata y continuación hasta Soraypampa, donde se arma el campamento." },
+        { dia: 2, titulo: "Soraypampa → Chaullay", descripcion: "Caminata atravesando el valle de Collpabamba, con almuerzo durante el recorrido, hasta ingresar en la ceja de selva: ríos y afluentes del Urubamba, orquídeas, una cascada y vistas del Salkantay. Noche en Chaullay." },
+        { dia: 3, titulo: "Chaullay → Playa Sahuayaco → Santa Teresa", descripcion: "Caminata entre zonas de cultivo de coca, con descenso hasta Playa Sahuayaco y continuación hasta Santa Teresa, donde se pernocta." },
+        { dia: 4, titulo: "Santa Teresa → Aguas Calientes", descripcion: "Recorrido por zona tropical, con caminata de aproximadamente 7 horas hasta Aguas Calientes pasando por Hidroeléctrica (existe la opción de tomar el tren desde ahí). En el trayecto se observan cascadas provenientes de los glaciares. Noche en hostel en Aguas Calientes." },
+        { dia: 5, titulo: "Machupicchu → Cusco", descripcion: "Ascenso a Machupicchu alrededor de las 04:30 y visita guiada de aproximadamente 2 horas, con tiempo libre después (opción de subir a Inti Punku o recorrer Aguas Calientes). Regreso a Cusco en tren, según el horario asignado (14:55, 15:20, 16:43, 18:20 o 21:50)." }
       ],
-      alojamiento: "[Completar] ej. Camping equipado",
-      comidas: "[Completar] ej. Desayuno y cena incluidos",
+      alojamiento: "Camping + hostel",
+      comidas: "4 desayunos, 4 almuerzos y 4 cenas",
+      personalizable: true,
+      logisticaNoIncluida: [
+        "Vuelo hasta el destino",
+        "Traslado aeropuerto → hotel",
+        "Traslado hotel → punto de encuentro",
+        "Alojamiento previo o posterior a la travesía",
+        "Traslado de regreso al aeropuerto"
+      ]
+    }
+  },
+  {
+    id: "peru-choquequirao-trek",
+    esPlaceholder: false,
+    tipo: "travesia",
+    nombre: "Choquequirao Trekking",
+    destino: "choquequirao",
+    categoria: "Trekking",
+    imagen: "assets/img/experiencias/pexels-teresita-ramirez-583628649-17043331.jpg",
+    galeria: ["assets/img/experiencias/pexels-teresita-ramirez-583628649-17043331.jpg"],
+    resumen: "Trekking exigente de 4 días hasta Choquequirao, la ciudad inca hermana de Machupicchu, cruzando el Cañón del Apurímac.",
+    descripcion: "Ruta exigente por los Andes hasta Choquequirao a través del Cañón del Apurímac, con pasos de montaña, bosques nublados y valles verdes. En el camino hay posibilidad de observar flora y fauna andina —cóndores, zorros andinos, venados y oso de anteojos— antes de llegar a las terrazas, plazas y restos arqueológicos incas del sitio, aún en gran parte sin excavar. Las noches son en alojamiento rural y en cabañas, con habitaciones dobles/twin, duchas frías y baños compartidos.",
+    incluye: ["Guía profesional bilingüe", "Transporte turístico Cusco–Capuliyoc–Cusco", "3 noches de alojamiento", "3 desayunos, 4 almuerzos y 3 cenas", "Opciones vegetarianas", "Entrada a Choquequirao"],
+    noIncluye: ["Primer desayuno", "Snacks", "Agua embotellada", "Caballo (S/ 80 por persona)", "Bastones de trekking"],
+    duracion: "4 días / 3 noches",
+    modalidad: "Salida con reserva previa",
+    ubicacion: "Cusco, Perú",
+    infoImportante: "Salidas disponibles cualquier fecha, con reserva previa. El caballo y el arriero no están incluidos.",
+    precio: null,
+    destacada: false,
+
+    detalle: {
+      dificultad: null,
+      distanciaTotal: null,
+      fechas: [],
+      itinerario: [
+        { dia: 1, titulo: "Cusco → Capuliyoc → Chikiska", descripcion: "Recojo en el hotel o en Plazoleta Regocijo antes de las 06:00–06:30 y traslado de aproximadamente 4 horas hasta San Pedro de Cachora / Capuliyoc. Almuerzo con vistas al Cañón del Apurímac y Padreyoc, y descenso de 3 a 4 horas por Cocamasana hasta Chikiska (2950 m máx. / 2100 m mín., 8 km, 3–4 h de caminata), con cena y alojamiento rural." },
+        { dia: 2, titulo: "Chikiska → río Apurímac → Santa Rosa → Marampata", descripcion: "Descenso de aproximadamente 1 hora hasta Playa Rosalina y cruce del río Apurímac, seguido de un ascenso de 2 horas hasta Santa Rosa y otras 2 horas hasta Marampata, con desnivel acumulado de aproximadamente 1500 m (2970 m, 9 km, 4–5 h). Tarde libre para conocer Marampata, su agricultura y la vida quechua local. Cena y alojamiento en cabañas." },
+        { dia: 3, titulo: "Marampata → Choquequirao → Santa Rosa o Chikiska", descripcion: "Desayuno antes del amanecer y caminata de aproximadamente 1,5 h (4,5 km) hasta el sitio arqueológico: las terrazas de las Llamas, la plaza central (3068 m) y el sector Hanan (3136 m), con restos aún sin excavar y vistas panorámicas. Almuerzo en el campamento y regreso por sendero rocoso hacia Marampata y Santa Rosa (3140 m máx. / 2200 m mín., 9 km, 5 h). Cena y alojamiento en cabañas dobles." },
+        { dia: 4, titulo: "Santa Rosa → Capuliyoc → Cusco", descripcion: "Descenso por terreno rocoso hasta el Apurímac y ascenso por Chiquisca y Cocamasana hasta Capuliyoc (2950 m máx. / 1530 m mín., 7 km, 5–6 h), con almuerzo y descanso. Transporte de aproximadamente 4,5 horas de regreso a Cusco." }
+      ],
+      alojamiento: "Rural + cabañas",
+      comidas: "3 desayunos, 4 almuerzos y 3 cenas (no incluye el primer desayuno)",
+      personalizable: true,
+      logisticaNoIncluida: [
+        "Vuelo hasta el destino",
+        "Traslado aeropuerto → hotel",
+        "Traslado hotel → punto de encuentro",
+        "Alojamiento previo o posterior a la travesía",
+        "Traslado de regreso al aeropuerto"
+      ]
+    }
+  },
+  {
+    id: "peru-machupicchu-carro",
+    esPlaceholder: false,
+    tipo: "travesia",
+    nombre: "Machupicchu en Carro",
+    destino: "peru",
+    categoria: "Machu Picchu",
+    imagen: "assets/img/galeria-machupicchu-terrazas.jpg",
+    galeria: ["assets/img/galeria-machupicchu-terrazas.jpg", "assets/img/experiencias/pexels-underxpossed-38263090.jpg"],
+    resumen: "Alternativa terrestre de 2 días a Machupicchu: Valle Sagrado, Abra Málaga, Hidroeléctrica y caminata final hasta Aguas Calientes.",
+    descripcion: "Una forma más económica de llegar a Machupicchu por tierra, cruzando el Valle Sagrado y el Abra Málaga (4316 m) antes de bajar hacia la selva hasta Santa Teresa e Hidroeléctrica. Desde ahí, una caminata de aproximadamente 2,5 horas lleva hasta Aguas Calientes, donde se pernocta antes de la visita guiada a la ciudadela al día siguiente.",
+    incluye: ["Transporte turístico ida y vuelta Cusco–Hidroeléctrica–Cusco", "1 noche de hotel", "1 almuerzo y 1 cena el día 1", "1 desayuno el día 2", "Entrada a Machupicchu", "Guía profesional en inglés y español"],
+    noIncluye: ["Tren Hidroeléctrica–Aguas Calientes ida y vuelta (USD 40 por tramo)", "Bus Aguas Calientes–Machupicchu (USD 27)", "Otros gastos no indicados"],
+    duracion: "2 días / 1 noche",
+    modalidad: "Servicio compartido",
+    ubicacion: "Cusco, Perú",
+    infoImportante: null,
+    precio: null,
+    destacada: false,
+
+    detalle: {
+      dificultad: null,
+      distanciaTotal: null,
+      fechas: [],
+      itinerario: [
+        { dia: 1, titulo: "Cusco → Santa Teresa → Hidroeléctrica → Aguas Calientes", descripcion: "Recojo a las 06:00 y recorrido por el Valle Sagrado hasta el Abra Málaga (4316 m), con descenso hacia la zona de selva y Santa María. Llegada a Santa Teresa alrededor de las 14:00 para almorzar, y a Hidroeléctrica cerca de las 15:30. Caminata de aproximadamente 2,5 horas hasta Aguas Calientes, con cena y briefing del guía, y entrega de entradas a Machupicchu." },
+        { dia: 2, titulo: "Aguas Calientes → Machupicchu → Cusco", descripcion: "Subida a Machupicchu en bus o caminando, con visita guiada de aproximadamente 3 horas y regreso a Aguas Calientes con tiempo libre. Transporte desde Hidroeléctrica a las 14:00 (presentarse 30 minutos antes) y retorno por Santa Teresa hasta Cusco, con llegada aproximada a las 21:30." }
+      ],
+      alojamiento: "1 noche de hostel en Aguas Calientes",
+      comidas: "1 almuerzo y 1 cena el día 1, 1 desayuno el día 2",
+      personalizable: true,
+      logisticaNoIncluida: [
+        "Vuelo hasta el destino",
+        "Traslado aeropuerto → hotel",
+        "Traslado hotel → punto de encuentro",
+        "Alojamiento previo o posterior a la travesía",
+        "Traslado de regreso al aeropuerto"
+      ]
+    }
+  },
+  {
+    id: "peru-machupicchu-tren",
+    esPlaceholder: false,
+    tipo: "travesia",
+    nombre: "Machupicchu",
+    destino: "peru",
+    categoria: "Machu Picchu",
+    imagen: "assets/img/destino-peru-machupicchu.jpg",
+    galeria: ["assets/img/destino-peru-machupicchu.jpg", "assets/img/experiencias/pexels-sergei-a-1322276-2539417.jpg"],
+    resumen: "2 días a Machupicchu en tren, con visita guiada privada del Circuito 2 y una noche de hotel en Aguas Calientes.",
+    descripcion: "La forma más cómoda de conocer Machupicchu: traslado a Ollantaytambo y tren hasta Aguas Calientes, donde se pernocta antes de subir a la ciudadela para una visita guiada privada por el Circuito 2. El regreso combina bus, tren y traslado privado hasta Cusco.",
+    incluye: ["Traslado Cusco–Ollantaytambo", "Ticket de tren de ida (12:55, servicio Expedition)", "1 noche de hotel", "Buses Aguas Calientes–Machupicchu ida y vuelta", "Guiado privado del Circuito 2", "Ticket de tren de retorno", "Transporte privado Ollantaytambo–Cusco"],
+    noIncluye: ["Alimentación (desayuno, almuerzo y cena)", "Gastos adicionales"],
+    duracion: "2 días / 1 noche",
+    modalidad: "Servicio privado",
+    ubicacion: "Cusco, Perú",
+    infoImportante: "Opciones de tren de retorno sujetas a disponibilidad: Vistadome Observatory (15:20 o 16:22), Expedition (14:55) o Vistadome (15:48).",
+    precio: null,
+    destacada: false,
+
+    detalle: {
+      dificultad: null,
+      distanciaTotal: null,
+      fechas: [],
+      itinerario: [
+        { dia: 1, titulo: "Cusco → Ollantaytambo → Aguas Calientes", descripcion: "Recojo del hotel a las 09:30 y traslado a Ollantaytambo (aproximadamente 2 h). Tren de las 12:55 (servicio Expedition) hasta Aguas Calientes, con llegada cerca de las 14:50: personal del hotel recibe a los pasajeros y se realiza el check-in." },
+        { dia: 2, titulo: "Machupicchu → Ollantaytambo → Cusco", descripcion: "Desayuno en el hotel y traslado a la estación de buses hacia Machupicchu, con visita guiada privada del Circuito 2. Regreso en bus a Aguas Calientes con tiempo libre para almorzar, tren de vuelta a Ollantaytambo y traslado privado hasta Cusco." }
+      ],
+      alojamiento: "1 noche de hotel en Aguas Calientes",
+      comidas: null,
+      personalizable: true,
+      logisticaNoIncluida: [
+        "Vuelo hasta el destino",
+        "Traslado aeropuerto → hotel",
+        "Traslado hotel → punto de encuentro",
+        "Alojamiento previo o posterior a la travesía",
+        "Traslado de regreso al aeropuerto"
+      ]
+    }
+  },
+
+  /* ---------------- TRAVESÍAS — PATAGONIA ---------------- */
+  {
+    id: "patagonia-bariloche-magico",
+    esPlaceholder: false,
+    tipo: "travesia",
+    nombre: "Bariloche Mágico — Del Bosque a la Estepa",
+    destino: "bariloche",
+    categoria: "Ciclismo",
+    imagen: "assets/img/experiencias/Valle del Manso.jpeg",
+    galeria: ["assets/img/experiencias/Valle del Manso.jpeg"],
+    resumen: "4 días de ciclismo por Bariloche, alternando estepa patagónica, bosque, valles y lagos hasta Colonia Suiza.",
+    descripcion: "Una travesía de ciclismo por distintos paisajes de Bariloche y sus alrededores: estepa junto a las vías del tren, el sector sur del Parque Nacional en el Valle del Manso, la estepa patagónica del Valle del Ñirihuau y, para cerrar, bosques y lagos hasta Colonia Suiza. En total, unos 130 km repartidos entre gravel, senderos y asfalto.",
+    incluye: ["Bicicletas", "Traslados", "Guías", "Seguro", "Vehículo de apoyo", "Estaciones de hidratación", "Almuerzos"],
+    noIncluye: ["Alojamiento", "Cenas", "Bebidas alcohólicas", "Propinas"],
+    duracion: "4 días / 3 noches",
+    modalidad: "Salida grupal",
+    ubicacion: "Bariloche, Río Negro, Argentina",
+    infoImportante: null,
+    precio: null,
+    destacada: false,
+
+    detalle: {
+      dificultad: "Media",
+      distanciaTotal: "130 km · 70% gravel · 20% senderos · 10% asfalto",
+      fechas: ["14 – 17 ene 2027"],
+      itinerario: [
+        { dia: 1, titulo: "Estepa", descripcion: "35 km junto a las vías del tren hasta la estación Perito Moreno, con regreso y transferencia de aproximadamente 1 hora." },
+        { dia: 2, titulo: "Valle del Manso", descripcion: "20 km por el sector sur del Parque Nacional, entre ríos y bosque. Transferencia total aproximada de 3 horas." },
+        { dia: 3, titulo: "Valle del Ñirihuau", descripcion: "34 km atravesando paisaje de estepa patagónica, con transferencia aproximada de 1 hora." },
+        { dia: 4, titulo: "Lago Gutiérrez → Colonia Suiza", descripcion: "39 km entre bosques y lagos hasta llegar a Colonia Suiza." }
+      ],
+      alojamiento: "No incluido",
+      comidas: "Almuerzos incluidos (no incluye cenas)",
+      personalizable: true,
+      logisticaNoIncluida: [
+        "Vuelo hasta el destino",
+        "Traslado aeropuerto → hotel",
+        "Traslado hotel → punto de encuentro",
+        "Alojamiento previo, durante o posterior a la travesía",
+        "Traslado de regreso al aeropuerto"
+      ]
+    }
+  },
+  {
+    id: "patagonia-7-lagos-ebike",
+    esPlaceholder: false,
+    tipo: "travesia",
+    nombre: "La Ruta de los 7 Lagos con E-bikes",
+    destino: "bariloche",
+    categoria: "E-bike",
+    imagen: "assets/img/experiencias/circuito chico - .jpeg",
+    galeria: ["assets/img/experiencias/circuito chico - .jpeg"],
+    resumen: "4 días en e-bike de Bariloche a San Martín de los Andes por la Ruta de los 7 Lagos, con catamarán a Arrayanes y noche en carpa.",
+    descripcion: "La clásica Ruta de los 7 Lagos en e-bike, de Bariloche a San Martín de los Andes: cruce en catamarán hacia Arrayanes, sendero de bosque, Villa La Angostura y los lagos Espejo, Correntoso, Escondido, Villarino, Falkner, Hermoso y Machónico en el camino, hasta el descenso final sobre el lago Lácar. Unos 135 km en total, mayormente asfaltados.",
+    incluye: ["Bicicletas", "Guías", "Seguro", "Snacks", "Vehículo de apoyo", "Catamarán", "3 noches de alojamiento entre hostería, carpas y dormis", "Cena el día 1", "Todas las comidas los días 2 y 3", "Desayuno y almuerzo el día 4", "Transportes necesarios", "Traslado de equipaje"],
+    noIncluye: ["Entradas a parques", "Alcohol", "Propinas", "Regreso San Martín de los Andes–Bariloche (puede coordinarse aparte)"],
+    duracion: "4 días / 3 noches",
+    modalidad: "Salida grupal",
+    ubicacion: "Bariloche → San Martín de los Andes, Argentina",
+    infoImportante: null,
+    precio: null,
+    destacada: false,
+
+    detalle: {
+      dificultad: "Baja +",
+      distanciaTotal: "135 km · 15% gravel · 85% asfalto",
+      fechas: ["10 – 13 dic 2026", "18 – 21 feb 2027", "18 – 21 mar 2027"],
+      itinerario: [
+        { dia: 1, titulo: "Bariloche", descripcion: "Encuentro por la tarde en el alojamiento, presentación con los guías, prueba de bicicletas y cena de bienvenida." },
+        { dia: 2, titulo: "Bariloche → Hostería 7 Lagos / Lago Correntoso", descripcion: "42 km en e-bike combinados con un cruce en catamarán hacia Arrayanes y 12 km por sendero de bosque, pasando por Villa La Angostura y el lago Espejo hasta Correntoso. Noche en carpa (carpa y aislante incluidos)." },
+        { dia: 3, titulo: "Correntoso → Lago Hermoso", descripcion: "49 km pasando por los lagos Escondido, Villarino y Falkner, con almuerzo en el camino. Noche en Lago Hermoso." },
+        { dia: 4, titulo: "Lago Hermoso → San Martín de los Andes", descripcion: "37 km junto al lago Machónico y descenso final de 15 km hacia el lago Lácar, con almuerzo y fin de servicios alrededor de las 16:00." }
+      ],
+      alojamiento: "3 noches entre hostería, carpa y dormis",
+      comidas: "Cena el día 1, todas las comidas los días 2 y 3, desayuno y almuerzo el día 4",
+      personalizable: true,
+      logisticaNoIncluida: [
+        "Vuelo hasta el destino",
+        "Traslado aeropuerto → hotel",
+        "Traslado hotel → punto de encuentro",
+        "Alojamiento previo o posterior a la travesía",
+        "Traslado de regreso al aeropuerto"
+      ]
+    }
+  },
+  {
+    id: "patagonia-7-lagos-premium-ebike",
+    esPlaceholder: false,
+    tipo: "travesia",
+    nombre: "7 Lagos Premium con E-bikes",
+    destino: "bariloche",
+    categoria: "E-bike",
+    imagen: "assets/img/experiencias/San Carlos de Bariloche desde Brazo Huemul.jpg",
+    galeria: ["assets/img/experiencias/San Carlos de Bariloche desde Brazo Huemul.jpg"],
+    resumen: "Versión premium de 5 días de la Ruta de los 7 Lagos, con Circuito Chico, Villa Traful y hotel 4 estrellas cada noche.",
+    descripcion: "La versión más completa de la Ruta de los 7 Lagos en e-bike: el Circuito Chico y un cruce en catamarán a Arrayanes, Villa La Angostura, Villa Traful y los lagos Espejo, Correntoso, Villarino, Falkner y Hermoso, hasta el descenso final a San Martín de los Andes. Cinco días en e-bike, unos 207 km en total, con hotel 4 estrellas cada noche.",
+    incluye: ["E-bikes", "Guías", "Seguro", "Snacks", "Vehículo de apoyo", "Catamarán", "4 noches de hotel 4 estrellas", "Cena el día 1", "Todas las comidas los días 2, 3 y 4", "Desayuno y almuerzo el día 5", "Transportes necesarios", "Traslado de equipaje"],
+    noIncluye: ["Entradas a parques", "Alcohol", "Propinas", "Regreso San Martín de los Andes–Bariloche (puede coordinarse aparte)"],
+    duracion: "5 días / 4 noches",
+    modalidad: "Salida grupal",
+    ubicacion: "Bariloche → San Martín de los Andes, Argentina",
+    infoImportante: null,
+    precio: null,
+    destacada: false,
+
+    detalle: {
+      dificultad: "Baja +",
+      distanciaTotal: "207 km · 20% gravel · 80% asfalto",
+      fechas: ["10 – 14 mar 2027"],
+      itinerario: [
+        { dia: 1, titulo: "Bariloche", descripcion: "Encuentro por la tarde en el alojamiento, presentación con los guías, prueba de bicicletas y cena de bienvenida." },
+        { dia: 2, titulo: "Circuito Chico + Arrayanes", descripcion: "45 km por el Circuito Chico, con almuerzo y cruce en catamarán hacia Arrayanes y la Península Quetrihué." },
+        { dia: 3, titulo: "Villa La Angostura → Villa Traful", descripcion: "57 km pasando por los lagos Espejo y Correntoso hasta Villa Traful, con picnic en el camino." },
+        { dia: 4, titulo: "Villa Traful → Lago Hermoso", descripcion: "68 km por los lagos Villarino, Falkner y Hermoso, con picnic durante el recorrido." },
+        { dia: 5, titulo: "Lago Hermoso → San Martín de los Andes", descripcion: "Media jornada en bicicleta: 37 km con un descenso final de 15 km, almuerzo y fin de servicios." }
+      ],
+      alojamiento: "4 noches en hotel 4 estrellas",
+      comidas: "Cena el día 1, todas las comidas los días 2 a 4, desayuno y almuerzo el día 5",
+      personalizable: true,
+      logisticaNoIncluida: [
+        "Vuelo hasta el destino",
+        "Traslado aeropuerto → hotel",
+        "Traslado hotel → punto de encuentro",
+        "Alojamiento previo o posterior a la travesía",
+        "Traslado de regreso al aeropuerto"
+      ]
+    }
+  },
+  {
+    id: "patagonia-doble-cruce-cordillera-ebike",
+    esPlaceholder: false,
+    tipo: "travesia",
+    nombre: "Doble Cruce de la Cordillera — E-bike",
+    destino: "san-martin-de-los-andes",
+    categoria: "E-bike",
+    imagen: "assets/img/experiencias/Cerro Capilla.jpg",
+    galeria: ["assets/img/experiencias/Cerro Capilla.jpg"],
+    resumen: "5 días en e-bike con dos cruces de los Andes entre Argentina y Chile, por el Parque Nacional Lanín, lagos y termas.",
+    descripcion: "Dos cruces de la cordillera de los Andes en e-bike, entre la Patagonia argentina y chilena: senderos de comunidad mapuche y el Parque Nacional Lanín, una navegación por el lago Pirihueico y una caminata hasta la cascada Huilo-Huilo, bosques andino-patagónicos y valdivianos, y un segundo cruce cordillerano de regreso a San Martín de los Andes. Cinco días, unos 200 km, mayormente por caminos de gravel.",
+    incluye: ["Bicicletas", "Traslados", "Guías", "Vehículo de apoyo", "Catamarán", "4 noches en cabañas/hotel", "Cena el día 1", "Todas las comidas los días 2, 3 y 4", "Desayuno y almuerzo el día 5", "Seguro", "Traslado de equipaje"],
+    noIncluye: ["Alcohol", "Propinas"],
+    duracion: "5 días / 4 noches",
+    modalidad: "Salida grupal",
+    ubicacion: "San Martín de los Andes, Argentina — Chile",
+    infoImportante: null,
+    precio: null,
+    destacada: true,
+
+    detalle: {
+      dificultad: "Media +",
+      distanciaTotal: "200 km · 75% gravel · 25% asfalto",
+      fechas: ["24 – 28 feb 2027"],
+      itinerario: [
+        { dia: 1, titulo: "San Martín de los Andes", descripcion: "Encuentro por la tarde en el alojamiento, presentación con los guías y prueba de bicicletas." },
+        { dia: 2, titulo: "San Martín → Hua Hum", descripcion: "48 km por senderos de comunidad mapuche y camino de gravel, dentro del Parque Nacional Lanín." },
+        { dia: 3, titulo: "Hua Hum → Neltume", descripcion: "22 km y primer cruce de los Andes, con navegación por el lago Pirihueico y una caminata hasta la cascada Huilo-Huilo." },
+        { dia: 4, titulo: "Neltume → Coñaripe", descripcion: "61 km pasando por el lago Neltume y la Cuesta de los Añiques." },
+        { dia: 5, titulo: "Coñaripe → Paso Mamuil Malal → San Martín", descripcion: "70 km con el segundo cruce cordillerano, ascenso y gravel, almuerzo y transferencia final a San Martín de los Andes." }
+      ],
+      alojamiento: "4 noches en cabañas/hotel",
+      comidas: "Cena el día 1, todas las comidas los días 2, 3 y 4, desayuno y almuerzo el día 5",
+      personalizable: true,
+      logisticaNoIncluida: [
+        "Vuelo hasta el destino",
+        "Traslado aeropuerto → hotel",
+        "Traslado hotel → punto de encuentro",
+        "Alojamiento previo o posterior a la travesía",
+        "Traslado de regreso al aeropuerto"
+      ]
+    }
+  },
+  {
+    id: "patagonia-cruce-andino-lagos-chile-ebike",
+    esPlaceholder: false,
+    tipo: "travesia",
+    nombre: "Cruce Andino × Lagos a Chile — E-bike",
+    destino: "bariloche",
+    categoria: "E-bike",
+    imagen: "assets/img/experiencias/Lago Moreno, Colonia Suiza.jpeg",
+    imagenPos: "center 5%",
+    galeria: ["assets/img/experiencias/Lago Moreno, Colonia Suiza.jpeg"],
+    resumen: "6 días combinando e-bike y navegación entre Bariloche y los lagos chilenos, con Termas de Puyehue y regreso a Argentina.",
+    descripcion: "El clásico Cruce Andino combinado con e-bike: navegación desde Bariloche hasta Puerto Blest y Puerto Frías, cruce a Chile y descenso hacia Peulla navegando el lago Todos los Santos. Del otro lado, ciclovías junto al lago Llanquihue, caminos entre lagos y campos hasta Puerto Octay y el lago Rupanco, con una parada en las Termas de Puyehue antes de cruzar de regreso a Bariloche. Seis días, unos 250 km en e-bike combinados con varias navegaciones.",
+    incluye: ["Bicicletas", "Traslados", "Guías", "Vehículo de apoyo", "Catamarán", "5 noches en cabañas/hotel", "Cena el día 1", "Todas las comidas de los días 2 a 5", "Desayuno y almuerzo el día 6", "Seguro", "Traslado de equipaje"],
+    noIncluye: ["Alcohol", "Propinas"],
+    duracion: "6 días / 5 noches",
+    modalidad: "Salida grupal",
+    ubicacion: "Bariloche, Argentina — Chile",
+    infoImportante: null,
+    precio: null,
+    destacada: false,
+
+    detalle: {
+      dificultad: "Media +",
+      distanciaTotal: "250 km · 80% asfalto · 20% gravel",
+      fechas: ["3 – 8 dic 2026"],
+      itinerario: [
+        { dia: 1, titulo: "Bariloche", descripcion: "Encuentro por la tarde en el alojamiento, prueba de bicicletas y cena de bienvenida." },
+        { dia: 2, titulo: "Bariloche → Puerto Blest → Petrohué", descripcion: "33 km en bicicleta combinados con una navegación inicial hasta Puerto Blest, 3 km más hasta Puerto Frías y una navegación de aproximadamente 40 minutos cruzando a Chile. Luego, 30 km hasta Peulla navegando el lago Todos los Santos. Noche en Petrohué." },
+        { dia: 3, titulo: "Petrohué → Puerto Varas", descripcion: "60 km por la ciclovía de Ensenada junto al lago Llanquihue." },
+        { dia: 4, titulo: "Puerto Varas → Puerto Octay", descripcion: "55 km por caminos internos entre lagos y campos, con almuerzo en Frutillar antes de llegar a Puerto Octay." },
+        { dia: 5, titulo: "Puerto Octay → Lago Rupanco → Puyehue", descripcion: "Media jornada en bicicleta (40 km) y traslado a las Termas de Puyehue, con alojamiento en un hotel emblemático." },
+        { dia: 6, titulo: "Termas de Puyehue → Aduana Argentina → Bariloche", descripcion: "60 km: 43 km de ascenso hasta el límite y 17 km de descenso hasta la Aduana Argentina, con traslado final a Bariloche y llegada aproximada a las 20:00." }
+      ],
+      alojamiento: "5 noches en cabañas/hotel",
+      comidas: "Cena el día 1, todas las comidas de los días 2 a 5, desayuno y almuerzo el día 6",
+      personalizable: true,
+      logisticaNoIncluida: [
+        "Vuelo hasta el destino",
+        "Traslado aeropuerto → hotel",
+        "Traslado hotel → punto de encuentro",
+        "Alojamiento previo o posterior a la travesía",
+        "Traslado de regreso al aeropuerto"
+      ]
+    }
+  },
+  {
+    id: "patagonia-pehuenia-chile-mtb",
+    esPlaceholder: false,
+    tipo: "travesia",
+    nombre: "Pehuenia + Chile — Pedaleando entre Araucarias",
+    destino: "villa-pehuenia",
+    categoria: "MTB",
+    imagen: "assets/img/patagonia.jpg",
+    galeria: ["assets/img/patagonia.jpg"],
+    resumen: "6 días de MTB por Villa Pehuenia y Chile, entre bosques de araucarias, volcanes, lagos y un cruce fronterizo por el paso Icalma.",
+    descripcion: "Una travesía de mountain bike por Villa Pehuenia y sus alrededores, entre cerros, playas de arena blanca, bosques de araucarias milenarias y paisajes cordilleranos. El recorrido pasa por la Laguna Corazón, los senderos de bosque antiguo de Moquehue, el volcán Batea Mahuida —con opción de trekking hasta la cumbre— y un cruce fronterizo a Chile por el paso Icalma junto al lago del mismo nombre, antes de cerrar con un recorrido por lagunas de regreso a San Martín de los Andes.",
+    incluye: ["Bicicletas", "Traslados", "Guías", "Vehículo de apoyo", "5 noches de hotel", "Cena el día 1", "Todas las comidas de los días 2 a 5", "Desayuno y almuerzo el día 6", "Traslado de equipaje"],
+    noIncluye: ["Alcohol", "Propinas"],
+    duracion: "6 días / 5 noches",
+    modalidad: "Salida grupal",
+    ubicacion: "Villa Pehuenia, Neuquén, Argentina — Chile",
+    infoImportante: null,
+    precio: null,
+    destacada: false,
+
+    detalle: {
+      dificultad: "Media +",
+      distanciaTotal: "220 km · 50% gravel · 50% asfalto",
+      fechas: ["24 – 29 nov 2026"],
+      itinerario: [
+        { dia: 1, titulo: "San Martín → Villa Pehuenia", descripcion: "Encuentro después del mediodía y traslado de aproximadamente 5 horas, con presentación de los guías y prueba de bicicletas." },
+        { dia: 2, titulo: "Laguna Corazón", descripcion: "60 km con un desnivel aproximado de +600 m: un desvío hacia el Paso El Arco de unos 11 km y un ascenso de 15 km por gravel hasta la laguna, donde se almuerza antes de descender por el mismo camino." },
+        { dia: 3, titulo: "Senderos de Moquehue", descripcion: "54 km por senderos entre bosque antiguo, con cruces de ríos y árboles caídos, y almuerzo junto al lago Moquehue. Noche de hotel." },
+        { dia: 4, titulo: "Volcán Batea Mahuida", descripcion: "34 km, con 7 km de camino y 7 km de ascenso por gravel, más un trekking opcional de aproximadamente 45 minutos hasta la cumbre. Almuerzo en el bosque y descenso en bicicleta." },
+        { dia: 5, titulo: "Cruce Paso Icalma", descripcion: "54 km hasta la frontera (8 km de camino y trámites de aduana), con descenso hasta Icalma y 20 km junto al lago del mismo nombre. Picnic y regreso." },
+        { dia: 6, titulo: "Vuelta por la península y las lagunas", descripcion: "Media jornada (15 km) recorriendo lagunas, con almuerzo de cierre y traslado final a San Martín de los Andes, con llegada aproximada a las 21:00." }
+      ],
+      alojamiento: "5 noches de hotel",
+      comidas: "Cena el día 1, todas las comidas de los días 2 a 5, desayuno y almuerzo el día 6",
+      personalizable: true,
+      logisticaNoIncluida: [
+        "Vuelo hasta el destino",
+        "Traslado aeropuerto → hotel",
+        "Traslado hotel → punto de encuentro",
+        "Alojamiento previo o posterior a la travesía",
+        "Traslado de regreso al aeropuerto"
+      ]
+    }
+  },
+  {
+    id: "patagonia-domuyo-norte-neuquino",
+    esPlaceholder: false,
+    tipo: "travesia",
+    nombre: "Domuyo — Norte Neuquino / Techo de la Patagonia con E-bikes",
+    destino: "norte-neuquino",
+    categoria: "E-bike",
+    imagen: "assets/img/trekking.jpg",
+    imagenPos: "center 20%",
+    galeria: ["assets/img/trekking.jpg"],
+    resumen: "Travesía en e-bike por el norte neuquino, con base en Varvarco: volcanes, lagunas glaciares, cavernas y aguas termales.",
+    descripcion: "Una travesía en e-bike por el norte neuquino, con base en el entorno de Varvarco, atravesando paisajes de montaña, zonas de trashumancia, volcanes, aguas termales y valles glaciares. El recorrido incluye las lagunas glaciares de Epulaufquen, cascadas junto al río, formaciones geológicas en Los Bolillos y un cierre en cavernas y aguas termales naturales en el Cajón del Covunco y el Cajón del Atreuco, con base en Chos Malal.",
+    incluye: ["E-bike", "Traslados", "Guías", "Vehículo de apoyo", "7 noches", "Cena el día 1", "Todas las comidas de los días siguientes"],
+    noIncluye: ["Alcohol", "Propinas"],
+    duracion: "8 días / 7 noches",
+    modalidad: "Salida grupal",
+    ubicacion: "Norte neuquino · Neuquén",
+    infoImportante: "La duración confirmada según el itinerario es de 8 días / 7 noches. El rango de fechas indicado (27 de marzo al 2 de abril de 2027) cubre 7 días de calendario: la fecha final está sujeta a confirmación.",
+    precio: null,
+    destacada: false,
+
+    detalle: {
+      dificultad: "Media +",
+      distanciaTotal: "290 km · 70% gravel · 30% asfalto",
+      fechas: ["27 mar — 2 abr 2027"],
+      fechasNota: "A confirmar",
+      itinerario: [
+        { dia: 1, titulo: "Chos Malal", descripcion: "Encuentro después del mediodía, presentación del guía, prueba de bicicletas y cena de bienvenida." },
+        { dia: 2, titulo: "Chos Malal → Andacollo → Mallín Malal", descripcion: "Traslado de aproximadamente 1 hora hasta Andacollo y ruta en bicicleta de unos 43 km junto al río Nahueve (asfalto y gravel, desnivel +600/-250 m) hasta Mallín Malal. Distancia total del día: 53 km." },
+        { dia: 3, titulo: "Lagunas de Epulaufquen", descripcion: "70 km por gravel hasta dos lagunas de origen glaciar, con ascensos suaves, recorrido junto al río y un trekking hasta unas cascadas (desnivel +300/-300 m). Regreso por el mismo camino." },
+        { dia: 4, titulo: "Mallín Malal → Las Ovejas → Varvarco", descripcion: "45 km por la Ruta 39 junto al río Neuquén, con desnivel +600/-500 m." },
+        { dia: 5, titulo: "Manzano Amargo y cascadas", descripcion: "55 km junto al río hasta unas cascadas, con almuerzo y regreso (desnivel +800/-550 m)." },
+        { dia: 6, titulo: "Los Bolillos", descripcion: "Media jornada (30 km) entre formaciones geológicas, con un pequeño trekking y la opción de ver el atardecer desde las antenas (desnivel +300/-150 m)." },
+        { dia: 7, titulo: "Cavernas y aguas calientes", descripcion: "Traslado en vehículo de aproximadamente 1 hora y recorrido en bicicleta (37 km, desnivel +700/-400 m) por el Cajón del Covunco, con cavernas, y el Cajón del Atreuco, con aguas termales naturales." },
+        { dia: 8, titulo: "Regreso", descripcion: "Desayuno y traslado a Chos Malal, de aproximadamente 2 horas." }
+      ],
+      alojamiento: "7 noches",
+      comidas: "Cena el día 1 y todas las comidas los días siguientes",
       personalizable: true,
       logisticaNoIncluida: [
         "Vuelo hasta el destino",
