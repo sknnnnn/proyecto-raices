@@ -6,24 +6,29 @@
    ========================================================= */
 
 :root{
-  /* Paleta de marca — fuente principal, no editar por página */
+  /* Paleta de marca — fuente principal, no editar por página.
+     Actualización cromática: #013020 pasa a ser el verde principal
+     (antes era #43612F, ahora "verde complementario"); crema/tinta se
+     alinean a los valores exactos de Papel/Asfalto de la paleta. */
   --color-celeste:#8BA6B7; --color-marron:#8D4B12; --color-naranja:#FF5B28;
-  --color-amarillo:#E9E073; --color-verde:#43612F; --color-verde-oliva:#6A7133;
-  --color-crema:#F7F4EC; --color-tinta:#211D16;
+  --color-amarillo:#E9E073; --color-verde:#013020; --color-verde-complementario:#43612F; --color-verde-oliva:#6A7133;
+  --color-crema:#ECE7D8; --color-tinta:#151310; --color-cemento:#8C887C;
 
-  /* Color semántico — los componentes usan estos, no la paleta directa */
-  --bg-primary:var(--color-crema);
-  --bg-surface:#ffffff;
+  /* Color semántico — los componentes usan estos, no la paleta directa.
+     #013020 pasa a ser el fondo base predominante del sitio; el texto
+     por defecto pasa a Papel/Cemento para leerse sobre ese verde. */
+  --bg-primary:var(--color-verde);
+  --bg-surface:var(--color-crema);
   --bg-dark:var(--color-tinta);
-  --text-primary:var(--color-tinta);
-  --text-secondary:#4a463c;
-  --text-muted:#6b6656;
-  --text-muted-on-dark:#9b967f;
-  --text-on-dark:#ffffff;
-  --text-on-dark-muted:#cfcabb;
+  --text-primary:var(--color-crema);
+  --text-secondary:var(--color-cemento);
+  --text-muted:var(--color-cemento);
+  --text-muted-on-dark:var(--color-cemento);
+  --text-on-dark:var(--color-crema);
+  --text-on-dark-muted:var(--color-cemento);
   --color-accent:var(--color-naranja);
-  --border-color:rgba(33,29,22,0.08);
-  --border-color-strong:rgba(33,29,22,0.16);
+  --border-color:rgba(140,136,124,0.28);
+  --border-color-strong:rgba(140,136,124,0.5);
   --focus-color:var(--color-naranja);
 
   /* Lienzo de Inicio (body[data-page="inicio"], ver "Home — lienzo de
@@ -32,13 +37,13 @@
      (nota fría, para que Destinos y Catálogo se diferencien de verdad) y
      terracota/arcilla (nota cálida-tierra en Quiénes somos), usados como
      manchas orgánicas que se pintan UNA vez sobre <main>. */
-  --canvas-base:#EAD9B8;
-  --bg-ivory:#F3EDE0;
-  --bg-sand:#E7D7B2;
-  --bg-sage:#C6CFB9;
-  --bg-petroleum:#AEC3C2;
-  --bg-terracotta:#CD9D79;
-  --bg-clay:#DABAAE;
+  --canvas-base:#013020;
+  --bg-ivory:#ECE7D8;
+  --bg-sand:#E9E073;
+  --bg-sage:#8BA6B7;
+  --bg-petroleum:#43612F;
+  --bg-terracotta:#8D4B12;
+  --bg-clay:#FF5B28;
 
   /* Lienzo de Destinos (body[data-page="destinos"]) — rediseño total de
      la página: la combinación acompaña el recorrido narrativo (Cusco →
@@ -48,19 +53,19 @@
      vuelve a un marrón de tierra antes del cierre. Mismo sistema (main
      pintado una vez, secciones transparentes), otra paleta y otra
      composición de manchas. */
-  --dest-canvas-base:#E4D5AE;
-  --dest-terracota:#C1683F;
-  --dest-ocre:#D9A05C;
-  --dest-oliva:#4F5C27;
-  --dest-celeste:#7FA3B8;
-  --dest-marron:#7A4A22;
+  --dest-canvas-base:#013020;
+  --dest-terracota:#8D4B12;
+  --dest-ocre:#E9E073;
+  --dest-oliva:#43612F;
+  --dest-celeste:#8BA6B7;
+  --dest-marron:#8D4B12;
 
   /* Lienzo de Experiencias (Experiencias + Tours + Travesías + Paquetes:
      misma familia de página, mismo lienzo) — tercera combinación propia:
      base arena cálida, amarillo y marrón con fuerza (aventura, tierra) y
      un toque de naranja muy comedido como acento puntual, nunca como
      superficie completa. */
-  --exp-canvas-base:#E6DCC0;
+  --exp-canvas-base:#013020;
   --exp-amarillo:#E9E073;
   --exp-marron:#8D4B12;
   --exp-oliva:#6A7133;
@@ -122,16 +127,39 @@ a{color:inherit;}
 .skip-link{position:absolute; left:-999px; top:0; background:var(--bg-dark); color:#fff; padding:10px 16px; z-index:999; border-radius:0 0 6px 0;}
 .skip-link:focus{left:0;}
 
-/* ---------- Header / navegación ---------- */
-header{position:sticky; top:0; z-index:50; background:rgba(247,244,236,0.94); backdrop-filter:blur(6px); border-bottom:1px solid var(--border-color);}
+/* ---------- Header / navegación ----------
+   color explícito: .navlinks a no tenía color propio y heredaba
+   --text-primary (Papel), invisible sobre el fondo Papel del propio
+   header. Con header oscuro (Asfalto/Tinta) el link queda legible;
+   el panel mobile (fondo verde) restaura Papel más abajo. */
+header{position:sticky; top:0; z-index:50; background:rgba(236,231,216,0.94); backdrop-filter:blur(6px); box-shadow:0 8px 22px -18px rgba(1,48,32,0.4); border-bottom:1px solid transparent; color:var(--color-tinta); transition:background-color .25s ease, box-shadow .25s ease, color .25s ease;}
 nav{display:flex; align-items:center; justify-content:space-between; padding:14px var(--gutter); max-width:var(--content-max); margin:0 auto; gap:16px;}
 .brand{display:flex; align-items:center; gap:10px; text-decoration:none; flex-shrink:0;}
 .brand img{height:34px; width:auto;}
 .navlinks{display:flex; gap:26px; font-size:14px; letter-spacing:0.02em; align-items:center;}
-.navlinks a{text-decoration:none; opacity:0.75; transition:opacity .2s; white-space:nowrap;}
+.navlinks a{color:inherit; text-decoration:none; opacity:0.75; transition:opacity .2s; white-space:nowrap;}
 .navlinks a:hover, .navlinks a.active{opacity:1;}
 .navlinks a.active{border-bottom:2px solid var(--color-naranja); padding-bottom:2px;}
 .nav-cta{flex-shrink:0;}
+
+/* Navbar + hero/cabecera integradas en una misma composición: en las
+   páginas con foto de portada de pantalla completa (Inicio, Guías,
+   Comentarios) el header flota transparente sobre la fotografía y
+   pasa a sólido recién al scrollear (clase .is-solid, ver main.js).
+   Sin overlay ni filtro sobre la foto: la legibilidad del texto usa
+   sólo color + text-shadow. Resto de páginas: header de siempre. */
+body[data-page="inicio"] header,
+body[data-page="guias"] header,
+body[data-page="comentarios"] header{position:fixed; top:0; left:0; width:100%;}
+body[data-page="inicio"] header:not(.is-solid),
+body[data-page="guias"] header:not(.is-solid),
+body[data-page="comentarios"] header:not(.is-solid){background:transparent; box-shadow:none; backdrop-filter:none; color:#fff;}
+body[data-page="inicio"] header:not(.is-solid) .navlinks a,
+body[data-page="guias"] header:not(.is-solid) .navlinks a{text-shadow:0 2px 8px rgba(0,0,0,0.55);}
+body[data-page="comentarios"] header:not(.is-solid) .navlinks a{text-shadow:0 2px 8px rgba(0,0,0,0.55);}
+body[data-page="inicio"] header:not(.is-solid) .nav-toggle span,
+body[data-page="guias"] header:not(.is-solid) .nav-toggle span,
+body[data-page="comentarios"] header:not(.is-solid) .nav-toggle span{background:#fff;}
 
 .nav-toggle{display:none; background:none; border:none; cursor:pointer; padding:8px; flex-shrink:0;}
 .nav-toggle span{display:block; width:24px; height:2px; background:var(--bg-dark); margin:5px 0; transition:transform .2s, opacity .2s;}
@@ -149,7 +177,7 @@ nav{display:flex; align-items:center; justify-content:space-between; padding:14p
   }
   .navlinks.open{transform:translateX(0);}
   .nav-cta{padding:9px 16px; font-size:13px;}
-  body[data-page="inicio"] .navlinks.open a{color:var(--text-primary);}
+  .navlinks.open a{color:var(--text-primary);}
 }
 
 /* ---------- Botones ---------- */
@@ -158,8 +186,8 @@ nav{display:flex; align-items:center; justify-content:space-between; padding:14p
 .btn-outline{background:transparent; border:2px solid currentColor; color:inherit;}
 .btn-outline.on-dark{color:#fff;}
 .btn-outline.on-dark:hover{background:#fff; color:var(--color-verde);}
-.btn-outline.on-light{color:var(--color-verde); border-color:var(--color-verde);}
-.btn-outline.on-light:hover{background:var(--color-verde); color:#fff;}
+.btn-outline.on-light{color:var(--color-amarillo); border-color:var(--color-naranja); background:rgba(255,91,40,0.1);}
+.btn-outline.on-light:hover{background:var(--color-naranja); color:#fff; border-color:var(--color-naranja);}
 .btn-sm{padding:9px 18px; font-size:13px;}
 .btn-block{display:block; text-align:center;}
 .btn-whatsapp{background:#25D366; font-size:15px; padding:14px 26px;}
@@ -175,8 +203,7 @@ nav{display:flex; align-items:center; justify-content:space-between; padding:14p
    La variante .page-hero--compact (Contacto) reduce escala
    para una portada más simple, sin duplicar reglas. */
 .page-hero{position:relative; width:100%; min-height:440px; max-height:820px; display:flex; align-items:flex-end; overflow:hidden; background:var(--bg-dark); color:#fff;}
-.page-hero img.bg{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; filter:brightness(0.97); transform:scale(1); animation:heroZoom 22s ease-out forwards;}
-.page-hero::after{content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(10,9,5,0) 0%, rgba(10,9,5,0) 42%, rgba(9,8,5,0.22) 62%, rgba(7,6,4,0.6) 100%); pointer-events:none;}
+.page-hero img.bg{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; transform:scale(1); animation:heroZoom 22s ease-out forwards;}
 .page-hero .wrap{position:relative; z-index:2; width:100%; padding-bottom:96px; animation:heroRise .8s ease-out both;}
 .page-hero .breadcrumb{margin-bottom:22px;}
 .page-hero .eyebrow{color:var(--color-amarillo); font-weight:700; margin-bottom:14px; text-shadow:0 1px 2px rgba(0,0,0,0.9), 0 2px 8px rgba(0,0,0,0.75);}
@@ -279,8 +306,6 @@ body[data-page="inicio"] .nav-toggle span{background:#fdfbf4;}
    mismos tonos de la paleta llevados a su versión más profunda, así el
    overlay se siente parte de la foto (verdes de montaña, tierra) y no
    un degradado genérico puesto encima. */
-.hero-inicio::before{content:""; position:absolute; inset:0; z-index:1; background:linear-gradient(180deg, rgba(22,27,13,0.24) 0%, rgba(22,27,13,0.24) 88%, transparent 100%); pointer-events:none;}
-.hero-inicio::after{content:""; position:absolute; inset:0; z-index:1; background:linear-gradient(180deg, rgba(22,27,13,0.2) 0%, rgba(22,27,13,0) 20%, rgba(30,20,10,0.1) 50%, rgba(30,20,10,0.52) 68%, rgba(30,20,10,0.52) 90%, transparent 100%); pointer-events:none;}
 /* Bloque simple (no flex): con flex-column + align-items:center cada
    hijo de texto toma su ancho "fit-content" y puede crecer más que el
    espacio disponible, recortándose contra el overflow:hidden del hero
@@ -303,7 +328,7 @@ body[data-page="inicio"] .nav-toggle span{background:#fdfbf4;}
    centro visual (la tinta) cae unos px a la derecha del centro real
    de la caja. Se compensa acá, en el texto, para que ambos queden
    alineados sobre el mismo eje visual — el logo no se toca. */
-.hero-inicio-tagline{display:block; font-family:var(--font-heading); font-weight:500; font-style:italic; letter-spacing:0.02em; font-size:clamp(16px,1.8vw,21px); line-height:1.35; color:rgba(247,244,236,0.92); white-space:normal; width:100%; margin:0; text-shadow:0 2px 10px rgba(0,0,0,0.45); transform:translateX(0.7%);}
+.hero-inicio-tagline{display:block; font-family:var(--font-heading); font-weight:500; font-style:italic; letter-spacing:0.02em; font-size:clamp(16px,1.8vw,21px); line-height:1.35; color:rgba(236,231,216,0.92); white-space:normal; width:100%; margin:0; text-shadow:0 2px 10px rgba(0,0,0,0.45); transform:translateX(0.7%);}
 .hero-inicio-tagline::before, .hero-inicio-tagline::after{content:none;}
 /* CTAs claramente separados del bloque logo+tagline, aprovechando el
    espacio de la foto hacia abajo — misma pareja editorial de antes
@@ -312,7 +337,7 @@ body[data-page="inicio"] .nav-toggle span{background:#fdfbf4;}
 .hero-inicio .btn{font-family:var(--font-heading); padding:17px 36px; font-size:15px; letter-spacing:0.02em; display:inline-flex; align-items:center; gap:10px;}
 .hero-inicio .btn::after{content:"→"; transition:transform var(--duration-base) var(--ease);}
 .hero-inicio .btn:hover::after{transform:translateX(4px);}
-.hero-inicio .btn-outline{background:none; border:none; padding:0 0 5px; border-bottom:1px solid rgba(233,224,115,0.45); border-radius:0; color:var(--color-amarillo); font-family:var(--font-heading); font-weight:700; font-size:15px; letter-spacing:0.02em; display:inline-flex; align-items:center; gap:8px; transition:border-color var(--duration-base) var(--ease);}
+.hero-inicio .btn-outline{background:none; border:none; padding:0 0 5px; border-bottom:1px solid rgba(233,224,115,0.45); border-radius:0; color:var(--color-amarillo); font-family:var(--font-heading); font-weight:700; font-size:15px; letter-spacing:0.02em; display:inline-flex; align-items:center; gap:8px; text-shadow:0 2px 8px rgba(0,0,0,0.5); transition:border-color var(--duration-base) var(--ease);}
 .hero-inicio .btn-outline::after{content:"→"; transition:transform var(--duration-base) var(--ease);}
 .hero-inicio .btn-outline:hover{background:none; color:var(--color-amarillo); border-bottom-color:var(--color-amarillo); transform:none;}
 .hero-inicio .btn-outline:hover::after{transform:translateX(4px);}
@@ -321,7 +346,7 @@ body[data-page="inicio"] .nav-toggle span{background:#fdfbf4;}
 section{padding:100px 0;}
 .section-head{max-width:640px; margin-bottom:56px;}
 .section-head.center{margin-left:auto; margin-right:auto; text-align:center;}
-.kicker{font-family:var(--font-body); font-size:13px; text-transform:uppercase; letter-spacing:0.15em; color:var(--color-marron); margin-bottom:14px; display:flex; align-items:center; gap:10px;}
+.kicker{font-family:var(--font-body); font-size:13px; text-transform:uppercase; letter-spacing:0.15em; color:var(--color-amarillo); margin-bottom:14px; display:flex; align-items:center; gap:10px;}
 .section-head.center .kicker{justify-content:center;}
 .kicker::before{content:""; width:26px; height:2px; background:var(--color-naranja); display:inline-block;}
 .section-head h2{font-size:clamp(30px,4vw,46px); line-height:1.05;}
@@ -331,7 +356,7 @@ section{padding:100px 0;}
 .section-foot .btn, .section-foot .btn-outline{margin:0 6px 10px;}
 
 /* ---------- Nosotros / About ---------- */
-.about{background:#fff;}
+.about{background:transparent;}
 .about-grid{display:grid; grid-template-columns:1.1fr 0.9fr; gap:64px; align-items:center;}
 .about-grid img{border-radius:6px;}
 /* Lista de datos separada por hairlines en vez de 3 cajas iguales:
@@ -340,7 +365,7 @@ section{padding:100px 0;}
 .stat-row{display:flex; gap:0; margin-top:var(--space-7); border-top:1px solid var(--border-color); padding-top:var(--space-5);}
 .stat{max-width:none; flex:1; padding:0 var(--space-5); border-left:1px solid var(--border-color);}
 .stat:first-child{padding-left:0; border-left:none;}
-.stat b{font-family:var(--font-heading); font-size:17px; line-height:1.25; display:block; color:var(--color-verde); margin-bottom:4px;}
+.stat b{font-family:var(--font-heading); font-size:17px; line-height:1.25; display:block; color:var(--color-amarillo); margin-bottom:4px;}
 .stat span{font-size:13px; color:var(--text-muted);}
 
 /* Home — la foto de "Quiénes somos" gana proporción editorial (retrato,
@@ -379,7 +404,7 @@ body[data-page="inicio"] .equipo-mini-persona h3{font-size:17px; color:var(--tex
 /* Perfil sin rol/bio cargados todavía: un tag "en preparación" (mismo
    lenguaje que ya usan los destinos sin foto/contenido real) en vez de
    dos líneas de texto genérico repetidas en las 3 personas. */
-body[data-page="inicio"] .equipo-mini-pendiente{display:inline-block; margin-top:8px; font-family:var(--font-body); font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:var(--color-marron); border:1px dashed var(--color-marron); border-radius:999px; padding:4px 12px;}
+body[data-page="inicio"] .equipo-mini-pendiente{display:inline-block; margin-top:8px; font-family:var(--font-body); font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:var(--color-amarillo); border:1px dashed var(--color-amarillo); border-radius:999px; padding:4px 12px;}
 body[data-page="inicio"] .equipo-mini-cta{display:inline-block; margin-top:var(--space-6);}
 .valores-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:28px; margin-top:56px;}
 .valor-card{background:var(--bg-primary); border-radius:8px; padding:28px;}
@@ -392,11 +417,11 @@ a.valor-card:hover .corner-arrow{transform:rotate(-45deg) scale(1.1); background
 a.valor-card .num{padding-right:40px;}
 .valor-card .num{font-family:var(--font-heading); font-size:13px; color:var(--color-naranja); letter-spacing:0.1em; margin-bottom:10px; display:block;}
 .valor-card h3{font-size:18px; margin-bottom:8px; transition:color .2s;}
-a.valor-card:hover h3{color:var(--color-marron);}
+a.valor-card:hover h3{color:var(--color-amarillo);}
 .valor-card p{font-size:14px; color:var(--text-secondary);}
-.valor-card .ver-mas{display:inline-block; margin-top:14px; font-size:13px; font-family:var(--font-heading); color:var(--color-verde); transition:transform .25s, color .2s;}
+.valor-card .ver-mas{display:inline-block; margin-top:14px; font-size:13px; font-family:var(--font-heading); color:var(--color-amarillo); transition:transform .25s, color .2s;}
 a.valor-card .ver-mas{font-weight:700; color:var(--color-naranja); text-decoration:underline; text-underline-offset:3px;}
-a.valor-card:hover .ver-mas{color:var(--color-marron); transform:translateX(4px);}
+a.valor-card:hover .ver-mas{color:var(--color-amarillo); transform:translateX(4px);}
 
 /* ---------- Destinos ---------- */
 .destinos{background:var(--bg-primary);}
@@ -415,14 +440,14 @@ body[data-page="inicio"] main{
   background-color:var(--canvas-base);
   background-repeat:no-repeat;
   background-image:
-    radial-gradient(72% 48% at 20% 26%, rgba(231,215,178,0.55) 0%, transparent 100%),
-    radial-gradient(62% 42% at 84% 34%, rgba(243,237,224,0.45) 0%, transparent 100%),
-    radial-gradient(70% 46% at 86% 48%, rgba(174,195,194,0.5) 0%, transparent 100%),
-    radial-gradient(64% 42% at 16% 56%, rgba(198,207,185,0.42) 0%, transparent 100%),
-    radial-gradient(74% 48% at 22% 68%, rgba(205,157,121,0.4) 0%, transparent 100%),
-    radial-gradient(50% 34% at 74% 72%, rgba(218,186,174,0.26) 0%, transparent 100%),
-    radial-gradient(62% 40% at 78% 86%, rgba(243,237,224,0.48) 0%, transparent 100%),
-    radial-gradient(58% 38% at 22% 92%, rgba(231,215,178,0.38) 0%, transparent 100%);
+    radial-gradient(72% 48% at 20% 26%, rgba(236,231,216,0.16) 0%, transparent 100%),
+    radial-gradient(62% 42% at 84% 34%, rgba(233,224,115,0.14) 0%, transparent 100%),
+    radial-gradient(70% 46% at 86% 48%, rgba(139,166,183,0.16) 0%, transparent 100%),
+    radial-gradient(64% 42% at 16% 56%, rgba(67,97,47,0.4) 0%, transparent 100%),
+    radial-gradient(74% 48% at 22% 68%, rgba(141,75,18,0.16) 0%, transparent 100%),
+    radial-gradient(50% 34% at 74% 72%, rgba(255,91,40,0.1) 0%, transparent 100%),
+    radial-gradient(62% 40% at 78% 86%, rgba(236,231,216,0.14) 0%, transparent 100%),
+    radial-gradient(58% 38% at 22% 92%, rgba(233,224,115,0.12) 0%, transparent 100%);
   background-size:100% 100%;
   background-position:0 0;
 }
@@ -450,7 +475,6 @@ body[data-page="inicio"] .catalogo-home .dest-card:nth-child(2){transform:transl
 body[data-page="inicio"] .catalogo-home .dest-card:nth-child(2):hover{transform:translateY(24px);}
 body[data-page="inicio"] .catalogo-home .dest-card:nth-child(3){transform:translateY(-14px); border-radius:12px 36px 12px 36px;}
 body[data-page="inicio"] .catalogo-home .dest-card:nth-child(3):hover{transform:translateY(-20px);}
-body[data-page="inicio"] .catalogo-home .dest-card::after{background:linear-gradient(180deg, transparent 0%, transparent 62%, rgba(10,12,6,0.85) 100%);}
 body[data-page="inicio"] .catalogo-home .dest-card .tag{font-size:11px; margin-bottom:4px;}
 body[data-page="inicio"] .catalogo-home .dest-card h3{font-size:19px; line-height:1.25;}
 body[data-page="inicio"] .catalogo-home .dest-card p{display:none;}
@@ -483,8 +507,6 @@ body[data-page="inicio"] .catalogo-home .dest-card:hover .count{opacity:1; trans
 .dest-card{position:relative; border-radius:8px; overflow:hidden; height:340px; display:flex; align-items:flex-end; text-decoration:none; color:inherit;}
 .dest-card img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; transition:transform .5s;}
 .dest-card:hover img{transform:scale(1.06);}
-.dest-card::after{content:""; position:absolute; inset:0; background:linear-gradient(180deg, transparent 0%, rgba(10,12,6,0.1) 25%, rgba(10,12,6,0.55) 60%, rgba(10,12,6,0.94) 100%);}
-#destinos-home .dest-card::after{background:linear-gradient(180deg, rgba(10,12,6,0.28) 0%, rgba(10,12,6,0.5) 45%, rgba(10,12,6,0.88) 100%);}
 .dest-card .info{position:relative; z-index:2; padding:26px;}
 .dest-card .tag{font-family:var(--font-body); font-size:12px; letter-spacing:0.1em; text-transform:uppercase; color:var(--color-amarillo); margin-bottom:8px; display:block; text-shadow:0 1px 4px rgba(0,0,0,0.55);}
 .dest-card h3{font-size:26px; color:#fff; text-shadow:0 2px 10px rgba(0,0,0,0.5);}
@@ -505,13 +527,13 @@ body[data-page="destinos"] main{
   background-color:var(--dest-canvas-base);
   background-repeat:no-repeat;
   background-image:
-    radial-gradient(64% 40% at 16% 10%, rgba(193,104,63,0.4) 0%, transparent 100%),
-    radial-gradient(58% 38% at 86% 20%, rgba(217,160,92,0.34) 0%, transparent 100%),
-    radial-gradient(60% 40% at 20% 34%, rgba(217,160,92,0.4) 0%, transparent 100%),
-    radial-gradient(62% 42% at 82% 48%, rgba(127,163,184,0.36) 0%, transparent 100%),
-    radial-gradient(56% 38% at 22% 60%, rgba(79,92,39,0.32) 0%, transparent 100%),
-    radial-gradient(60% 40% at 84% 74%, rgba(122,74,34,0.36) 0%, transparent 100%),
-    radial-gradient(58% 38% at 24% 90%, rgba(193,104,63,0.3) 0%, transparent 100%);
+    radial-gradient(64% 40% at 16% 10%, rgba(141,75,18,0.22) 0%, transparent 100%),
+    radial-gradient(58% 38% at 86% 20%, rgba(233,224,115,0.18) 0%, transparent 100%),
+    radial-gradient(60% 40% at 20% 34%, rgba(67,97,47,0.4) 0%, transparent 100%),
+    radial-gradient(62% 42% at 82% 48%, rgba(139,166,183,0.2) 0%, transparent 100%),
+    radial-gradient(56% 38% at 22% 60%, rgba(236,231,216,0.12) 0%, transparent 100%),
+    radial-gradient(60% 40% at 84% 74%, rgba(141,75,18,0.2) 0%, transparent 100%),
+    radial-gradient(58% 38% at 24% 90%, rgba(255,91,40,0.1) 0%, transparent 100%);
   background-size:100% 100%;
   background-position:0 0;
 }
@@ -535,7 +557,7 @@ body[data-page="destinos"] .page-intro{background:transparent; padding-bottom:0;
    una card blanca separada. */
 .destinos-group{margin-bottom:64px;}
 .destinos-group:last-child{margin-bottom:0;}
-.destinos-group-title{font-family:var(--font-body); font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.14em; color:var(--color-marron); display:flex; align-items:center; gap:14px; margin-bottom:24px;}
+.destinos-group-title{font-family:var(--font-body); font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.14em; color:var(--color-amarillo); display:flex; align-items:center; gap:14px; margin-bottom:24px;}
 .destinos-group-title::after{content:""; flex:1; height:1px; background:var(--border-color-strong);}
 /* Carrusel por país — finito: cada destino aparece una sola vez, sin
    clonado ni auto-scroll. Flechas + swipe nativo; el JS habilita y
@@ -545,7 +567,7 @@ body[data-page="destinos"] .page-intro{background:transparent; padding-bottom:0;
    y sin flechas. */
 .destinos-carousel{position:relative; display:flex; align-items:center; gap:14px;}
 .destinos-carousel.sin-desborde .destinos-carousel-arrow{display:none;}
-.destinos-carousel-viewport{flex:1; min-width:0; overflow-x:auto; scroll-behavior:smooth; scrollbar-width:none; -ms-overflow-style:none; cursor:grab; padding:20px 20px 34px;}
+.destinos-carousel-viewport{flex:1; min-width:0; overflow-x:auto; scroll-behavior:smooth; scrollbar-width:none; -ms-overflow-style:none; cursor:grab; padding:20px 20px 34px; background:rgba(236,231,216,0.06); border-radius:26px 8px 26px 8px;}
 .destinos-carousel-viewport::-webkit-scrollbar{display:none;}
 .destinos-carousel-track{display:flex; gap:22px; width:max-content;}
 .destino-card{position:relative; display:block; aspect-ratio:0.88; border-radius:22px 6px 22px 6px; overflow:hidden; box-shadow:var(--shadow-md); text-decoration:none; color:inherit;}
@@ -553,12 +575,14 @@ body[data-page="destinos"] .page-intro{background:transparent; padding-bottom:0;
 .destino-card img, .destino-card .gal-placeholder{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; transition:transform .5s ease;}
 .destino-card .gal-placeholder{display:flex; align-items:center; justify-content:center;}
 .destino-card:hover img{transform:scale(1.06);}
-.destino-card::after{content:""; position:absolute; inset:0; background:linear-gradient(180deg, transparent 50%, rgba(10,8,4,0.82) 100%);}
 .destino-card .info{position:absolute; left:0; right:0; bottom:0; z-index:2; padding:18px;}
 .destino-card h3{color:#fff; font-size:20px; line-height:1.15; text-shadow:0 2px 8px rgba(0,0,0,0.5);}
-.destino-card .explorar{display:block; margin-top:6px; font-family:var(--font-heading); font-weight:700; font-size:12px; color:var(--color-amarillo); opacity:0; transform:translateY(4px); transition:opacity .25s ease, transform .25s ease;}
+.destino-card .explorar{display:block; margin-top:6px; font-family:var(--font-heading); font-weight:700; font-size:12px; color:var(--color-amarillo); text-shadow:0 2px 8px rgba(0,0,0,0.5); opacity:0; transform:translateY(4px); transition:opacity .25s ease, transform .25s ease;}
 .destino-card:hover .explorar{opacity:1; transform:translateY(0);}
-.destino-card-flag{position:absolute; top:12px; left:12px; z-index:2; font-size:10px; text-transform:uppercase; letter-spacing:0.08em; color:#fff; background:rgba(20,18,12,0.55); padding:5px 10px; border-radius:999px;}
+.destino-card-flag{position:absolute; top:12px; left:12px; z-index:2; font-size:10px; text-transform:uppercase; letter-spacing:0.08em; color:var(--color-tinta); background:var(--color-amarillo); padding:5px 10px; border-radius:999px; font-weight:700;}
+/* Próximamente: única excepción permitida al tratamiento de color de
+   fotos (blanco y negro en vez de ocultar la imagen real). */
+img.placeholder{filter:grayscale(1);}
 @media (hover: none){
   .destino-card .explorar{opacity:1; transform:none;}
 }
@@ -607,7 +631,6 @@ body[data-page="destinos"] .page-intro{background:transparent; padding-bottom:0;
    gigante), misma técnica de disolución hacia el lienzo de la página. */
 .destinos-hero{position:relative; min-height:62vh; display:flex; align-items:flex-end; overflow:hidden; padding-bottom:64px;}
 .destinos-hero-bg{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 30%; display:block; z-index:0; mask-image:linear-gradient(180deg, black 0%, black 78%, transparent 100%); -webkit-mask-image:linear-gradient(180deg, black 0%, black 78%, transparent 100%);}
-.destinos-hero::before{content:""; position:absolute; inset:0; z-index:1; background:linear-gradient(180deg, rgba(22,19,13,0.28) 0%, rgba(22,19,13,0.12) 40%, rgba(22,19,13,0.42) 100%); pointer-events:none;}
 .destinos-hero-content{position:relative; z-index:2; width:100%; padding:0 48px; max-width:1400px; margin:0 auto; color:#fff;}
 .destinos-hero-content .breadcrumb{font-size:13px; color:var(--text-on-dark-muted); margin-bottom:14px;}
 .destinos-hero-content .breadcrumb a{color:var(--text-on-dark-muted);}
@@ -644,16 +667,16 @@ body[data-page="destinos"] .page-intro{background:transparent; padding-bottom:0;
 /* ---------- Experiencias (catálogo) ---------- */
 .filtros{display:flex; flex-wrap:wrap; gap:10px; margin-bottom:44px;}
 .filtros.center{justify-content:center;}
-.filtro-btn{font-family:var(--font-body); font-size:13px; padding:9px 18px; border-radius:999px; border:1.5px solid #d9d4c4; background:#fff; cursor:pointer; color:var(--text-primary); transition:background .2s ease, color .2s ease, border-color .2s ease, transform .2s ease;}
+.filtro-btn{font-family:var(--font-body); font-size:13px; padding:9px 18px; border-radius:999px; border:1.5px solid rgba(140,136,124,0.4); background:var(--color-crema); cursor:pointer; color:var(--color-tinta); transition:background .2s ease, color .2s ease, border-color .2s ease, transform .2s ease;}
 .filtro-btn:active{transform:scale(0.96);}
 #prop-grid{transition:opacity .18s ease;}
 #prop-grid.prop-grid-fading{opacity:0;}
 .filtro-btn:hover{border-color:var(--color-naranja);}
-.filtro-btn.active{background:var(--color-verde); border-color:var(--color-verde); color:#fff;}
+.filtro-btn.active{background:var(--color-amarillo); border-color:var(--color-amarillo); color:var(--color-tinta);}
 
 .filtro-destino-group{display:flex; align-items:center; gap:10px; flex-wrap:wrap; max-width:100%;}
 .filtro-destino-label{font-family:var(--font-body); font-size:13px; color:var(--text-primary);}
-.filtro-destino-select{font-family:var(--font-body); font-size:13px; padding:9px 34px 9px 18px; border-radius:999px; border:1.5px solid #d9d4c4; background:#fff; color:var(--text-primary); cursor:pointer; max-width:100%; appearance:none; background-image:url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%234a463c' d='M5.5 7.5l4.5 4.5 4.5-4.5z'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; background-size:14px;}
+.filtro-destino-select{font-family:var(--font-body); font-size:13px; padding:9px 34px 9px 18px; border-radius:999px; border:1.5px solid rgba(140,136,124,0.4); background:var(--color-crema); color:var(--color-tinta); cursor:pointer; max-width:100%; appearance:none; background-image:url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%234a463c' d='M5.5 7.5l4.5 4.5 4.5-4.5z'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; background-size:14px;}
 .filtro-destino-select:hover{border-color:var(--color-naranja);}
 
 .exp-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:40px 28px;}
@@ -674,7 +697,7 @@ body[data-page="catalogo"] .exp-card:nth-child(3n+1) .img-wrap{aspect-ratio:1.1;
 .exp-card:hover .img-wrap img{transform:scale(1.055);}
 .exp-card .cat-badge{position:absolute; top:12px; left:12px; background:rgba(20,18,12,0.55); font-family:var(--font-body); font-weight:600; color:#fff; font-size:10.5px; text-transform:uppercase; letter-spacing:0.1em; padding:6px 12px; border-radius:999px;}
 .exp-card .body{padding:16px 2px 0; display:flex; flex-direction:column; gap:8px; flex:1;}
-.exp-card .dest-tag{font-size:11.5px; text-transform:uppercase; letter-spacing:0.08em; color:var(--color-marron);}
+.exp-card .dest-tag{font-size:11.5px; text-transform:uppercase; letter-spacing:0.08em; color:var(--color-amarillo);}
 .exp-card h3{font-size:19px; line-height:1.2;}
 .exp-card .resumen{font-size:13.5px; color:var(--text-secondary); flex:1; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;}
 /* Catálogo (destino): título y resumen reservan siempre el mismo alto
@@ -693,16 +716,16 @@ body[data-page="catalogo"] .exp-card .resumen{min-height:63px;}
    agrega el riel horizontal con auto-scroll continuo, pausado al
    interactuar. Ancho/alto fijos por card para que la simetría se
    sostenga aunque cambie el largo del texto real más adelante. */
-body[data-page="inicio"] .exp-home{padding-top:8px; padding-bottom:16px; position:relative;}
-body[data-page="inicio"] .destinos{padding-top:20px;}
+body[data-page="inicio"] .exp-home{padding-top:var(--space-8); padding-bottom:var(--space-8); position:relative;}
+body[data-page="inicio"] .destinos{padding-top:var(--space-8);}
 /* Halo muy sutil detrás del carrusel — misma paleta del lienzo, sólo
    para dar algo de profundidad sin competir con las fotos. */
 body[data-page="inicio"] .exp-carousel{position:relative; display:flex; align-items:center; gap:16px; margin-top:8px;}
-body[data-page="inicio"] .exp-carousel::before{content:""; position:absolute; inset:-48px -24px; z-index:0; background:radial-gradient(60% 75% at 50% 48%, rgba(141,75,18,0.16) 0%, rgba(141,75,18,0.07) 55%, transparent 100%); pointer-events:none;}
+body[data-page="inicio"] .exp-carousel::before{content:""; position:absolute; inset:-48px -24px; z-index:0; background:radial-gradient(60% 75% at 50% 48%, rgba(236,231,216,0.1) 0%, rgba(236,231,216,0.04) 55%, transparent 100%); pointer-events:none;}
 /* Superficie levemente hundida detrás de las cards: un borde interno
    sutil arriba/abajo que separa el riel del resto del lienzo, sin caja
    ni sombra dura. */
-body[data-page="inicio"] .exp-carousel-viewport{box-shadow:inset 0 24px 34px -30px rgba(33,29,22,0.22), inset 0 -24px 34px -30px rgba(33,29,22,0.22);}
+body[data-page="inicio"] .exp-carousel-viewport{background:rgba(236,231,216,0.06); border-radius:26px 8px 26px 8px; box-shadow:inset 0 24px 34px -30px rgba(21,19,16,0.28), inset 0 -24px 34px -30px rgba(21,19,16,0.28);}
 /* Padding interno para que la sombra de cada card no quede recortada
    contra el borde del viewport con scroll (arriba/abajo y en los
    extremos), sin alterar el ancho de las cards. */
@@ -740,11 +763,11 @@ body[data-page="propuesta"] main{
   background-color:var(--exp-canvas-base);
   background-repeat:no-repeat;
   background-image:
-    radial-gradient(64% 42% at 14% 18%, rgba(233,224,115,0.4) 0%, transparent 100%),
-    radial-gradient(60% 40% at 86% 32%, rgba(141,75,18,0.26) 0%, transparent 100%),
-    radial-gradient(62% 40% at 14% 50%, rgba(106,113,51,0.3) 0%, transparent 100%),
-    radial-gradient(52% 34% at 82% 64%, rgba(255,91,40,0.14) 0%, transparent 100%),
-    radial-gradient(58% 38% at 24% 76%, rgba(233,224,115,0.34) 0%, transparent 100%);
+    radial-gradient(64% 42% at 14% 18%, rgba(233,224,115,0.18) 0%, transparent 100%),
+    radial-gradient(60% 40% at 86% 32%, rgba(141,75,18,0.18) 0%, transparent 100%),
+    radial-gradient(62% 40% at 14% 50%, rgba(67,97,47,0.4) 0%, transparent 100%),
+    radial-gradient(52% 34% at 82% 64%, rgba(255,91,40,0.1) 0%, transparent 100%),
+    radial-gradient(58% 38% at 24% 76%, rgba(236,231,216,0.14) 0%, transparent 100%);
   background-size:100% 100%;
   background-position:0 0;
 }
@@ -811,7 +834,7 @@ body[data-tipo-fijo] .exp-card h3{font-size:24px; line-height:1.22;}
 body[data-tipo-fijo] .exp-card .resumen{font-size:14.5px; line-height:1.5; -webkit-line-clamp:3;}
 body[data-tipo-fijo] .exp-card .meta{font-size:12.5px; gap:16px;}
 
-.placeholder-badge{display:inline-block; font-size:11px; text-transform:uppercase; letter-spacing:0.06em; background:var(--color-amarillo); color:var(--text-primary); padding:3px 9px; border-radius:999px; margin-bottom:6px; font-family:var(--font-body);}
+.placeholder-badge{display:inline-block; font-size:11px; text-transform:uppercase; letter-spacing:0.06em; background:var(--color-amarillo); color:var(--color-tinta); padding:3px 9px; border-radius:999px; margin-bottom:6px; font-family:var(--font-body);}
 .empty-state{text-align:center; padding:60px 20px; color:var(--text-muted);}
 
 /* ---------- Detalle de experiencia ---------- */
@@ -820,7 +843,7 @@ body[data-tipo-fijo] .exp-card .meta{font-size:12.5px; gap:16px;}
 .exp-gallery-main img{width:100%; height:100%; object-fit:cover;}
 .exp-gallery-thumbs{display:grid; grid-template-columns:repeat(4,1fr); gap:10px;}
 .exp-gallery-thumbs img{border-radius:6px; height:80px; width:100%; object-fit:cover;}
-.exp-info-card{background:#fff; border:1px solid rgba(33,29,22,0.1); border-radius:10px; padding:28px; position:sticky; top:96px; min-width:0;}
+.exp-info-card{background:var(--color-crema); color:var(--color-tinta); border:1px solid rgba(21,19,16,0.1); border-radius:10px; padding:28px; position:sticky; top:96px; min-width:0;}
 .exp-info-card .dest-tag{font-size:12px; text-transform:uppercase; letter-spacing:0.08em; color:var(--color-marron);}
 .exp-info-card h1{font-size:1.5em; margin:8px 0 0;}
 .exp-info-card .info-row{display:flex; justify-content:space-between; align-items:baseline; gap:12px; padding:12px 0; border-bottom:1px solid var(--border-color); font-size:14px;}
@@ -831,11 +854,11 @@ body[data-tipo-fijo] .exp-card .meta{font-size:12.5px; gap:16px;}
 .exp-info-card .btn{width:100%; text-align:center; margin-top:18px;}
 .exp-body h2{font-size:24px; margin:40px 0 14px;}
 .exp-body h2:first-child{margin-top:0;}
-.exp-body ul{padding-left:20px; font-size:15px; color:#3a3626; line-height:1.8;}
-.exp-body p{font-size:15px; color:#3a3626; line-height:1.8;}
-.check-list li::marker{color:var(--color-verde);}
+.exp-body ul{padding-left:20px; font-size:15px; line-height:1.8;}
+.exp-body p{font-size:15px; line-height:1.8;}
+.check-list li::marker{color:var(--color-amarillo);}
 .cross-list li::marker{color:var(--color-naranja);}
-.notice-box{background:var(--color-amarillo); border-radius:8px; padding:18px 22px; font-size:14px; margin-top:16px;}
+.notice-box{background:var(--color-amarillo); color:var(--color-tinta); border-radius:8px; padding:18px 22px; font-size:14px; margin-top:16px;}
 
 /* ---------- Guías ---------- */
 .guias-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:28px;}
@@ -843,7 +866,7 @@ body[data-tipo-fijo] .exp-card .meta{font-size:12.5px; gap:16px;}
 .guia-card .foto{height:220px; background:linear-gradient(135deg,var(--color-celeste),var(--color-verde-oliva)); display:flex; align-items:center; justify-content:center; color:#fff; font-family:var(--font-heading); font-size:15px; position:relative;}
 .guia-card .foto img{width:100%; height:100%; object-fit:cover; position:absolute; inset:0;}
 .guia-card .body{padding:22px;}
-.guia-card h3{font-size:18px;}
+.guia-card h3{font-size:18px; color:var(--color-tinta);}
 .guia-card .rol{font-size:12px; text-transform:uppercase; letter-spacing:0.08em; color:var(--color-marron); margin:6px 0 12px;}
 .guia-card p{font-size:14px; color:var(--text-secondary);}
 
@@ -885,14 +908,14 @@ body[data-tipo-fijo] .exp-card .meta{font-size:12.5px; gap:16px;}
 }
 
 /* ---------- Comunidad Raíces (Galería) ---------- */
-.comunidad{background:var(--color-amarillo);}
+.comunidad{background:var(--color-amarillo); color:var(--color-tinta);}
 .comunidad .kicker{color:var(--color-verde);}
 .comunidad-grid{display:grid; grid-template-columns:1.05fr 0.95fr; gap:64px; align-items:center;}
 .comunidad-text h2{font-size:clamp(28px,4vw,42px); line-height:1.1; margin-bottom:20px;}
 .comunidad-text p{font-size:16px; line-height:1.7; color:var(--text-secondary); max-width:480px;}
 .comunidad-text p + p{margin-top:14px;}
-.comunidad-text .comunidad-tagline{font-family:var(--font-heading); font-weight:700; color:var(--text-primary);}
-.comunidad-mail{display:inline-flex; align-items:center; gap:16px; margin-top:30px; background:#fff; border-radius:999px; padding:10px 24px 10px 10px; text-decoration:none; color:var(--text-primary); box-shadow:0 10px 24px rgba(33,29,22,0.16); transition:transform .25s ease, box-shadow .25s ease;}
+.comunidad-text .comunidad-tagline{font-family:var(--font-heading); font-weight:700; color:var(--color-tinta);}
+.comunidad-mail{display:inline-flex; align-items:center; gap:16px; margin-top:30px; background:#fff; border-radius:999px; padding:10px 24px 10px 10px; text-decoration:none; color:var(--color-tinta); box-shadow:0 10px 24px rgba(21,19,16,0.16); transition:transform .25s ease, box-shadow .25s ease;}
 .comunidad-mail:hover{transform:translateY(-3px); box-shadow:0 16px 32px rgba(33,29,22,0.24);}
 .comunidad-mail-ico{width:42px; height:42px; border-radius:50%; background:var(--color-verde); display:flex; align-items:center; justify-content:center; font-size:17px; flex-shrink:0;}
 .comunidad-mail-text{display:flex; flex-direction:column; line-height:1.35;}
@@ -907,15 +930,15 @@ body[data-tipo-fijo] .exp-card .meta{font-size:12.5px; gap:16px;}
 .comunidad-stack img:nth-child(3){top:2px; left:55%; transform:rotate(-3deg); z-index:2;}
 
 /* ---------- Testimonios ---------- */
-.testi{background:var(--color-amarillo);}
+.testi{background:var(--color-amarillo); color:var(--color-tinta);}
 /* Home — Comentarios cierra el recorrido cálido: entra desde el tono
    tierra de Quiénes somos y se asienta en el amarillo de marca (no es
    un bloque de color nuevo, es el final de la misma transición). */
-body[data-page="inicio"] .testi{background:transparent;}
+body[data-page="inicio"] .testi{background:transparent; color:var(--text-primary);}
 .testi-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:28px;}
 .testi-card{background:#fff; border-radius:8px; padding:32px;}
 .testi-card p{font-size:15px; color:#3a3626; margin-bottom:20px;}
-.testi-name{font-family:var(--font-heading); font-weight:700; font-size:14px;}
+.testi-name{font-family:var(--font-heading); font-weight:700; font-size:14px; color:var(--color-tinta);}
 .testi-role{font-size:12px; color:#8a8470;}
 .stars{color:var(--color-naranja); margin-bottom:14px; font-size:14px; letter-spacing:2px;}
 .testi-disclaimer{font-size:13px; color:#4a4020; background:rgba(255,255,255,0.5); border:1px dashed rgba(58,54,38,0.35); padding:14px 18px; border-radius:8px; margin-top:36px;}
@@ -927,7 +950,7 @@ body[data-page="inicio"] .testi{background:transparent;}
 .testi-slide{grid-area:1 / 1; opacity:0; visibility:hidden; pointer-events:none; transform:translateY(6px); transition:opacity .5s ease, transform .5s ease, visibility 0s linear .5s;}
 .testi-slide.is-active{opacity:1; visibility:visible; pointer-events:auto; transform:translateY(0); transition:opacity .5s ease, transform .5s ease;}
 .testi-track .testi-card{height:100%;}
-.testi-arrow{width:44px; height:44px; border-radius:50%; border:none; background:#fff; color:var(--text-primary); font-size:22px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow:0 6px 16px rgba(33,29,22,0.14); transition:background var(--duration-fast) var(--ease), color var(--duration-fast) var(--ease), transform var(--duration-fast) var(--ease), opacity var(--duration-fast) var(--ease);}
+.testi-arrow{width:44px; height:44px; border-radius:50%; border:none; background:#fff; color:var(--color-tinta); font-size:22px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow:0 6px 16px rgba(33,29,22,0.14); transition:background var(--duration-fast) var(--ease), color var(--duration-fast) var(--ease), transform var(--duration-fast) var(--ease), opacity var(--duration-fast) var(--ease);}
 .testi-arrow:hover{background:var(--color-verde); color:#fff; transform:scale(1.06);}
 .testi-arrow:disabled{opacity:0.35; cursor:default; pointer-events:none; box-shadow:none;}
 .testi-dots{display:flex; justify-content:center; gap:10px; margin-top:28px;}
@@ -953,7 +976,7 @@ body[data-page="inicio"] .testi{background:transparent;}
 form{display:grid; gap:var(--space-5);}
 .form-row{display:grid; grid-template-columns:1fr 1fr; gap:var(--space-5);}
 label{font-size:12px; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted); margin-bottom:var(--space-2); display:block;}
-input, select, textarea{width:100%; padding:14px 16px; border:1.5px solid var(--border-color-strong); border-radius:var(--radius-md); font-family:var(--font-body); font-size:14px; background:#fff; color:var(--text-primary); transition:border-color var(--duration-fast) var(--ease), box-shadow var(--duration-fast) var(--ease);}
+input, select, textarea{width:100%; padding:14px 16px; border:1.5px solid var(--border-color-strong); border-radius:var(--radius-md); font-family:var(--font-body); font-size:14px; background:var(--color-crema); color:var(--color-tinta); transition:border-color var(--duration-fast) var(--ease), box-shadow var(--duration-fast) var(--ease);}
 input:focus, select:focus, textarea:focus{outline:none; border-color:var(--color-naranja); box-shadow:0 0 0 3px rgba(255,91,40,0.14);}
 textarea{resize:vertical; min-height:130px;}
 form .btn{justify-self:start; margin-top:var(--space-2); padding:14px 34px;}
@@ -1162,7 +1185,6 @@ body[data-page="experiencias"] .exp-explorer-paises{margin-bottom:var(--space-7)
 .exp-destino-tile{position:relative; flex:0 0 auto; width:220px; aspect-ratio:1; display:block; border-radius:var(--radius-lg); overflow:hidden; box-shadow:var(--shadow-sm); text-decoration:none; transition:box-shadow var(--duration-base) var(--ease), transform var(--duration-base) var(--ease);}
 .exp-destino-tile:hover{transform:translateY(-2px); box-shadow:var(--shadow-md);}
 .exp-destino-tile img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;}
-.exp-destino-tile::after{content:""; position:absolute; inset:0; background:linear-gradient(180deg, transparent 45%, rgba(10,8,4,0.78) 100%);}
 .exp-destino-tile-label{position:absolute; left:0; right:0; bottom:0; z-index:1; padding:16px; font-family:var(--font-heading); font-weight:700; font-size:18px; color:#fff; text-shadow:0 2px 8px rgba(0,0,0,0.5);}
 
 /* "Para inspirarte" — deliberadamente chica y secundaria: sin kicker
@@ -1178,12 +1200,11 @@ body[data-page="experiencias"] .exp-inspirate{padding:0 0 var(--space-8);}
 .exp-inspirate-card:hover{transform:translateY(-3px); box-shadow:var(--shadow-md);}
 .exp-inspirate-card img,
 .exp-inspirate-card .gal-placeholder{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;}
-.exp-inspirate-card::after{content:""; position:absolute; inset:0; background:linear-gradient(180deg, transparent 45%, rgba(10,8,4,0.8) 100%);}
 .exp-inspirate-card .cat-badge{position:absolute; top:12px; left:12px; z-index:2; background:rgba(20,18,12,0.55); font-family:var(--font-body); font-weight:600; color:#fff; font-size:10.5px; text-transform:uppercase; letter-spacing:0.1em; padding:6px 12px; border-radius:999px;}
 .exp-inspirate-card-info{position:absolute; left:0; right:0; bottom:0; z-index:2; padding:16px; display:flex; flex-direction:column; gap:4px;}
-.exp-inspirate-card-dest{font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:var(--color-amarillo);}
+.exp-inspirate-card-dest{font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:var(--color-amarillo); text-shadow:0 2px 8px rgba(0,0,0,0.5);}
 .exp-inspirate-card-name{font-family:var(--font-heading); font-weight:700; font-size:16px; color:#fff; line-height:1.2;}
-.exp-inspirate-card-cta{font-family:var(--font-heading); font-weight:700; font-size:12px; color:#fff; opacity:0; transform:translateY(4px); transition:opacity var(--duration-base) var(--ease), transform var(--duration-base) var(--ease);}
+.exp-inspirate-card-cta{font-family:var(--font-heading); font-weight:700; font-size:12px; color:#fff; text-shadow:0 2px 8px rgba(0,0,0,0.5); opacity:0; transform:translateY(4px); transition:opacity var(--duration-base) var(--ease), transform var(--duration-base) var(--ease);}
 .exp-inspirate-card:hover .exp-inspirate-card-cta{opacity:1; transform:none;}
 @media (hover:none){
   .exp-inspirate-card-cta{opacity:1; transform:none;}
@@ -1233,7 +1254,7 @@ body[data-page="nosotros"] .equipo-foto img{width:100%; height:100%; object-fit:
 body[data-page="nosotros"] .equipo-persona:hover .equipo-foto img{transform:scale(1.04);}
 body[data-page="nosotros"] .equipo-persona figcaption{margin-top:var(--space-4);}
 body[data-page="nosotros"] .equipo-persona h3{font-size:19px; color:var(--text-primary);}
-body[data-page="nosotros"] .equipo-pendiente{display:inline-block; margin-top:10px; font-family:var(--font-body); font-size:11.5px; text-transform:uppercase; letter-spacing:0.08em; color:var(--color-marron); border:1px dashed var(--color-marron); border-radius:999px; padding:5px 14px;}
+body[data-page="nosotros"] .equipo-pendiente{display:inline-block; margin-top:10px; font-family:var(--font-body); font-size:11.5px; text-transform:uppercase; letter-spacing:0.08em; color:var(--color-amarillo); border:1px dashed var(--color-amarillo); border-radius:999px; padding:5px 14px;}
 
 /* "Nuestra propuesta" — de card en caja a bloques abiertos separados
    por un filete (mismo recurso que ya usa Destinos entre grupos de

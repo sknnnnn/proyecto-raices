@@ -197,10 +197,13 @@
 
       const destinosHtml = Object.values(arbol[paisActivo]).map(d => {
         const nombre = nombreDestino(d);
-        const prep = d.esPlaceholder ? `<span class="destino-card-flag">En preparación</span>` : "";
+        const prep = d.esPlaceholder ? `<span class="destino-card-flag">Próximamente</span>` : "";
+        const img = d.imagen
+          ? `<img class="${d.esPlaceholder ? "placeholder" : ""}" src="${d.imagen}" alt="${nombre}, ${d.pais}" loading="lazy">`
+          : `<div class="gal-placeholder">Imagen pendiente</div>`;
         return `
           <a class="exp-destino-tile" href="catalogo.html?destino=${d.slug}">
-            <img src="${d.imagen}" alt="${nombre}, ${d.pais}" loading="lazy">
+            ${img}
             ${prep}
             <span class="exp-destino-tile-label">${nombre}</span>
           </a>`;

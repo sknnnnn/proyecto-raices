@@ -135,9 +135,9 @@
     const tarjeta = (d) => {
       const nombre = d.slug === "peru" ? "Cusco" : d.nombre;
       const img = d.imagen
-        ? `<img src="${d.imagen}" alt="${nombre}, ${d.pais}" style="object-position:${objPos[d.slug] || "center"};" loading="lazy">`
+        ? `<img class="${d.esPlaceholder ? "placeholder" : ""}" src="${d.imagen}" alt="${nombre}, ${d.pais}" style="object-position:${objPos[d.slug] || "center"};" loading="lazy">`
         : `<div class="gal-placeholder">Imagen pendiente</div>`;
-      const prep = d.esPlaceholder ? `<span class="destino-card-flag">En preparación</span>` : "";
+      const prep = d.esPlaceholder ? `<span class="destino-card-flag">Próximamente</span>` : "";
       return `
         <a class="destino-card" href="catalogo.html?destino=${d.slug}" aria-label="Ver propuestas en ${nombre}">
           ${img}
@@ -161,7 +161,7 @@
         </div>
       </div>`).join("");
 
-    cont.innerHTML = `<div class="kicker">Destinos</div><h1 class="destinos-lead">Lugares para conocer, <em>recorrer</em> y vivir</h1>` + gruposHtml;
+    cont.innerHTML = `<div class="kicker">Destinos</div><h1 class="destinos-lead">Territorio que se recorre, <em>no que se mira</em></h1>` + gruposHtml;
 
     // Cada país es un carrusel propio, finito: cada destino aparece una
     // sola vez (nada se clona ni se duplica), sin auto-scroll ni loop.
