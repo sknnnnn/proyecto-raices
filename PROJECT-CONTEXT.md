@@ -24,6 +24,20 @@ La comunicación debe transmitir:
 
 Evitar una estética de agencia de viajes genérica o excesivamente corporativa.
 
+### Identidad y estrategia de marca (resumen)
+
+Proyecto Raíces conecta personas, guías y territorios a través de experiencias de turismo aventura (trekking, hiking, MTB, buceo, salidas de uno o varios días, paquetes), priorizando confianza, seguridad y respeto por el lugar visitado. Principio central: **la experiencia vale más que la transacción**.
+
+Personalidad: humana, cercana, aventurera, curiosa, consciente, confiable, humilde, comunitaria — evitar lo artificial, frío, excesivamente premium o corporativo.
+
+Diferencial: lugares menos convencionales, conexión humana, confianza y calidad de servicio por sobre precio.
+
+Territorio conceptual (pilares de marca): **Raíces** (origen, pertenencia), **Conexión** (personas, lugares, guías), **Movimiento** (aventura, libertad), **Experiencia** (lo vivido por sobre lo transaccional).
+
+Identidad visual vigente: ver §5 más abajo (paleta, tipografías, logo). Destinos actuales relevantes: ver §4 más abajo (Argentina: 6 destinos reales; Perú sin cambios; "Patagonia" ya no es destino navegable).
+
+Fuente estratégica ampliada (esencia, historia, público, motivaciones, relación con viajeros y guías, visión de red, conceptos exploratorios): `BRAND-BIBLE.md`.
+
 ## 2. Estructura general
 
 La navegación principal debe contemplar:
