@@ -139,7 +139,7 @@
       const media = document.getElementById("cat-media");
       if (media) {
         if (d.imagen) {
-          media.innerHTML = `<img id="cat-img" src="${d.imagen}" alt="${nombre}" style="object-position:center;">`;
+          media.innerHTML = `<img id="cat-img" class="${d.esPlaceholder ? "placeholder" : ""}" src="${d.imagen}" alt="${nombre}" style="object-position:center;">`;
         } else {
           // Sin foto propia todavía: se muestra el mismo estado "Imagen
           // pendiente" que ya usan las cards de destinos.html, en vez de
@@ -147,7 +147,7 @@
           // este destino).
           media.innerHTML = `<div class="gal-placeholder">Imagen pendiente</div>`;
         }
-        if (d.esPlaceholder) media.innerHTML += `<span class="destino-card-flag">En preparación</span>`;
+        if (d.esPlaceholder) media.innerHTML += `<span class="destino-card-flag">Próximamente</span>`;
       }
       const bc = document.getElementById("cat-breadcrumb");
       if (bc) bc.innerHTML = `<a href="index.html">Inicio</a> / <a href="destinos.html">Destinos</a> / ${nombre}`;

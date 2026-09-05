@@ -20,6 +20,7 @@
 
 document.addEventListener("DOMContentLoaded", () => {
   initNav();
+  initHeaderScroll();
   initFooterYear();
   initWhatsappFloat();
   initContactForm();
@@ -31,6 +32,19 @@ document.addEventListener("DOMContentLoaded", () => {
   initTestimoniosCarousel(); // sólo actúa si la página tiene #testi-track (Inicio)
   initGaleriaJustify(); // sólo actúa si la página tiene .gal-row (galeria.html)
 });
+
+/* ---------- Header sólido al scrollear ----------
+   En Inicio/Guías/Comentarios el header nace transparente sobre la
+   foto de portada (ver style.css); esta clase lo pasa a sólido apenas
+   se scrollea, sin afectar el resto de las páginas (ahí ya es sólido
+   siempre por CSS y la clase no cambia nada visualmente). */
+function initHeaderScroll(){
+  const header = document.querySelector("header");
+  if (!header) return;
+  const marcar = () => header.classList.toggle("is-solid", window.scrollY > 30);
+  marcar();
+  window.addEventListener("scroll", marcar, { passive: true });
+}
 
 /* ---------- Navegación mobile + link activo ---------- */
 function initNav(){
@@ -379,6 +393,9 @@ function renderPropuestaDetalle(){
           <p>${p.descripcion}</p>
 
           ${especifico.bodyHtml}
+
+          ${p.tipo === "tour" || p.tipo === "travesia" ? `<div class="notice-box">Esta ${p.tipo === "tour" ? "salida" : "travesía"} puede reservarse de forma privada, sólo para tu grupo, sujeto a disponibilidad.</div>` : ""}
+          ${p.tipo === "paquete" ? `<div class="notice-box">El itinerario puede conversarse y adaptarse según las necesidades del grupo, cuando resulte viable.</div>` : ""}
 
           ${p.incluye && p.incluye.length ? `<h2>Qué incluye</h2><ul class="check-list">${p.incluye.map(i => `<li>${i}</li>`).join("")}</ul>` : ""}
 
