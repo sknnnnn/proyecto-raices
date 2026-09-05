@@ -195,12 +195,12 @@
         });
       });
 
-      const destinosHtml = Object.values(arbol[paisActivo]).map(d => {
+      const destinosHtml = ordenarDestinos(Object.values(arbol[paisActivo])).map(d => {
         const nombre = nombreDestino(d);
-        const prep = d.esPlaceholder ? `<span class="destino-card-flag">Próximamente</span>` : "";
+        const prep = (d.esPlaceholder && d.imagen) ? `<span class="destino-card-flag">Próximamente</span>` : "";
         const img = d.imagen
           ? `<img class="${d.esPlaceholder ? "placeholder" : ""}" src="${d.imagen}" alt="${nombre}, ${d.pais}" loading="lazy">`
-          : `<div class="gal-placeholder">Imagen pendiente</div>`;
+          : `<div class="gal-placeholder">${d.esPlaceholder ? "Próximamente" : "Imagen pendiente"}</div>`;
         return `
           <a class="exp-destino-tile" href="catalogo.html?destino=${d.slug}">
             ${img}
@@ -234,7 +234,12 @@
     }
     const inspirateWrap = document.getElementById("exp-inspirate");
     if (inspirateWrap) {
-      inspirateWrap.innerHTML = PROPUESTAS.slice(0, 3).map(inspirateCardHtml).join("");
+      // Mezcla real de tipos (Tours/Travesías/hoy sin Paquetes reales
+      // todavía): sin esto, tomar las primeras 3 de PROPUESTAS tal cual
+      // mostraba casi siempre el mismo tipo, porque los datos están
+      // agrupados por tipo en propuestas-data.js.
+      const reales = PROPUESTAS.filter(p => !p.esPlaceholder);
+      inspirateWrap.innerHTML = interleaveByTipo(reales).slice(0, 3).map(inspirateCardHtml).join("");
     }
 
     render();

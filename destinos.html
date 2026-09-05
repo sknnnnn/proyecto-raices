@@ -114,13 +114,14 @@
     const cont = document.getElementById("destinos-lista");
     if (!cont || typeof DESTINOS === "undefined") return;
 
-    const ordenPagina = ["peru", "bariloche", "ushuaia", "norte-argentino"];
-    const destacados = ordenPagina
-      .map(slug => DESTINOS.find(d => d.slug === slug))
-      .filter(Boolean)
-      .concat(DESTINOS.filter(d => !ordenPagina.includes(d.slug)));
+    // Orden consistente con Experiencias: Argentina primero, Perú
+    // después (orden natural de DESTINOS, sin reordenar a mano acá) y,
+    // dentro de cada país, los "Próximamente" siempre al final
+    // (ordenarDestinos, ver destinos-data.js — misma lógica reutilizable
+    // que usa Experiencias para sus destino-tiles).
+    const destacados = ordenarDestinos(DESTINOS);
 
-    const objPos = { peru: "center 55%", bariloche: "center 32%", "norte-neuquino": "center 20%", "norte-argentino": "center" };
+    const objPos = { peru: "center 55%", bariloche: "center 32%", "norte-neuquino": "center 20%", "norte-argentino": "center", choquequirao: "40% center" };
 
     // Agrupa por país (d.pais) en el orden en que aparece cada uno por
     // primera vez en "destacados" — un país nuevo en destinos-data.js
@@ -134,10 +135,14 @@
 
     const tarjeta = (d) => {
       const nombre = d.slug === "peru" ? "Cusco" : d.nombre;
+      // Próximamente CON foto real: se muestra en blanco y negro (única
+      // excepción de color permitida), nunca oculta. Próximamente SIN
+      // foto todavía: un único mensaje ("Próximamente"), sin duplicarlo
+      // con un "Imagen pendiente" aparte.
       const img = d.imagen
         ? `<img class="${d.esPlaceholder ? "placeholder" : ""}" src="${d.imagen}" alt="${nombre}, ${d.pais}" style="object-position:${objPos[d.slug] || "center"};" loading="lazy">`
-        : `<div class="gal-placeholder">Imagen pendiente</div>`;
-      const prep = d.esPlaceholder ? `<span class="destino-card-flag">Próximamente</span>` : "";
+        : `<div class="gal-placeholder">${d.esPlaceholder ? "Próximamente" : "Imagen pendiente"}</div>`;
+      const prep = (d.esPlaceholder && d.imagen) ? `<span class="destino-card-flag">Próximamente</span>` : "";
       return `
         <a class="destino-card" href="catalogo.html?destino=${d.slug}" aria-label="Ver propuestas en ${nombre}">
           ${img}
@@ -161,7 +166,7 @@
         </div>
       </div>`).join("");
 
-    cont.innerHTML = `<div class="kicker">Destinos</div><h1 class="destinos-lead">Territorio que se recorre, <em>no que se mira</em></h1>` + gruposHtml;
+    cont.innerHTML = `<div class="kicker">Destinos</div><h1 class="destinos-lead">Los lugares que <em>recorremos</em> con vos</h1>` + gruposHtml;
 
     // Cada país es un carrusel propio, finito: cada destino aparece una
     // sola vez (nada se clona ni se duplica), sin auto-scroll ni loop.
@@ -176,15 +181,21 @@
       const nextBtn = root.querySelector(".next");
       if (!viewport || !track) return;
 
-      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       const EPS = 2;
 
       function actualizarLimites() {
         const max = track.scrollWidth - viewport.clientWidth;
         const desborda = max > EPS;
         root.classList.toggle("sin-desborde", !desborda);
-        if (prevBtn) prevBtn.disabled = !desborda || viewport.scrollLeft <= EPS;
-        if (nextBtn) nextBtn.disabled = !desborda || viewport.scrollLeft >= max - EPS;
+        const alInicio = !desborda || viewport.scrollLeft <= EPS;
+        const alFinal = !desborda || viewport.scrollLeft >= max - EPS;
+        if (prevBtn) prevBtn.disabled = alInicio;
+        if (nextBtn) nextBtn.disabled = alFinal;
+        // Indicador de continuidad: el fundido lateral se apaga solo en
+        // la punta donde ya no hay más para ver (mismas condiciones que
+        // el disabled de cada flecha).
+        viewport.classList.toggle("edge-start", alInicio);
+        viewport.classList.toggle("edge-end", alFinal);
       }
 
       function paso() {
@@ -194,12 +205,8 @@
         return card.getBoundingClientRect().width + parseFloat(style.columnGap || style.gap || 0);
       }
 
-      if (prevBtn) prevBtn.addEventListener("click", () => {
-        viewport.scrollBy({ left: -paso(), behavior: reduceMotion ? "auto" : "smooth" });
-      });
-      if (nextBtn) nextBtn.addEventListener("click", () => {
-        viewport.scrollBy({ left: paso(), behavior: reduceMotion ? "auto" : "smooth" });
-      });
+      if (prevBtn) prevBtn.addEventListener("click", () => scrollSuave(viewport, -paso()));
+      if (nextBtn) nextBtn.addEventListener("click", () => scrollSuave(viewport, paso()));
 
       // Cubre swipe/drag manual y el resultado de cada click de flecha
       // (el scroll dispara este evento igual, sea nativo o por scrollBy).
