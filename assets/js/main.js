@@ -46,6 +46,54 @@ function initHeaderScroll(){
   window.addEventListener("scroll", marcar, { passive: true });
 }
 
+/* Mezcla una lista de propuestas por tipo (round-robin), preservando el
+   orden real dentro de cada tipo — así Tours/Travesías/Paquetes quedan
+   intercalados (Tour, Travesía, Tour, Paquete…) en vez de agrupados en
+   bloques, sin alterar los datos ni su orden de origen. Reutilizable
+   por cualquier vista que junte más de un tipo en una misma lista. */
+function interleaveByTipo(lista){
+  const grupos = {};
+  const orden = [];
+  lista.forEach(p => {
+    if (!grupos[p.tipo]) { grupos[p.tipo] = []; orden.push(p.tipo); }
+    grupos[p.tipo].push(p);
+  });
+  const resultado = [];
+  let quedan = true;
+  while (quedan) {
+    quedan = false;
+    orden.forEach(tipo => {
+      if (grupos[tipo].length) {
+        resultado.push(grupos[tipo].shift());
+        quedan = true;
+      }
+    });
+  }
+  return resultado;
+}
+
+/* Scroll horizontal con easing propio (en vez del scrollBy nativo,
+   cuyo "smooth" es un poco mecánico) — usado por las flechas de los
+   carruseles para que el recorrido se sienta más chill. Respeta
+   prefers-reduced-motion saltando directo al destino. */
+function scrollSuave(el, delta, duracion){
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const inicio = el.scrollLeft;
+  const max = el.scrollWidth - el.clientWidth;
+  const destino = Math.max(0, Math.min(max, inicio + delta));
+  if (reduceMotion) { el.scrollLeft = destino; return; }
+  const distancia = destino - inicio;
+  const t0 = performance.now();
+  const dur = duracion || 550;
+  function easeInOutQuad(t){ return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; }
+  function paso(ahora){
+    const t = Math.min(1, (ahora - t0) / dur);
+    el.scrollLeft = inicio + distancia * easeInOutQuad(t);
+    if (t < 1) requestAnimationFrame(paso);
+  }
+  requestAnimationFrame(paso);
+}
+
 /* ---------- Navegación mobile + link activo ---------- */
 function initNav(){
   const toggle = document.querySelector(".nav-toggle");
@@ -86,7 +134,13 @@ function initWhatsappFloat(){
   holder.innerHTML = `<a class="whatsapp-float" href="${link}" target="_blank" rel="noopener" aria-label="Escribinos por WhatsApp">💬</a>`;
 }
 
-/* ---------- Formulario de contacto ---------- */
+/* ---------- Formulario de contacto ----------
+   No hay backend ni servicio de envío (Google Forms/Formspree/EmailJS):
+   el submit arma un mailto: con los datos ya cargados y redirige el
+   navegador ahí, así que lo único que "envía" la consulta es que la
+   persona confirme el envío desde su propio cliente de correo. El
+   mensaje de status refleja eso — no promete una respuesta que todavía
+   no depende de nosotros, sino de ese paso final del usuario. */
 function initContactForm(){
   const form = document.getElementById("contact-form");
   if (!form) return;
@@ -101,7 +155,7 @@ function initContactForm(){
       `Nombre: ${nombre}\nEmail: ${email}\nDestino de interés: ${destino}\n\nMensaje:\n${mensaje}`
     );
     if (status) {
-      status.textContent = "¡Gracias! Te vamos a responder a la brevedad. También se abrió tu correo para enviar la consulta directamente.";
+      status.textContent = "Se abrió tu correo con la consulta ya redactada — confirmá el envío desde ahí para que nos llegue.";
       status.classList.add("show", "ok");
     }
     window.location.href = `mailto:${SITE_CONFIG.email}?subject=${encodeURIComponent("Consulta desde la web — " + nombre)}&body=${cuerpo}`;
@@ -237,6 +291,10 @@ function renderPropuestasGrid(){
   let lista = tipoFijo ? PROPUESTAS.slice() : PROPUESTAS.filter(p => !p.esPlaceholder);
   if (tipoFiltro) lista = lista.filter(p => p.tipo === tipoFiltro);
   if (destinoFiltro) lista = lista.filter(p => p.destino === destinoFiltro);
+  // "Todos" (sin tipo fijo ni filtro de tipo): mezcla Tours/Travesías/
+  // Paquetes entre sí en vez de mostrarlos agrupados en bloques. Con un
+  // único tipo ya filtrado esto no cambia nada (round-robin de 1 grupo).
+  lista = interleaveByTipo(lista);
 
   // ---- Aviso de filtro activo (sólo relevante en catalogo.html) ----
   const tituloFiltro = document.getElementById("prop-filtro-activo");

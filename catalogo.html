@@ -141,13 +141,14 @@
         if (d.imagen) {
           media.innerHTML = `<img id="cat-img" class="${d.esPlaceholder ? "placeholder" : ""}" src="${d.imagen}" alt="${nombre}" style="object-position:center;">`;
         } else {
-          // Sin foto propia todavía: se muestra el mismo estado "Imagen
-          // pendiente" que ya usan las cards de destinos.html, en vez de
-          // mostrar la imagen genérica por defecto (que no corresponde a
-          // este destino).
-          media.innerHTML = `<div class="gal-placeholder">Imagen pendiente</div>`;
+          // Sin foto propia todavía: un único mensaje ("Próximamente" si
+          // el destino todavía no está disponible, o el genérico "Imagen
+          // pendiente" si sólo falta la foto) en vez de mostrar la imagen
+          // genérica por defecto (que no corresponde a este destino) o
+          // duplicar el aviso con el flag de abajo.
+          media.innerHTML = `<div class="gal-placeholder">${d.esPlaceholder ? "Próximamente" : "Imagen pendiente"}</div>`;
         }
-        if (d.esPlaceholder) media.innerHTML += `<span class="destino-card-flag">Próximamente</span>`;
+        if (d.esPlaceholder && d.imagen) media.innerHTML += `<span class="destino-card-flag">Próximamente</span>`;
       }
       const bc = document.getElementById("cat-breadcrumb");
       if (bc) bc.innerHTML = `<a href="index.html">Inicio</a> / <a href="destinos.html">Destinos</a> / ${nombre}`;

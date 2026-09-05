@@ -113,6 +113,15 @@
 }
 *{box-sizing:border-box; margin:0; padding:0;}
 html{scroll-behavior:smooth; overflow-x:hidden;}
+/* Transición entre páginas — nativa del navegador (View Transitions,
+   cross-document), sin JS: un fundido breve y automático que no toca
+   links, back/forward, filtros ni query strings, y que directamente no
+   existe en navegadores que no la soportan (degrada a la navegación de
+   siempre, sin corte extra ni salto). */
+@view-transition{ navigation:auto; }
+@media (prefers-reduced-motion: reduce){
+  ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*){ animation:none !important; }
+}
 /* El menú mobile (.navlinks) vive fuera de pantalla vía position:fixed +
    translateX(100%): eso agranda el scrollWidth del documento aunque nada
    sea alcanzable al hacer scroll. overflow-x:hidden en html/body contiene
@@ -142,24 +151,25 @@ nav{display:flex; align-items:center; justify-content:space-between; padding:14p
 .navlinks a.active{border-bottom:2px solid var(--color-naranja); padding-bottom:2px;}
 .nav-cta{flex-shrink:0;}
 
-/* Navbar + hero/cabecera integradas en una misma composición: en las
-   páginas con foto de portada de pantalla completa (Inicio, Guías,
-   Comentarios) el header flota transparente sobre la fotografía y
-   pasa a sólido recién al scrollear (clase .is-solid, ver main.js).
-   Sin overlay ni filtro sobre la foto: la legibilidad del texto usa
-   sólo color + text-shadow. Resto de páginas: header de siempre. */
+/* Navbar + hero/cabecera integradas en una misma composición, en TODAS
+   las páginas: el header nace transparente (mismo verde que el lienzo
+   de fondo de cada página, ver más abajo) y pasa a sólido recién al
+   scrollear (clase .is-solid, ver main.js) — se ve continuo con la
+   cabecera de cada página en vez de una franja separada encima.
+   En Inicio/Guías/Comentarios (foto de portada a pantalla completa)
+   además queda fijo sobre la foto, con sombra de texto para legibilidad
+   sobre una imagen variable. En el resto de las páginas sigue "sticky"
+   (ocupa su lugar en el flujo): no hay foto que tapar, así que sólo
+   cambia color/fondo — nada de overlay ni filtro sobre ninguna imagen. */
+header:not(.is-solid){background:transparent; box-shadow:none; backdrop-filter:none; color:#fff;}
+header:not(.is-solid) .nav-toggle span{background:#fff;}
+
 body[data-page="inicio"] header,
 body[data-page="guias"] header,
 body[data-page="comentarios"] header{position:fixed; top:0; left:0; width:100%;}
-body[data-page="inicio"] header:not(.is-solid),
-body[data-page="guias"] header:not(.is-solid),
-body[data-page="comentarios"] header:not(.is-solid){background:transparent; box-shadow:none; backdrop-filter:none; color:#fff;}
 body[data-page="inicio"] header:not(.is-solid) .navlinks a,
-body[data-page="guias"] header:not(.is-solid) .navlinks a{text-shadow:0 2px 8px rgba(0,0,0,0.55);}
+body[data-page="guias"] header:not(.is-solid) .navlinks a,
 body[data-page="comentarios"] header:not(.is-solid) .navlinks a{text-shadow:0 2px 8px rgba(0,0,0,0.55);}
-body[data-page="inicio"] header:not(.is-solid) .nav-toggle span,
-body[data-page="guias"] header:not(.is-solid) .nav-toggle span,
-body[data-page="comentarios"] header:not(.is-solid) .nav-toggle span{background:#fff;}
 
 .nav-toggle{display:none; background:none; border:none; cursor:pointer; padding:8px; flex-shrink:0;}
 .nav-toggle span{display:block; width:24px; height:2px; background:var(--bg-dark); margin:5px 0; transition:transform .2s, opacity .2s;}
@@ -270,24 +280,6 @@ body[data-page="comentarios"] header:not(.is-solid) .nav-toggle span{background:
 /* ---------- Hero de inicio ---------- */
 .eyebrow{font-family:var(--font-body); font-size:13px; text-transform:uppercase; letter-spacing:0.15em; color:var(--color-amarillo); margin-bottom:18px;}
 .hero-ctas{display:flex; gap:16px; flex-wrap:wrap;}
-
-/* ---------- Hero de Inicio — composición dividida (foto + bloque editorial) ---------- */
-/* Hero de Inicio — foto inmersiva a pantalla completa, sin tarjetas
-   ni degradado pesado: sólo el mínimo necesario para leer el texto. */
-/* Hero de Inicio — la navegación flota transparente sobre la foto
-   (sin franja crema separada) para que el ingreso al sitio se sienta
-   como una sola composición: foto + marca + navegación, no "banner
-   arriba, contenido abajo". El scrim superior es funcional (legibilidad
-   del logo/nav sobre cielo claro), no un overlay oscuro de fondo. */
-body[data-page="inicio"] header{position:absolute; top:0; left:0; right:0; z-index:30; background:transparent; backdrop-filter:none; border-bottom:none;}
-/* Antes: blanco a 0.75 de opacidad (heredado de .navlinks a base) —
-   se leía gris/apagado sobre la foto. Ahora: opacidad casi plena +
-   más peso, y el activo pasa a amarillo (no sólo el subrayado) para
-   que la nav tenga presencia real desde el primer momento. */
-body[data-page="inicio"] .navlinks a{color:#fdfbf4; opacity:0.92; font-weight:600; letter-spacing:0.02em;}
-body[data-page="inicio"] .navlinks a:hover{opacity:1;}
-body[data-page="inicio"] .navlinks a.active{opacity:1; color:var(--color-amarillo); border-bottom-color:var(--color-amarillo);}
-body[data-page="inicio"] .nav-toggle span{background:#fdfbf4;}
 
 /* Hero de Inicio — portada real a pantalla completa (100dvh), marca
    centrada como ancla visual. El overlay es un lavado parejo + un
@@ -540,6 +532,16 @@ body[data-page="destinos"] main{
 body[data-page="destinos"] .destinos-lista{background:transparent;}
 body[data-page="destinos"] .page-intro{background:transparent; padding-bottom:0;}
 
+/* Cabecera de un destino puntual (catalogo.html) — más compacta y
+   contextual: identifica el destino rápido (kicker=país, h1=nombre,
+   resumen corto) y pasa a las experiencias, en vez de sentirse una
+   portada/landing propia. Misma estructura y componentes (.page-intro,
+   .page-intro-media) que el resto del sitio, sólo con menos escala. */
+body[data-page="catalogo"] .page-intro{padding:40px 0 8px;}
+body[data-page="catalogo"] .page-intro-grid{gap:36px; padding-bottom:32px;}
+body[data-page="catalogo"] .page-intro-text h1{font-size:clamp(32px,4.2vw,56px);}
+body[data-page="catalogo"] .page-intro-media{aspect-ratio:2.2;}
+
 /* ---------- Destinos — composición editorial (SOLO destinos.html) ----------
    Reemplaza la grilla de tarjetas (separada Argentina/Internacional) por
    una secuencia de destinos protagonistas, alternando el lado de la foto.
@@ -565,9 +567,29 @@ body[data-page="destinos"] .page-intro{background:transparent; padding-bottom:0;
    en destinos.html). Sólo se activa (flechas visibles) cuando el país
    realmente desborda su fila; con pocos destinos el riel queda quieto
    y sin flechas. */
-.destinos-carousel{position:relative; display:flex; align-items:center; gap:14px;}
+/* Superficie continua: el fondo vive en el contenedor entero (flechas +
+   viewport), no sólo detrás de las cards — antes cada uno tenía el
+   suyo (translúcido acá, blanco sólido heredado de .testi-arrow en las
+   flechas) y se leían como dos piezas separadas en vez de un mismo
+   componente. */
+.destinos-carousel{position:relative; display:flex; align-items:center; gap:8px; background:rgba(236,231,216,0.06); border-radius:26px 8px 26px 8px; padding:6px;}
 .destinos-carousel.sin-desborde .destinos-carousel-arrow{display:none;}
-.destinos-carousel-viewport{flex:1; min-width:0; overflow-x:auto; scroll-behavior:smooth; scrollbar-width:none; -ms-overflow-style:none; cursor:grab; padding:20px 20px 34px; background:rgba(236,231,216,0.06); border-radius:26px 8px 26px 8px;}
+.destinos-carousel .testi-arrow{background:transparent; color:var(--text-primary); box-shadow:none; border:1.5px solid rgba(236,231,216,0.28);}
+.destinos-carousel .testi-arrow:hover{background:var(--color-naranja); border-color:var(--color-naranja); color:#fff;}
+/* Indicador de continuidad: fundido lateral sutil en vez de un corte
+   seco contra el borde — se apaga solo en la punta donde ya no hay más
+   para ver (edge-start/edge-end, calculados en destinos.html junto con
+   el disabled de las flechas) y desaparece del todo si la fila no
+   desborda. No es un overlay sobre la foto: es una máscara de opacidad,
+   la fotografía en sí no cambia de color. */
+.destinos-carousel-viewport{flex:1; min-width:0; overflow-x:auto; scroll-behavior:smooth; scrollbar-width:none; -ms-overflow-style:none; cursor:grab; padding:14px 14px 28px;
+  mask-image:linear-gradient(to right, transparent, black 28px, black calc(100% - 28px), transparent);
+  -webkit-mask-image:linear-gradient(to right, transparent, black 28px, black calc(100% - 28px), transparent);
+}
+.destinos-carousel-viewport.edge-start{mask-image:linear-gradient(to right, black, black calc(100% - 28px), transparent); -webkit-mask-image:linear-gradient(to right, black, black calc(100% - 28px), transparent);}
+.destinos-carousel-viewport.edge-end{mask-image:linear-gradient(to right, transparent, black 28px, black); -webkit-mask-image:linear-gradient(to right, transparent, black 28px, black);}
+.destinos-carousel-viewport.edge-start.edge-end,
+.destinos-carousel.sin-desborde .destinos-carousel-viewport{mask-image:none; -webkit-mask-image:none;}
 .destinos-carousel-viewport::-webkit-scrollbar{display:none;}
 .destinos-carousel-track{display:flex; gap:22px; width:max-content;}
 .destino-card{position:relative; display:block; aspect-ratio:0.88; border-radius:22px 6px 22px 6px; overflow:hidden; box-shadow:var(--shadow-md); text-decoration:none; color:inherit;}
@@ -719,17 +741,23 @@ body[data-page="catalogo"] .exp-card .resumen{min-height:63px;}
 body[data-page="inicio"] .exp-home{padding-top:var(--space-8); padding-bottom:var(--space-8); position:relative;}
 body[data-page="inicio"] .destinos{padding-top:var(--space-8);}
 /* Halo muy sutil detrás del carrusel — misma paleta del lienzo, sólo
-   para dar algo de profundidad sin competir con las fotos. */
-body[data-page="inicio"] .exp-carousel{position:relative; display:flex; align-items:center; gap:16px; margin-top:8px;}
+   para dar algo de profundidad sin competir con las fotos. La
+   superficie hundida (antes sólo detrás de las cards) ahora vive en
+   este mismo contenedor, para que flechas + viewport se sientan una
+   única pieza en vez de dos fondos distintos. */
+body[data-page="inicio"] .exp-carousel{position:relative; display:flex; align-items:center; gap:10px; margin-top:8px; background:rgba(236,231,216,0.06); border-radius:26px 8px 26px 8px; box-shadow:inset 0 24px 34px -30px rgba(21,19,16,0.28), inset 0 -24px 34px -30px rgba(21,19,16,0.28); padding:6px;}
 body[data-page="inicio"] .exp-carousel::before{content:""; position:absolute; inset:-48px -24px; z-index:0; background:radial-gradient(60% 75% at 50% 48%, rgba(236,231,216,0.1) 0%, rgba(236,231,216,0.04) 55%, transparent 100%); pointer-events:none;}
-/* Superficie levemente hundida detrás de las cards: un borde interno
-   sutil arriba/abajo que separa el riel del resto del lienzo, sin caja
-   ni sombra dura. */
-body[data-page="inicio"] .exp-carousel-viewport{background:rgba(236,231,216,0.06); border-radius:26px 8px 26px 8px; box-shadow:inset 0 24px 34px -30px rgba(21,19,16,0.28), inset 0 -24px 34px -30px rgba(21,19,16,0.28);}
-/* Padding interno para que la sombra de cada card no quede recortada
-   contra el borde del viewport con scroll (arriba/abajo y en los
-   extremos), sin alterar el ancho de las cards. */
-body[data-page="inicio"] .exp-carousel-viewport{position:relative; z-index:1; flex:1; min-width:0; overflow-x:auto; scroll-behavior:smooth; scrollbar-width:none; -ms-overflow-style:none; cursor:grab; padding:24px 24px 42px;}
+body[data-page="inicio"] .exp-carousel .testi-arrow{background:transparent; color:var(--text-primary); box-shadow:none; border:1.5px solid rgba(236,231,216,0.28);}
+body[data-page="inicio"] .exp-carousel .testi-arrow:hover{background:var(--color-naranja); border-color:var(--color-naranja); color:#fff;}
+/* Riel infinito (se duplica y hace loop, ver main.js): siempre hay más
+   contenido a ambos lados, así que el fundido lateral queda fijo — es
+   el mismo indicador de continuidad que usa el carrusel de Destinos,
+   acá sin estados edge-start/edge-end porque nunca llega a una punta
+   real. Máscara de opacidad, no un overlay de color sobre la foto. */
+body[data-page="inicio"] .exp-carousel-viewport{position:relative; z-index:1; flex:1; min-width:0; overflow-x:auto; scroll-behavior:smooth; scrollbar-width:none; -ms-overflow-style:none; cursor:grab; padding:18px 18px 36px;
+  mask-image:linear-gradient(to right, transparent, black 32px, black calc(100% - 32px), transparent);
+  -webkit-mask-image:linear-gradient(to right, transparent, black 32px, black calc(100% - 32px), transparent);
+}
 body[data-page="inicio"] .exp-carousel-viewport.dragging{cursor:grabbing; scroll-behavior:auto;}
 body[data-page="inicio"] .exp-carousel-viewport::-webkit-scrollbar{display:none;}
 body[data-page="inicio"] .exp-carousel-track{display:flex; gap:26px; width:max-content;}
@@ -964,7 +992,7 @@ body[data-page="inicio"] .testi{background:transparent; color:var(--text-primary
 
 /* ---------- Contacto ---------- */
 .contact-wrap{display:grid; grid-template-columns:0.8fr 1.2fr; gap:var(--space-9); align-items:start;}
-#whatsapp-cta-holder{margin-bottom:var(--space-5);}
+#whatsapp-cta-holder{margin-top:var(--space-5);}
 .contact-info .item{display:flex; gap:var(--space-4); align-items:flex-start; padding:var(--space-4) 0; border-top:1px solid var(--border-color);}
 .contact-info .item:first-of-type{border-top:none; padding-top:0;}
 .contact-info .item .ico{width:40px; height:40px; border-radius:50%; background:rgba(255,91,40,0.12); color:var(--color-naranja); display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:16px;}

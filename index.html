@@ -42,9 +42,8 @@
 <section class="hero-inicio">
   <img class="hero-inicio-bg" src="assets/img/hero-inicio.jpg" alt="Laguna y montañas de la Cordillera, uno de los paisajes que conecta Proyecto Raíces">
   <div class="hero-inicio-content">
-    <div class="eyebrow">Turismo aventura · Argentina &amp; Perú</div>
     <img class="hero-inicio-logo" src="assets/img/logo-amarillo.png" alt="Proyecto Raíces">
-    <h1 class="hero-inicio-tagline">Viajes para conectar con cada lugar</h1>
+    <h1 class="hero-inicio-tagline">TURISMO AVENTURA · ARGENTINA &amp; PERÚ</h1>
     <div class="hero-ctas">
       <a href="experiencias.html" class="btn">Ver experiencias</a>
       <a href="contacto.html" id="hero-wa-cta" class="btn btn-outline on-dark">Reservá por WhatsApp</a>
@@ -344,7 +343,10 @@
       // Inicio: acá conviven todos los tipos y un placeholder se vería como
       // contenido real.
       const reales = PROPUESTAS.filter(p => !p.esPlaceholder);
-      const lista = tipoActivo ? reales.filter(p => p.tipo === tipoActivo) : reales;
+      // "Todos": Tours/Travesías/Paquetes mezclados entre sí, no
+      // agrupados en bloques por tipo (con un filtro activo ya es un
+      // único tipo, así que interleaveByTipo no cambia nada).
+      const lista = tipoActivo ? reales.filter(p => p.tipo === tipoActivo) : interleaveByTipo(reales);
       if (!lista.length) {
         track.innerHTML = `<p class="empty-state">Todavía no hay experiencias cargadas en esta categoría.</p>`;
         setWidth = 0;
@@ -374,7 +376,7 @@
     let paused = false, resumeTimer = null;
     function tick() {
       if (!paused && !reduceMotion && setWidth > 0) {
-        viewport.scrollLeft += 0.45;
+        viewport.scrollLeft += 0.3;
         if (viewport.scrollLeft >= setWidth) viewport.scrollLeft -= setWidth;
       }
       requestAnimationFrame(tick);
@@ -395,8 +397,8 @@
       const style = getComputedStyle(track);
       return card.offsetWidth + parseFloat(style.columnGap || style.gap || 26);
     }
-    if (prevBtn) prevBtn.addEventListener("click", () => { pauseTemporal(); viewport.scrollLeft -= cardStep(); });
-    if (nextBtn) nextBtn.addEventListener("click", () => { pauseTemporal(); viewport.scrollLeft += cardStep(); });
+    if (prevBtn) prevBtn.addEventListener("click", () => { pauseTemporal(); scrollSuave(viewport, -cardStep()); });
+    if (nextBtn) nextBtn.addEventListener("click", () => { pauseTemporal(); scrollSuave(viewport, cardStep()); });
   });
 </script>
 </body>

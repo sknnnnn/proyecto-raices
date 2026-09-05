@@ -142,3 +142,11 @@ const DESTINOS = [
 function getDestinoPorSlug(slug){
   return DESTINOS.find(d => d.slug === slug);
 }
+
+/* Orden reutilizable para cualquier listado/carrusel de destinos: los
+   "Próximamente" (esPlaceholder) siempre al final, sin mezclarse con
+   los disponibles — sort() es estable, así que dentro de cada grupo se
+   conserva el orden ya definido arriba en DESTINOS. */
+function ordenarDestinos(lista){
+  return lista.slice().sort((a, b) => (a.esPlaceholder === b.esPlaceholder) ? 0 : a.esPlaceholder ? 1 : -1);
+}
