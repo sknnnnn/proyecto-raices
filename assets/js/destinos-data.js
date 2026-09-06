@@ -4,6 +4,23 @@
    y completá sus datos. "imagen" puede quedar en null si
    todavía no hay foto: se mostrará un placeholder prolijo.
 
+   "esPlaceholder" describe el propio destino (su foto/resumen
+   todavía no están cargados/terminados) — NO dice si el lugar
+   existe ni si puede tener experiencias reales y publicadas.
+   Un destino con esPlaceholder:true puede perfectamente tener
+   propuestas reales con publicado:true (ver propuestas-data.js);
+   ese es el caso de Choquequirao. No usar esPlaceholder para
+   decidir si una propuesta puede publicarse — ese criterio vive
+   sólo en "publicado", dentro de cada propuesta.
+
+   "region" (opcional) agrupa destinos que pertenecen a una misma
+   región/departamento (hoy sólo "Cusco" y "Choquequirao" comparten
+   region:"Cusco"). Es metadata descriptiva: hoy ningún render la
+   usa todavía, así que agregarla no cambia ningún comportamiento;
+   queda disponible para cuando se necesite una jerarquía
+   País → Región → Destino más adelante, sin forzarla ahora en
+   destinos que no la necesitan.
+
    Buenos Aires se sacó de esta lista: ya no se ofrece como
    destino. Si en algún momento vuelve a ofrecerse, alcanza
    con agregar de nuevo su objeto (imagen de referencia:
@@ -75,6 +92,7 @@ const DESTINOS = [
     slug: "cusco",
     nombre: "Cusco",
     pais: "Perú",
+    region: "Cusco",
     grupo: "internacional",
     imagen: "assets/img/destino-peru-machupicchu.jpg",
     resumen: "Ciudadelas incas, picos nevados y desiertos que parecen de otro planeta.",
@@ -82,20 +100,25 @@ const DESTINOS = [
   },
 
   /* ---------------------------------------------------------
-     Perú — Choquequirao, Paracas, Huacachina, Arequipa y Lima.
-     TEMPORAL: todavía no hay fotos reales de estos 5 destinos,
-     así que "imagen" apunta por ahora a fotos de Bariloche
-     (subidas para otro fin) sólo para poder ver la estructura y
-     el diseño del carrusel de Perú. "resumen" no describe el
-     destino real (no hay info cargada todavía) — es un aviso
-     genérico, igual que el resto del sitio marca contenido de
-     ejemplo. Reemplazar "imagen" y "resumen" por los reales
-     apenas estén disponibles; no hace falta tocar nada más.
+     Perú — Choquequirao (Región Cusco), Paracas, Huacachina,
+     Arequipa y Lima. Choquequirao es un destino/atractivo propio,
+     independiente de la ciudad de Cusco (no una actividad dentro
+     de Cusco): ya tiene foto y resumen reales, y ya tiene una
+     propuesta real y publicada (Choquequirao Trekking, ver
+     propuestas-data.js) — esPlaceholder:true acá sólo indica que
+     la ficha del destino en sí (foto/resumen) sigue siendo mínima,
+     no que el lugar o sus experiencias no sean reales.
+     Paracas/Huacachina/Arequipa/Lima, en cambio, todavía no tienen
+     foto ("imagen: null") ni ninguna propuesta cargada, así que su
+     "resumen" dice eso mismo en vez de inventar una descripción.
+     Reemplazar "imagen" y "resumen" por los reales apenas estén
+     disponibles; no hace falta tocar nada más.
      --------------------------------------------------------- */
   {
     slug: "choquequirao",
     nombre: "Choquequirao",
     pais: "Perú",
+    region: "Cusco",
     grupo: "internacional",
     imagen: "assets/img/experiencias/pexels-teresita-ramirez-583628649-17043331.jpg",
     resumen: "La ciudad inca hermana de Machupicchu, cruzando el Cañón del Apurímac: trekking exigente entre pasos de montaña, bosques nublados y valles verdes.",
@@ -107,7 +130,7 @@ const DESTINOS = [
     pais: "Perú",
     grupo: "internacional",
     imagen: null,
-    resumen: "Contenido de ejemplo — información real próximamente.",
+    resumen: "Todavía no tenemos información cargada de este destino.",
     esPlaceholder: true
   },
   {
@@ -116,7 +139,7 @@ const DESTINOS = [
     pais: "Perú",
     grupo: "internacional",
     imagen: null,
-    resumen: "Contenido de ejemplo — información real próximamente.",
+    resumen: "Todavía no tenemos información cargada de este destino.",
     esPlaceholder: true
   },
   {
@@ -125,7 +148,7 @@ const DESTINOS = [
     pais: "Perú",
     grupo: "internacional",
     imagen: null,
-    resumen: "Contenido de ejemplo — información real próximamente.",
+    resumen: "Todavía no tenemos información cargada de este destino.",
     esPlaceholder: true
   },
   {
@@ -134,7 +157,7 @@ const DESTINOS = [
     pais: "Perú",
     grupo: "internacional",
     imagen: null,
-    resumen: "Contenido de ejemplo — información real próximamente.",
+    resumen: "Todavía no tenemos información cargada de este destino.",
     esPlaceholder: true
   }
 ];

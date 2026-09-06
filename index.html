@@ -149,21 +149,18 @@
         <div class="equipo-mini-foto"><img src="assets/img/santi.png" alt="Santiago, parte del equipo de Proyecto Raíces" style="object-position:center 25%;" loading="lazy"></div>
         <figcaption>
           <h3>Santiago</h3>
-          <span class="equipo-mini-pendiente">Perfil en preparación</span>
         </figcaption>
       </figure>
       <figure class="equipo-mini-persona">
         <div class="equipo-mini-foto"><img src="assets/img/trekking.jpg" alt="Belén, parte del equipo de Proyecto Raíces" style="object-position:center 20%;" loading="lazy"></div>
         <figcaption>
           <h3>Belén</h3>
-          <span class="equipo-mini-pendiente">Perfil en preparación</span>
         </figcaption>
       </figure>
       <figure class="equipo-mini-persona">
         <div class="equipo-mini-foto"><img src="assets/img/IMG_3755.JPEG" alt="Ignacio, parte del equipo de Proyecto Raíces" style="object-position:center 30%;" loading="lazy"></div>
         <figcaption>
           <h3>Ignacio</h3>
-          <span class="equipo-mini-pendiente">Perfil en preparación</span>
         </figcaption>
       </figure>
     </div>
@@ -185,9 +182,6 @@
       <button type="button" class="testi-arrow next" aria-label="Ver comentario siguiente">›</button>
     </div>
     <div class="testi-dots" id="testi-dots"></div>
-    <p class="testi-disclaimer">
-      Los comentarios de esta sección son de ejemplo, pensados para mostrar cómo se van a ver acá las reseñas reales de quienes viajen con nosotros.
-    </p>
   </div>
 </section>
 
@@ -339,10 +333,9 @@
     let tipoActivo = "";
 
     function render() {
-      // No mostrar propuestas de ejemplo (esPlaceholder) en el carrusel del
-      // Inicio: acá conviven todos los tipos y un placeholder se vería como
-      // contenido real.
-      const reales = PROPUESTAS.filter(p => !p.esPlaceholder);
+      // Sólo propuestas publicadas (ver getPropuestasPublicadas en
+      // propuestas-data.js) — no todo lo que tenga esPlaceholder:false.
+      const reales = getPropuestasPublicadas();
       // "Todos": Tours/Travesías/Paquetes mezclados entre sí, no
       // agrupados en bloques por tipo (con un filtro activo ya es un
       // único tipo, así que interleaveByTipo no cambia nada).

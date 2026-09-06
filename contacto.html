@@ -146,8 +146,14 @@
     // Select de destinos, poblado desde destinos-data.js
     const sel = document.getElementById("destino");
     if (sel && typeof DESTINOS !== "undefined") {
+      // Mismo criterio comercial que el selector de destino de Tours/
+      // Travesías/Paquetes (ver main.js): un destino en preparación sólo
+      // se ofrece acá si ya tiene alguna propuesta publicada (Choquequirao);
+      // si todavía no tiene ninguna (Paracas/Huacachina/Arequipa/Lima/
+      // Norte Argentino) no se muestra como opción.
+      const destinosDisponibles = DESTINOS.filter(d => !d.esPlaceholder || getPropuestasPorDestino(d.slug).length > 0);
       let opts = `<option value="" selected disabled>Seleccioná un destino</option>`;
-      opts += DESTINOS.map(d => `<option value="${d.nombre}">${d.pais} — ${d.nombre}</option>`).join("");
+      opts += destinosDisponibles.map(d => `<option value="${d.nombre}">${d.pais} — ${d.nombre}</option>`).join("");
       opts += `<option value="Aún no sé">Aún no sé, quiero más info</option>`;
       sel.innerHTML = opts;
 

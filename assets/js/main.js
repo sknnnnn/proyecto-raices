@@ -30,6 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
   renderPropuestaDetalle();
   renderDestinosGrid();
   initTestimoniosCarousel(); // sólo actúa si la página tiene #testi-track (Inicio)
+  initComentariosGrid(); // sólo actúa si la página tiene #comentarios-grid (comentarios.html)
   initGaleriaJustify(); // sólo actúa si la página tiene .gal-row (galeria.html)
 });
 
@@ -238,15 +239,19 @@ function renderPropuestasGrid(){
       // Dentro de una página de tipo fijo (Tours/Travesías/Paquetes): un
       // único selector "Destino" agrupado por país, en vez de una fila de
       // chips (con Argentina + Perú separados en sus destinos reales, una
-      // fila plana se vuelve interminable). Mismo control y misma lista
-      // completa de DESTINOS en las tres páginas — no depende de qué
-      // destinos ya tengan contenido para este tipo, así el selector queda
-      // listo para Paquetes aunque hoy no tenga propuestas cargadas.
+      // fila plana se vuelve interminable). Un destino real (esPlaceholder
+      // false) siempre aparece, aunque hoy no tenga propuestas de este
+      // tipo — así el selector queda listo para Paquetes aunque todavía
+      // no tenga nada cargado. Un destino en preparación (esPlaceholder
+      // true) sólo aparece si ya tiene alguna propuesta publicada (caso
+      // Choquequirao): sin eso se mostraría como una opción comercial
+      // activa sin serlo (caso Paracas/Huacachina/Arequipa/Lima, sin
+      // ninguna propuesta todavía).
       const paises = [...new Set(DESTINOS.map(d => d.pais))];
       let optionsHtml = `<option value="">Todos los destinos</option>`;
       paises.forEach(pais => {
         optionsHtml += `<optgroup label="${pais}">`;
-        DESTINOS.filter(d => d.pais === pais).forEach(d => {
+        DESTINOS.filter(d => d.pais === pais && (!d.esPlaceholder || getPropuestasPorDestino(d.slug).length > 0)).forEach(d => {
           optionsHtml += `<option value="${d.slug}"${destinoFiltro === d.slug ? " selected" : ""}>${d.nombre}</option>`;
         });
         optionsHtml += `</optgroup>`;
@@ -283,11 +288,12 @@ function renderPropuestasGrid(){
   }
 
   // ---- Lista filtrada ----
-  // En catalogo.html (sin tipo fijo) se mezclan tours, travesías y paquetes
-  // por destino: ahí no mostramos propuestas de ejemplo (esPlaceholder) para
-  // no confundirlas con contenido real. En una página de tipo fijo (por
-  // ejemplo paquetes.html) sí puede mostrarse, ya marcada con su badge.
-  let lista = tipoFijo ? PROPUESTAS.slice() : PROPUESTAS.filter(p => !p.esPlaceholder);
+  // Cualquier listado público (con o sin tipo fijo) sólo muestra
+  // propuestas publicadas — ver getPropuestasPublicadas en
+  // propuestas-data.js. esPlaceholder no es el criterio acá: una
+  // propuesta puede tener datos reales (esPlaceholder:false) y
+  // todavía no estar publicada.
+  let lista = getPropuestasPublicadas();
   if (tipoFiltro) lista = lista.filter(p => p.tipo === tipoFiltro);
   if (destinoFiltro) lista = lista.filter(p => p.destino === destinoFiltro);
   // "Todos" (sin tipo fijo ni filtro de tipo): mezcla Tours/Travesías/
@@ -377,6 +383,18 @@ function renderPropuestaDetalle(){
   const params = new URLSearchParams(window.location.search);
   const id = params.get("id");
   const p = getPropuestaPorId(id);
+
+  // Una propuesta no publicada se trata igual que una inexistente: no
+  // debe poder verse por más que alguien conozca o adivine su id/URL.
+  if (p && !p.publicado) {
+    cont.innerHTML = `
+      <div class="empty-state">
+        No encontramos esa propuesta.<br>
+        <a class="btn btn-sm" style="margin-top:16px;" href="destinos.html">Volver a Destinos</a>
+      </div>`;
+    document.title = "Propuesta no encontrada — Proyecto Raíces";
+    return;
+  }
 
   if (!p) {
     cont.innerHTML = `
@@ -572,8 +590,8 @@ function renderDetallePaquete(d){
 
   // Tours y travesías que integra el paquete: se resuelven por id
   // contra el mismo array PROPUESTAS y se linkean a su propia ficha.
-  const toursLinkeados = (d.toursIncluidos || []).map(getPropuestaPorId).filter(Boolean);
-  const travesiasLinkeadas = (d.travesiasIncluidas || []).map(getPropuestaPorId).filter(Boolean);
+  const toursLinkeados = (d.toursIncluidos || []).map(getPropuestaPorId).filter(p => p && p.publicado);
+  const travesiasLinkeadas = (d.travesiasIncluidas || []).map(getPropuestaPorId).filter(p => p && p.publicado);
   if (toursLinkeados.length) {
     bodyHtml += `<h2>Tours incluidos en este paquete</h2><ul class="check-list">${toursLinkeados.map(t => `<li><a href="propuesta.html?id=${t.id}">${t.nombre}</a></li>`).join("")}</ul>`;
   }
@@ -702,7 +720,16 @@ function initTestimoniosCarousel(){
   const carousel = document.getElementById("testi-carousel");
   const track = document.getElementById("testi-track");
   const dotsWrap = document.getElementById("testi-dots");
-  if (!carousel || !track || !dotsWrap || typeof comentarios === "undefined" || !comentarios.length) return;
+  if (!carousel || !track || !dotsWrap) return;
+  const seccion = carousel.closest("section");
+  // Sin reseñas reales cargadas todavía (comentarios-data.js vacío):
+  // se oculta toda la sección en vez de mostrar el carrusel vacío o
+  // contenido de ejemplo como si fuera real.
+  if (typeof comentarios === "undefined" || !comentarios.length) {
+    if (seccion) seccion.hidden = true;
+    return;
+  }
+  if (seccion) seccion.hidden = false;
 
   track.innerHTML = comentarios.map((c, i) => `
     <li class="testi-slide${i === 0 ? " is-active" : ""}" role="group" aria-roledescription="comentario" aria-label="${i + 1} de ${comentarios.length}"${i === 0 ? "" : " aria-hidden=\"true\""}>
@@ -770,4 +797,25 @@ function initTestimoniosCarousel(){
   }
 
   startAutoplay();
+}
+
+/* ---------- Grilla de comentarios (comentarios.html) ----------
+   Misma fuente de datos que el carrusel de Inicio (comentarios-data.js):
+   agregar/sacar una reseña ahí actualiza las dos superficies. Sin
+   reseñas reales cargadas, muestra un estado vacío honesto en vez de
+   contenido de ejemplo. */
+function initComentariosGrid(){
+  const grid = document.getElementById("comentarios-grid");
+  if (!grid || typeof comentarios === "undefined") return;
+  if (!comentarios.length) {
+    grid.innerHTML = `<p class="empty-state" style="grid-column:1/-1;">Todavía no tenemos reseñas publicadas. Muy pronto vamos a sumar acá las experiencias reales de quienes viajen con nosotros.</p>`;
+    return;
+  }
+  grid.innerHTML = comentarios.map(c => `
+    <div class="testi-card">
+      <div class="stars">${"★".repeat(c.estrellas)}${"☆".repeat(5 - c.estrellas)}</div>
+      <p>"${c.texto}"</p>
+      <div class="testi-name">${c.nombre}</div>
+      <div class="testi-role">${c.destino} · ${c.experiencia}</div>
+    </div>`).join("");
 }

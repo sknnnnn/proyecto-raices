@@ -231,11 +231,11 @@
     }
     const inspirateWrap = document.getElementById("exp-inspirate");
     if (inspirateWrap) {
-      // Mezcla real de tipos (Tours/Travesías/hoy sin Paquetes reales
-      // todavía): sin esto, tomar las primeras 3 de PROPUESTAS tal cual
-      // mostraba casi siempre el mismo tipo, porque los datos están
-      // agrupados por tipo en propuestas-data.js.
-      const reales = PROPUESTAS.filter(p => !p.esPlaceholder);
+      // Sólo propuestas publicadas (ver getPropuestasPublicadas en
+      // propuestas-data.js), mezcladas por tipo (Tours/Travesías): sin
+      // la mezcla, tomar las primeras 3 mostraba casi siempre el mismo
+      // tipo, porque los datos están agrupados por tipo en el archivo.
+      const reales = getPropuestasPublicadas();
       inspirateWrap.innerHTML = interleaveByTipo(reales).slice(0, 3).map(inspirateCardHtml).join("");
     }
 
