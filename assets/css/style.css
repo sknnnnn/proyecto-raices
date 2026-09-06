@@ -606,6 +606,11 @@ body[data-page="catalogo"] .page-intro-media{aspect-ratio:2.2;}
 .destino-card h3{color:#fff; font-size:20px; line-height:1.15; text-shadow:0 2px 8px rgba(0,0,0,0.5);}
 .destino-card .explorar{display:block; margin-top:6px; font-family:var(--font-heading); font-weight:700; font-size:12px; color:var(--color-amarillo); text-shadow:0 2px 8px rgba(0,0,0,0.5); opacity:0; transform:translateY(4px); transition:opacity .25s ease, transform .25s ease;}
 .destino-card:hover .explorar{opacity:1; transform:translateY(0);}
+/* Sin foto de fondo (placeholder claro en vez de fotografía oscura): el
+   blanco + text-shadow pensados para foto quedan ilegibles sobre el
+   placeholder claro (Paracas/Huacachina/Arequipa/Lima). */
+.destino-card.sin-foto h3{color:var(--color-tinta); text-shadow:none;}
+.destino-card.sin-foto .explorar{color:var(--color-marron); text-shadow:none;}
 .destino-card-flag{position:absolute; top:12px; left:12px; z-index:2; font-size:10px; text-transform:uppercase; letter-spacing:0.08em; color:var(--color-tinta); background:var(--color-amarillo); padding:5px 10px; border-radius:999px; font-weight:700;}
 /* Próximamente: única excepción permitida al tratamiento de color de
    fotos (blanco y negro en vez de ocultar la imagen real). */
@@ -1223,8 +1228,13 @@ body[data-page="experiencias"] .exp-explorer-paises{margin-bottom:var(--space-7)
 .exp-explorer-destinos{display:flex; flex-wrap:wrap; gap:var(--space-4);}
 .exp-destino-tile{position:relative; flex:0 0 auto; width:220px; aspect-ratio:1; display:block; border-radius:var(--radius-lg); overflow:hidden; box-shadow:var(--shadow-sm); text-decoration:none; transition:box-shadow var(--duration-base) var(--ease), transform var(--duration-base) var(--ease);}
 .exp-destino-tile:hover{transform:translateY(-2px); box-shadow:var(--shadow-md);}
-.exp-destino-tile img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;}
+.exp-destino-tile img, .exp-destino-tile .gal-placeholder{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;}
+.exp-destino-tile .gal-placeholder{display:flex; align-items:center; justify-content:center;}
 .exp-destino-tile-label{position:absolute; left:0; right:0; bottom:0; z-index:1; padding:16px; font-family:var(--font-heading); font-weight:700; font-size:18px; color:#fff; text-shadow:0 2px 8px rgba(0,0,0,0.5);}
+/* Sin foto de fondo (placeholder claro en vez de fotografía oscura): el
+   blanco + text-shadow pensados para foto quedan ilegibles. Mismo ajuste
+   que .destino-card.sin-foto en Destinos. */
+.exp-destino-tile.sin-foto .exp-destino-tile-label{color:var(--color-tinta); text-shadow:none;}
 
 /* "Para inspirarte" — deliberadamente chica y secundaria: sin kicker
    grande ni h2, sin carrusel (son sólo 3), tarjetas más chicas que las

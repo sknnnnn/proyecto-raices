@@ -195,12 +195,17 @@
 
       const destinosHtml = ordenarDestinos(Object.values(arbol[paisActivo])).map(d => {
         const nombre = nombreDestino(d);
-        const prep = (d.esPlaceholder && d.imagen) ? `<span class="destino-card-flag">Próximamente</span>` : "";
+        // "disponible" contempla el caso Choquequirao (esPlaceholder:true
+        // con una propuesta publicada): ver destinoDisponibleComercialmente
+        // en destinos-data.js, mismo criterio que el selector de Tours/
+        // Travesías/Paquetes/Contacto.
+        const disponible = destinoDisponibleComercialmente(d);
+        const prep = (!disponible && d.imagen) ? `<span class="destino-card-flag">Próximamente</span>` : "";
         const img = d.imagen
-          ? `<img class="${d.esPlaceholder ? "placeholder" : ""}" src="${d.imagen}" alt="${nombre}, ${d.pais}" loading="lazy">`
-          : `<div class="gal-placeholder">${d.esPlaceholder ? "Próximamente" : "Imagen pendiente"}</div>`;
+          ? `<img class="${!disponible ? "placeholder" : ""}" src="${d.imagen}" alt="${nombre}, ${d.pais}" loading="lazy">`
+          : `<div class="gal-placeholder">${!disponible ? "Próximamente" : "Imagen pendiente"}</div>`;
         return `
-          <a class="exp-destino-tile" href="catalogo.html?destino=${d.slug}">
+          <a class="exp-destino-tile${d.imagen ? "" : " sin-foto"}" href="catalogo.html?destino=${d.slug}">
             ${img}
             ${prep}
             <span class="exp-destino-tile-label">${nombre}</span>

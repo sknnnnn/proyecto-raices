@@ -76,8 +76,21 @@ function interleaveByTipo(lista){
 /* Scroll horizontal con easing propio (en vez del scrollBy nativo,
    cuyo "smooth" es un poco mecánico) — usado por las flechas de los
    carruseles para que el recorrido se sienta más chill. Respeta
-   prefers-reduced-motion saltando directo al destino. */
+   prefers-reduced-motion saltando directo al destino.
+
+   scrollSuaveRAF guarda, por elemento, el requestAnimationFrame de la
+   animación en curso (si la hay). Sin esto, dos llamadas seguidas antes
+   de que la primera termine (doble click, clicks rápidos) dejaban dos
+   rAF escribiendo el mismo scrollLeft a la vez — eso es lo que se veía
+   como un pequeño movimiento previo al desplazamiento "real". Cancelar
+   la animación anterior de ESE elemento antes de arrancar una nueva
+   resuelve el problema para cualquier consumidor de scrollSuave, sin
+   cambiar la firma ni el comportamiento de una llamada aislada. */
+const scrollSuaveRAF = new WeakMap();
 function scrollSuave(el, delta, duracion){
+  const rafAnterior = scrollSuaveRAF.get(el);
+  if (rafAnterior) { cancelAnimationFrame(rafAnterior); scrollSuaveRAF.delete(el); }
+
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const inicio = el.scrollLeft;
   const max = el.scrollWidth - el.clientWidth;
@@ -90,9 +103,13 @@ function scrollSuave(el, delta, duracion){
   function paso(ahora){
     const t = Math.min(1, (ahora - t0) / dur);
     el.scrollLeft = inicio + distancia * easeInOutQuad(t);
-    if (t < 1) requestAnimationFrame(paso);
+    if (t < 1) {
+      scrollSuaveRAF.set(el, requestAnimationFrame(paso));
+    } else {
+      scrollSuaveRAF.delete(el);
+    }
   }
-  requestAnimationFrame(paso);
+  scrollSuaveRAF.set(el, requestAnimationFrame(paso));
 }
 
 /* ---------- Navegación mobile + link activo ---------- */

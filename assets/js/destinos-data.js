@@ -173,3 +173,15 @@ function getDestinoPorSlug(slug){
 function ordenarDestinos(lista){
   return lista.slice().sort((a, b) => (a.esPlaceholder === b.esPlaceholder) ? 0 : a.esPlaceholder ? 1 : -1);
 }
+
+/* Criterio único (mismo que ya usaba el selector de destino de Tours/
+   Travesías/Paquetes/Contacto, ver main.js) para decidir si un destino
+   se muestra como disponible ("a color") o como "Próximamente": un
+   destino con esPlaceholder:false siempre está disponible; uno con
+   esPlaceholder:true (ficha propia todavía mínima) también cuenta como
+   disponible si YA tiene alguna propuesta publicada (caso Choquequirao).
+   Reutilizar esta función en vez de leer d.esPlaceholder directo evita
+   repetir esta condición en cada página que arma cards de destino. */
+function destinoDisponibleComercialmente(d){
+  return !d.esPlaceholder || (typeof getPropuestasPorDestino === "function" && getPropuestasPorDestino(d.slug).length > 0);
+}
