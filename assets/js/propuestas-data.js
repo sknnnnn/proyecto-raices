@@ -4,10 +4,21 @@
    Cada propuesta tiene:
 
    1) CAMPOS COMUNES (todos los tipos los tienen):
-      id, esPlaceholder, tipo, nombre, destino, categoria,
+      id, esPlaceholder, publicado, tipo, nombre, destino, categoria,
       imagen, galeria, resumen, descripcion, incluye, noIncluye,
       duracion, modalidad, ubicacion, infoImportante, destacada,
       precio
+
+      "esPlaceholder" y "publicado" son dos cosas distintas:
+      - esPlaceholder: el contenido es de ejemplo/plantilla (no una
+        propuesta real todavía).
+      - publicado: puede aparecer en Home, catálogos, filtros y
+        fichas (superficies públicas). "esPlaceholder: false" NO
+        implica "publicado: true" — cargar los datos reales de una
+        propuesta es necesario pero no alcanza para publicarla; la
+        decisión de publicar es explícita.
+      Si no estás seguro de que una propuesta esté lista para
+      producción, dejá "publicado: false".
 
    2) UN OBJETO "detalle" con los campos ESPECÍFICOS del tipo
       (sólo los que correspondan a ese tipo — no hace falta
@@ -74,6 +85,9 @@
    4. Completá SOLO los campos de "detalle" que correspondan
       a ese tipo (podés borrar los que no uses).
    5. Poné "esPlaceholder: false" cuando el contenido sea real.
+   6. Poné "publicado: true" recién cuando esa propuesta esté lista
+      para mostrarse en producción (no antes, y no sólo porque
+      esPlaceholder sea false).
    No hace falta tocar ningún otro archivo ni crear una página
    HTML nueva: tours.html / travesias.html / paquetes.html /
    catalogo.html / propuesta.html se arman solas a partir de
@@ -92,9 +106,10 @@ const PROPUESTAS = [
   {
     id: "cusco-city-tour",
     esPlaceholder: false,
+    publicado: true,
     tipo: "tour",
     nombre: "City Tour — Guía 2 idiomas",
-    destino: "peru",
+    destino: "cusco",
     categoria: "City tour",
     imagen: "assets/img/pexels-danitza-pena-galup-8100091-18143706.jpg",
     galeria: ["assets/img/pexels-danitza-pena-galup-8100091-18143706.jpg", "assets/img/experiencias/pexels-suca-19852367.jpg"],
@@ -126,9 +141,10 @@ const PROPUESTAS = [
   {
     id: "cusco-mirabus",
     esPlaceholder: false,
+    publicado: true,
     tipo: "tour",
     nombre: "Tour Mirabus — Bus Panorámico",
-    destino: "peru",
+    destino: "cusco",
     categoria: "Bus panorámico",
     imagen: "assets/img/experiencias/pexels-julia-volk-5198292.jpg",
     imagenPos: "center 78%",
@@ -161,9 +177,10 @@ const PROPUESTAS = [
   {
     id: "cusco-valle-sagrado",
     esPlaceholder: false,
+    publicado: true,
     tipo: "tour",
     nombre: "Tour Valle Sagrado",
-    destino: "peru",
+    destino: "cusco",
     categoria: "Valle Sagrado",
     imagen: "assets/img/_DSC0144.jpg",
     galeria: ["assets/img/_DSC0144.jpg", "assets/img/galeria-cusco-calle.jpg"],
@@ -195,9 +212,10 @@ const PROPUESTAS = [
   {
     id: "cusco-super-valle-sagrado",
     esPlaceholder: false,
+    publicado: true,
     tipo: "tour",
     nombre: "Tour Super Valle Sagrado de los Incas",
-    destino: "peru",
+    destino: "cusco",
     categoria: "Valle Sagrado",
     imagen: "assets/img/experiencias/_DSC0108.jpg",
     galeria: ["assets/img/experiencias/_DSC0108.jpg", "assets/img/experiencias/_DSC0122.jpg", "assets/img/galeria-maras.jpg"],
@@ -229,9 +247,10 @@ const PROPUESTAS = [
   {
     id: "cusco-valle-sur",
     esPlaceholder: false,
+    publicado: true,
     tipo: "tour",
     nombre: "Tour Valle Sur",
-    destino: "peru",
+    destino: "cusco",
     categoria: "Valle Sur",
     imagen: "assets/img/hero-nosotros-cusco.jpg",
     galeria: ["assets/img/hero-nosotros-cusco.jpg"],
@@ -263,9 +282,10 @@ const PROPUESTAS = [
   {
     id: "cusco-maras-moray",
     esPlaceholder: false,
+    publicado: true,
     tipo: "tour",
     nombre: "Tour Maras & Moray",
-    destino: "peru",
+    destino: "cusco",
     categoria: "Valle Sagrado",
     imagen: "assets/img/experiencias/pexels-marco-alhelm-1479977387-32141363.jpg",
     imagenPos: "center 88%",
@@ -298,9 +318,10 @@ const PROPUESTAS = [
   {
     id: "cusco-machupicchu-tren",
     esPlaceholder: false,
+    publicado: true,
     tipo: "tour",
     nombre: "Machupicchu en un solo día en tren",
-    destino: "peru",
+    destino: "cusco",
     categoria: "Machu Picchu",
     imagen: "assets/img/experiencias/pexels-sergei-a-1322276-2539417.jpg",
     galeria: ["assets/img/experiencias/pexels-sergei-a-1322276-2539417.jpg", "assets/img/experiencias/pexels-angel-valladares-242487480-17060856.jpg", "assets/img/experiencias/pexels-underxpossed-38263090.jpg", "assets/img/galeria-machupicchu-terrazas.jpg"],
@@ -332,9 +353,10 @@ const PROPUESTAS = [
   {
     id: "cusco-vinicunca",
     esPlaceholder: false,
+    publicado: true,
     tipo: "tour",
     nombre: "Montaña de Colores / Vinicunca 1 día",
-    destino: "peru",
+    destino: "cusco",
     categoria: "Trekking",
     imagen: "assets/img/experiencias/pexels-teresita-ramirez-583628649-17043331.jpg",
     galeria: ["assets/img/experiencias/pexels-teresita-ramirez-583628649-17043331.jpg"],
@@ -366,9 +388,10 @@ const PROPUESTAS = [
   {
     id: "cusco-palcoyo",
     esPlaceholder: false,
+    publicado: true,
     tipo: "tour",
     nombre: "Cordillera Arcoíris – Palcoyo",
-    destino: "peru",
+    destino: "cusco",
     categoria: "Trekking",
     imagen: "assets/img/experiencias/pexels-davidexpedition-30228477.jpg",
     imagenPos: "center 68%",
@@ -401,9 +424,10 @@ const PROPUESTAS = [
   {
     id: "cusco-valle-rojo-atv",
     esPlaceholder: false,
+    publicado: true,
     tipo: "tour",
     nombre: "Montaña de Colores por el Valle Rojo — Ruta Larga en Cuatrimotos",
-    destino: "peru",
+    destino: "cusco",
     categoria: "Cuatrimotos",
     imagen: "assets/img/galeria-vicunas.jpg",
     galeria: ["assets/img/galeria-vicunas.jpg"],
@@ -435,9 +459,10 @@ const PROPUESTAS = [
   {
     id: "cusco-humantay",
     esPlaceholder: false,
+    publicado: true,
     tipo: "tour",
     nombre: "Laguna Humantay Full Day",
-    destino: "peru",
+    destino: "cusco",
     categoria: "Trekking",
     imagen: "assets/img/experiencias/pexels-lyon-17505746.jpg",
     imagenPos: "center 65%",
@@ -470,9 +495,10 @@ const PROPUESTAS = [
   {
     id: "cusco-ausangate-7-lagunas",
     esPlaceholder: false,
+    publicado: true,
     tipo: "tour",
     nombre: "Circuito de las 7 Lagunas de Ausangate Full Day",
-    destino: "peru",
+    destino: "cusco",
     categoria: "Trekking",
     imagen: "assets/img/experiencias/pexels-daiji-umemoto-549226763-38917638.jpg",
     imagenPos: "center 60%",
@@ -505,9 +531,10 @@ const PROPUESTAS = [
   {
     id: "cusco-qeswachaka",
     esPlaceholder: false,
+    publicado: true,
     tipo: "tour",
     nombre: "Qeswachaka Full Day",
-    destino: "peru",
+    destino: "cusco",
     categoria: "Cultura",
     imagen: "assets/img/_DSC0036 (1).jpg",
     galeria: ["assets/img/_DSC0036 (1).jpg"],
@@ -539,9 +566,10 @@ const PROPUESTAS = [
   {
     id: "cusco-waqrapukara",
     esPlaceholder: false,
+    publicado: true,
     tipo: "tour",
     nombre: "Waqrapukara Full Day",
-    destino: "peru",
+    destino: "cusco",
     categoria: "Trekking",
     imagen: "assets/img/destino-peru-machupicchu.jpg",
     galeria: ["assets/img/destino-peru-machupicchu.jpg"],
@@ -573,9 +601,10 @@ const PROPUESTAS = [
   {
     id: "cusco-quelccaya",
     esPlaceholder: false,
+    publicado: true,
     tipo: "tour",
     nombre: "Quelccaya – Suyuparina Full Day",
-    destino: "peru",
+    destino: "cusco",
     categoria: "Trekking",
     imagen: "assets/img/vista-lago.jpg",
     imagenPos: "center 68%",
@@ -608,9 +637,10 @@ const PROPUESTAS = [
   {
     id: "cusco-cuatrimotos-morada-dioses",
     esPlaceholder: false,
+    publicado: true,
     tipo: "tour",
     nombre: "Tours en Cuatrimotos Morada de los Dioses",
-    destino: "peru",
+    destino: "cusco",
     categoria: "Cuatrimotos",
     imagen: "assets/img/experiencias/pexels-kaushik21-26074194.jpg",
     galeria: ["assets/img/experiencias/pexels-kaushik21-26074194.jpg"],
@@ -642,9 +672,10 @@ const PROPUESTAS = [
   {
     id: "cusco-skybike-cachimayo",
     esPlaceholder: false,
+    publicado: true,
     tipo: "tour",
     nombre: "Skybike, Rappel y Vía Ferrata Cachimayo",
-    destino: "peru",
+    destino: "cusco",
     categoria: "Aventura",
     imagen: "assets/img/experiencias/pexels-viviane-couto-450464801-33463618.jpg",
     galeria: ["assets/img/experiencias/pexels-viviane-couto-450464801-33463618.jpg"],
@@ -678,6 +709,7 @@ const PROPUESTAS = [
   {
     id: "ushuaia-canoas",
     esPlaceholder: false,
+    publicado: true,
     tipo: "tour",
     nombre: "Canoas Experience",
     destino: "ushuaia",
@@ -712,6 +744,7 @@ const PROPUESTAS = [
   {
     id: "ushuaia-trekking-canoas",
     esPlaceholder: false,
+    publicado: true,
     tipo: "tour",
     nombre: "Trekking y Canoas",
     destino: "ushuaia",
@@ -746,6 +779,7 @@ const PROPUESTAS = [
   {
     id: "ushuaia-sunset",
     esPlaceholder: false,
+    publicado: true,
     tipo: "tour",
     nombre: "Ushuaia Sunset",
     destino: "ushuaia",
@@ -780,6 +814,7 @@ const PROPUESTAS = [
   {
     id: "ushuaia-estancia-tunel-trekking",
     esPlaceholder: false,
+    publicado: true,
     tipo: "tour",
     nombre: "Estancia Túnel — Trekking",
     destino: "ushuaia",
@@ -815,6 +850,7 @@ const PROPUESTAS = [
   {
     id: "ushuaia-balcones-susana",
     esPlaceholder: false,
+    publicado: true,
     tipo: "tour",
     nombre: "Balcones del Susana",
     destino: "ushuaia",
@@ -849,6 +885,7 @@ const PROPUESTAS = [
   {
     id: "ushuaia-lagunas-gemelas",
     esPlaceholder: false,
+    publicado: true,
     tipo: "tour",
     nombre: "Lagunas Gemelas",
     destino: "ushuaia",
@@ -883,6 +920,7 @@ const PROPUESTAS = [
   {
     id: "ushuaia-lagunas-gemelas-full-day",
     esPlaceholder: false,
+    publicado: true,
     tipo: "tour",
     nombre: "Lagunas Gemelas Full Day",
     destino: "ushuaia",
@@ -917,6 +955,7 @@ const PROPUESTAS = [
   {
     id: "ushuaia-trek-andino",
     esPlaceholder: false,
+    publicado: true,
     tipo: "tour",
     nombre: "Trek Andino",
     destino: "ushuaia",
@@ -951,6 +990,7 @@ const PROPUESTAS = [
   {
     id: "ushuaia-urban-landscape",
     esPlaceholder: false,
+    publicado: true,
     tipo: "tour",
     nombre: "Urban Landscape",
     destino: "ushuaia",
@@ -985,6 +1025,7 @@ const PROPUESTAS = [
   {
     id: "ushuaia-mirador-beagle",
     esPlaceholder: false,
+    publicado: true,
     tipo: "tour",
     nombre: "Mirador del Beagle",
     destino: "ushuaia",
@@ -1019,6 +1060,7 @@ const PROPUESTAS = [
   {
     id: "ushuaia-estancia-tunel-ebike",
     esPlaceholder: false,
+    publicado: true,
     tipo: "tour",
     nombre: "Estancia Túnel — E-bike",
     destino: "ushuaia",
@@ -1053,6 +1095,7 @@ const PROPUESTAS = [
   {
     id: "ushuaia-cascada-beban",
     esPlaceholder: false,
+    publicado: true,
     tipo: "tour",
     nombre: "Cascada Beban",
     destino: "ushuaia",
@@ -1089,9 +1132,10 @@ const PROPUESTAS = [
   {
     id: "peru-salkantay-trek",
     esPlaceholder: false,
+    publicado: true,
     tipo: "travesia",
     nombre: "Salkantay Trek",
-    destino: "peru",
+    destino: "cusco",
     categoria: "Trekking",
     imagen: "assets/img/experiencias/pexels-davidexpedition-30228477.jpg",
     imagenPos: "center 68%",
@@ -1133,6 +1177,7 @@ const PROPUESTAS = [
   {
     id: "peru-choquequirao-trek",
     esPlaceholder: false,
+    publicado: true,
     tipo: "travesia",
     nombre: "Choquequirao Trekking",
     destino: "choquequirao",
@@ -1175,9 +1220,10 @@ const PROPUESTAS = [
   {
     id: "peru-machupicchu-carro",
     esPlaceholder: false,
+    publicado: true,
     tipo: "travesia",
     nombre: "Machupicchu en Carro",
-    destino: "peru",
+    destino: "cusco",
     categoria: "Machu Picchu",
     imagen: "assets/img/galeria-machupicchu-terrazas.jpg",
     galeria: ["assets/img/galeria-machupicchu-terrazas.jpg", "assets/img/experiencias/pexels-underxpossed-38263090.jpg"],
@@ -1215,9 +1261,10 @@ const PROPUESTAS = [
   {
     id: "peru-machupicchu-tren",
     esPlaceholder: false,
+    publicado: true,
     tipo: "travesia",
     nombre: "Machupicchu",
-    destino: "peru",
+    destino: "cusco",
     categoria: "Machu Picchu",
     imagen: "assets/img/destino-peru-machupicchu.jpg",
     galeria: ["assets/img/destino-peru-machupicchu.jpg", "assets/img/experiencias/pexels-sergei-a-1322276-2539417.jpg"],
@@ -1257,6 +1304,7 @@ const PROPUESTAS = [
   {
     id: "patagonia-bariloche-magico",
     esPlaceholder: false,
+    publicado: true,
     tipo: "travesia",
     nombre: "Bariloche Mágico — Del Bosque a la Estepa",
     destino: "bariloche",
@@ -1299,6 +1347,7 @@ const PROPUESTAS = [
   {
     id: "patagonia-7-lagos-ebike",
     esPlaceholder: false,
+    publicado: true,
     tipo: "travesia",
     nombre: "La Ruta de los 7 Lagos con E-bikes",
     destino: "bariloche",
@@ -1341,6 +1390,7 @@ const PROPUESTAS = [
   {
     id: "patagonia-7-lagos-premium-ebike",
     esPlaceholder: false,
+    publicado: true,
     tipo: "travesia",
     nombre: "7 Lagos Premium con E-bikes",
     destino: "bariloche",
@@ -1384,6 +1434,7 @@ const PROPUESTAS = [
   {
     id: "patagonia-doble-cruce-cordillera-ebike",
     esPlaceholder: false,
+    publicado: true,
     tipo: "travesia",
     nombre: "Doble Cruce de la Cordillera — E-bike",
     destino: "san-martin-de-los-andes",
@@ -1427,6 +1478,7 @@ const PROPUESTAS = [
   {
     id: "patagonia-cruce-andino-lagos-chile-ebike",
     esPlaceholder: false,
+    publicado: true,
     tipo: "travesia",
     nombre: "Cruce Andino × Lagos a Chile — E-bike",
     destino: "bariloche",
@@ -1472,6 +1524,7 @@ const PROPUESTAS = [
   {
     id: "patagonia-pehuenia-chile-mtb",
     esPlaceholder: false,
+    publicado: true,
     tipo: "travesia",
     nombre: "Pehuenia + Chile — Pedaleando entre Araucarias",
     destino: "villa-pehuenia",
@@ -1516,6 +1569,7 @@ const PROPUESTAS = [
   {
     id: "patagonia-domuyo-norte-neuquino",
     esPlaceholder: false,
+    publicado: true,
     tipo: "travesia",
     nombre: "Domuyo — Norte Neuquino / Techo de la Patagonia con E-bikes",
     destino: "norte-neuquino",
@@ -1566,9 +1620,10 @@ const PROPUESTAS = [
   {
     id: "andes-peru-ejemplo",
     esPlaceholder: true,
+    publicado: false,
     tipo: "paquete",
     nombre: "[Ejemplo] Ruta andina integral",
-    destino: "peru",
+    destino: "cusco",
     categoria: "Cultura & altura",
     imagen: "assets/img/0789c7b1-125a-4bad-8f3a-576c36622000.jpeg",
     galeria: ["assets/img/0789c7b1-125a-4bad-8f3a-576c36622000.jpeg"],
@@ -1610,7 +1665,16 @@ function getPropuestasPorTipo(tipo){
 }
 
 function getPropuestasPorDestino(slug){
-  return PROPUESTAS.filter(p => p.destino === slug);
+  return PROPUESTAS.filter(p => p.destino === slug && p.publicado);
+}
+
+/* Filtro central de "qué puede mostrarse en producción": todo listado
+   público (Home, catálogos, filtros, fichas) debe pasar por acá en vez
+   de mirar esPlaceholder directamente — esPlaceholder identifica
+   contenido de ejemplo, publicado identifica si ya está habilitado
+   para mostrarse (ver nota al principio del archivo). */
+function getPropuestasPublicadas(lista){
+  return (lista || PROPUESTAS).filter(p => p.publicado);
 }
 
 function getCategorias(lista){

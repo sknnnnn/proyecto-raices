@@ -149,21 +149,18 @@
         <div class="equipo-mini-foto"><img src="assets/img/santi.png" alt="Santiago, parte del equipo de Proyecto Raíces" style="object-position:center 25%;" loading="lazy"></div>
         <figcaption>
           <h3>Santiago</h3>
-          <span class="equipo-mini-pendiente">Perfil en preparación</span>
         </figcaption>
       </figure>
       <figure class="equipo-mini-persona">
         <div class="equipo-mini-foto"><img src="assets/img/trekking.jpg" alt="Belén, parte del equipo de Proyecto Raíces" style="object-position:center 20%;" loading="lazy"></div>
         <figcaption>
           <h3>Belén</h3>
-          <span class="equipo-mini-pendiente">Perfil en preparación</span>
         </figcaption>
       </figure>
       <figure class="equipo-mini-persona">
         <div class="equipo-mini-foto"><img src="assets/img/IMG_3755.JPEG" alt="Ignacio, parte del equipo de Proyecto Raíces" style="object-position:center 30%;" loading="lazy"></div>
         <figcaption>
           <h3>Ignacio</h3>
-          <span class="equipo-mini-pendiente">Perfil en preparación</span>
         </figcaption>
       </figure>
     </div>
@@ -185,9 +182,6 @@
       <button type="button" class="testi-arrow next" aria-label="Ver comentario siguiente">›</button>
     </div>
     <div class="testi-dots" id="testi-dots"></div>
-    <p class="testi-disclaimer">
-      Los comentarios de esta sección son de ejemplo, pensados para mostrar cómo se van a ver acá las reseñas reales de quienes viajen con nosotros.
-    </p>
   </div>
 </section>
 
@@ -215,19 +209,20 @@
         <h4>Navegación</h4>
         <ul>
           <li><a href="index.html">Inicio</a></li>
+          <li><a href="experiencias.html">Experiencias</a></li>
           <li><a href="destinos.html">Destinos</a></li>
-          <li><a href="tours.html">Tours</a></li>
-          <li><a href="travesias.html">Travesías</a></li>
-          <li><a href="paquetes.html">Paquetes</a></li>
+          <li><a href="nosotros.html">Nosotros</a></li>
+          <li><a href="galeria.html">Galería</a></li>
+          <li><a href="contacto.html">Contacto</a></li>
         </ul>
       </div>
       <div>
         <h4>Más</h4>
         <ul>
-          <li><a href="nosotros.html">Nosotros</a></li>
-          <li><a href="galeria.html">Galería</a></li>
+          <li><a href="tours.html">Tours</a></li>
+          <li><a href="travesias.html">Travesías</a></li>
+          <li><a href="paquetes.html">Paquetes</a></li>
           <li><a href="comentarios.html">Comentarios</a></li>
-          <li><a href="contacto.html">Contacto</a></li>
         </ul>
       </div>
       <div>
@@ -261,7 +256,7 @@
   document.addEventListener("DOMContentLoaded", () => {
     const destinosHome = document.getElementById("destinos-home");
     if (destinosHome) {
-      const ordenInicio = ["peru", "bariloche", "ushuaia"];
+      const ordenInicio = ["cusco", "bariloche", "ushuaia"];
       const destacados = ordenInicio
         .map(slug => DESTINOS.find(d => d.slug === slug))
         .filter(Boolean)
@@ -271,7 +266,7 @@
           ${d.imagen ? `<img src="${d.imagen}" alt="${d.nombre}">` : ""}
           <div class="info">
             <span class="tag">${d.pais}</span>
-            <h3>${d.slug === "peru" ? "Cusco" : d.nombre}</h3>
+            <h3>${d.nombre}</h3>
             <p>${d.resumen}</p>
           </div>
         </a>`).join("");
@@ -337,16 +332,20 @@
 
     let setWidth = 0;
     let tipoActivo = "";
+    // rAF en curso de un desplazamiento manual (flechas) — ver scrollManual
+    // más abajo. Se cancela acá también si un cambio de filtro llega a
+    // pisar una animación manual todavía en curso.
+    let manualRAF = null;
 
     function render() {
-      // No mostrar propuestas de ejemplo (esPlaceholder) en el carrusel del
-      // Inicio: acá conviven todos los tipos y un placeholder se vería como
-      // contenido real.
-      const reales = PROPUESTAS.filter(p => !p.esPlaceholder);
+      // Sólo propuestas publicadas (ver getPropuestasPublicadas en
+      // propuestas-data.js) — no todo lo que tenga esPlaceholder:false.
+      const reales = getPropuestasPublicadas();
       // "Todos": Tours/Travesías/Paquetes mezclados entre sí, no
       // agrupados en bloques por tipo (con un filtro activo ya es un
       // único tipo, así que interleaveByTipo no cambia nada).
       const lista = tipoActivo ? reales.filter(p => p.tipo === tipoActivo) : interleaveByTipo(reales);
+      if (manualRAF) { cancelAnimationFrame(manualRAF); manualRAF = null; }
       if (!lista.length) {
         track.innerHTML = `<p class="empty-state">Todavía no hay experiencias cargadas en esta categoría.</p>`;
         setWidth = 0;
@@ -397,8 +396,36 @@
       const style = getComputedStyle(track);
       return card.offsetWidth + parseFloat(style.columnGap || style.gap || 26);
     }
-    if (prevBtn) prevBtn.addEventListener("click", () => { pauseTemporal(); scrollSuave(viewport, -cardStep()); });
-    if (nextBtn) nextBtn.addEventListener("click", () => { pauseTemporal(); scrollSuave(viewport, cardStep()); });
+
+    // ---- Navegación manual (flechas) ----
+    // Un click debe producir un único desplazamiento limpio de exactamente
+    // un cardStep(), sin el micro-movimiento que aparecía al pisarse con
+    // el rAF del autoplay (tick) ni con una animación manual anterior
+    // todavía en curso. Vive sólo acá (no toca scrollSuave de main.js, que
+    // usan otras páginas): pausa el autoplay primero (misma pauseTemporal
+    // de siempre), cancela cualquier rAF manual pendiente y recién ahí
+    // lee viewport.scrollLeft y arranca la animación. El wrap del loop
+    // infinito se hace con el mismo criterio que usa tick() (módulo de
+    // setWidth) pero aplicado en cada frame, así nunca "pisa el freno" ni
+    // salta al llegar a la costura entre el primer y el segundo set.
+    function scrollManual(delta) {
+      pauseTemporal();
+      if (manualRAF) { cancelAnimationFrame(manualRAF); manualRAF = null; }
+      const inicio = viewport.scrollLeft;
+      const wrap = (v) => setWidth > 0 ? ((v % setWidth) + setWidth) % setWidth : v;
+      if (reduceMotion) { viewport.scrollLeft = wrap(inicio + delta); return; }
+      const t0 = performance.now();
+      const dur = 550;
+      function easeInOutQuad(t){ return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; }
+      function paso(ahora) {
+        const t = Math.min(1, (ahora - t0) / dur);
+        viewport.scrollLeft = wrap(inicio + delta * easeInOutQuad(t));
+        manualRAF = (t < 1) ? requestAnimationFrame(paso) : null;
+      }
+      manualRAF = requestAnimationFrame(paso);
+    }
+    if (prevBtn) prevBtn.addEventListener("click", () => scrollManual(-cardStep()));
+    if (nextBtn) nextBtn.addEventListener("click", () => scrollManual(cardStep()));
   });
 </script>
 </body>

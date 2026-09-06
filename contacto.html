@@ -104,19 +104,20 @@
         <h4>Navegación</h4>
         <ul>
           <li><a href="index.html">Inicio</a></li>
+          <li><a href="experiencias.html">Experiencias</a></li>
           <li><a href="destinos.html">Destinos</a></li>
-          <li><a href="tours.html">Tours</a></li>
-          <li><a href="travesias.html">Travesías</a></li>
-          <li><a href="paquetes.html">Paquetes</a></li>
+          <li><a href="nosotros.html">Nosotros</a></li>
+          <li><a href="galeria.html">Galería</a></li>
+          <li><a href="contacto.html">Contacto</a></li>
         </ul>
       </div>
       <div>
         <h4>Más</h4>
         <ul>
-          <li><a href="nosotros.html">Nosotros</a></li>
-          <li><a href="galeria.html">Galería</a></li>
+          <li><a href="tours.html">Tours</a></li>
+          <li><a href="travesias.html">Travesías</a></li>
+          <li><a href="paquetes.html">Paquetes</a></li>
           <li><a href="comentarios.html">Comentarios</a></li>
-          <li><a href="contacto.html">Contacto</a></li>
         </ul>
       </div>
       <div>
@@ -146,8 +147,14 @@
     // Select de destinos, poblado desde destinos-data.js
     const sel = document.getElementById("destino");
     if (sel && typeof DESTINOS !== "undefined") {
+      // Mismo criterio comercial que el selector de destino de Tours/
+      // Travesías/Paquetes (ver main.js): un destino en preparación sólo
+      // se ofrece acá si ya tiene alguna propuesta publicada (Choquequirao);
+      // si todavía no tiene ninguna (Paracas/Huacachina/Arequipa/Lima/
+      // Norte Argentino) no se muestra como opción.
+      const destinosDisponibles = DESTINOS.filter(d => !d.esPlaceholder || getPropuestasPorDestino(d.slug).length > 0);
       let opts = `<option value="" selected disabled>Seleccioná un destino</option>`;
-      opts += DESTINOS.map(d => `<option value="${d.nombre}">${d.pais} — ${d.nombre}</option>`).join("");
+      opts += destinosDisponibles.map(d => `<option value="${d.nombre}">${d.pais} — ${d.nombre}</option>`).join("");
       opts += `<option value="Aún no sé">Aún no sé, quiero más info</option>`;
       sel.innerHTML = opts;
 
