@@ -247,8 +247,7 @@ function renderPropuestasGrid(){
       paises.forEach(pais => {
         optionsHtml += `<optgroup label="${pais}">`;
         DESTINOS.filter(d => d.pais === pais).forEach(d => {
-          const nombre = d.slug === "peru" ? "Cusco" : d.nombre;
-          optionsHtml += `<option value="${d.slug}"${destinoFiltro === d.slug ? " selected" : ""}>${nombre}</option>`;
+          optionsHtml += `<option value="${d.slug}"${destinoFiltro === d.slug ? " selected" : ""}>${d.nombre}</option>`;
         });
         optionsHtml += `</optgroup>`;
       });
@@ -609,7 +608,7 @@ function renderDestinosGrid(){
       ${d.imagen ? `<img src="${d.imagen}" alt="${d.nombre}">` : ""}
       <div class="info">
         <span class="tag">${d.pais}</span>
-        <h3>${d.slug === "peru" ? "Cusco" : d.nombre}</h3>
+        <h3>${d.nombre}</h3>
         <p>${d.resumen}</p>
         ${d.esPlaceholder ? `<span class="placeholder-flag">Contenido en preparación</span>` : `<span class="count">${cantidad} propuesta${cantidad === 1 ? "" : "s"} →</span>`}
       </div>

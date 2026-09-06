@@ -72,8 +72,8 @@ const DESTINOS = [
     esPlaceholder: true
   },
   {
-    slug: "peru",
-    nombre: "Perú",
+    slug: "cusco",
+    nombre: "Cusco",
     pais: "Perú",
     grupo: "internacional",
     imagen: "assets/img/destino-peru-machupicchu.jpg",

@@ -261,7 +261,7 @@
   document.addEventListener("DOMContentLoaded", () => {
     const destinosHome = document.getElementById("destinos-home");
     if (destinosHome) {
-      const ordenInicio = ["peru", "bariloche", "ushuaia"];
+      const ordenInicio = ["cusco", "bariloche", "ushuaia"];
       const destacados = ordenInicio
         .map(slug => DESTINOS.find(d => d.slug === slug))
         .filter(Boolean)
@@ -271,7 +271,7 @@
           ${d.imagen ? `<img src="${d.imagen}" alt="${d.nombre}">` : ""}
           <div class="info">
             <span class="tag">${d.pais}</span>
-            <h3>${d.slug === "peru" ? "Cusco" : d.nombre}</h3>
+            <h3>${d.nombre}</h3>
             <p>${d.resumen}</p>
           </div>
         </a>`).join("");

@@ -162,11 +162,8 @@
     const paisesWrap = document.getElementById("exp-paises");
     if (!stage || !paisesWrap || typeof PROPUESTAS === "undefined" || typeof DESTINOS === "undefined") return;
 
-    // Mismo criterio que ya usa destinos.html: el slug "peru" se
-    // muestra como "Cusco" (la región real que se ofrece hoy; Machu
-    // Picchu y Choquequirao son parte de Cusco, no destinos aparte).
     function nombreDestino(d){
-      return d.slug === "peru" ? "Cusco" : d.nombre;
+      return d.nombre;
     }
 
     const arbol = {};

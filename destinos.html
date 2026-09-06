@@ -121,7 +121,7 @@
     // que usa Experiencias para sus destino-tiles).
     const destacados = ordenarDestinos(DESTINOS);
 
-    const objPos = { peru: "center 55%", bariloche: "center 32%", "norte-neuquino": "center 20%", "norte-argentino": "center", choquequirao: "40% center" };
+    const objPos = { cusco: "center 55%", bariloche: "center 32%", "norte-neuquino": "center 20%", "norte-argentino": "center", choquequirao: "40% center" };
 
     // Agrupa por país (d.pais) en el orden en que aparece cada uno por
     // primera vez en "destacados" — un país nuevo en destinos-data.js
@@ -134,7 +134,7 @@
     });
 
     const tarjeta = (d) => {
-      const nombre = d.slug === "peru" ? "Cusco" : d.nombre;
+      const nombre = d.nombre;
       // Próximamente CON foto real: se muestra en blanco y negro (única
       // excepción de color permitida), nunca oculta. Próximamente SIN
       // foto todavía: un único mensaje ("Próximamente"), sin duplicarlo

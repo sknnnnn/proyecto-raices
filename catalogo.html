@@ -128,7 +128,7 @@
     const slug = params.get("destino");
     const d = slug ? getDestinoPorSlug(slug) : null;
     if (d) {
-      const nombre = d.slug === "peru" ? "Cusco" : d.nombre;
+      const nombre = d.nombre;
       document.title = `${nombre} — Proyecto Raíces`;
       const h1 = document.getElementById("cat-titulo");
       if (h1) h1.textContent = nombre;
