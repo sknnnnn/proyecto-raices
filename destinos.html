@@ -136,16 +136,25 @@
 
     const tarjeta = (d) => {
       const nombre = d.nombre;
+      // "disponible" ya contempla el caso Choquequirao: esPlaceholder:true
+      // a nivel de ficha, pero con una propuesta publicada, así que no debe
+      // tratarse como Próximamente (ver destinoDisponibleComercialmente en
+      // destinos-data.js — mismo criterio que ya usaba el selector de
+      // Tours/Travesías/Paquetes/Contacto).
+      const disponible = destinoDisponibleComercialmente(d);
       // Próximamente CON foto real: se muestra en blanco y negro (única
       // excepción de color permitida), nunca oculta. Próximamente SIN
       // foto todavía: un único mensaje ("Próximamente"), sin duplicarlo
       // con un "Imagen pendiente" aparte.
       const img = d.imagen
-        ? `<img class="${d.esPlaceholder ? "placeholder" : ""}" src="${d.imagen}" alt="${nombre}, ${d.pais}" style="object-position:${objPos[d.slug] || "center"};" loading="lazy">`
-        : `<div class="gal-placeholder">${d.esPlaceholder ? "Próximamente" : "Imagen pendiente"}</div>`;
-      const prep = (d.esPlaceholder && d.imagen) ? `<span class="destino-card-flag">Próximamente</span>` : "";
+        ? `<img class="${!disponible ? "placeholder" : ""}" src="${d.imagen}" alt="${nombre}, ${d.pais}" style="object-position:${objPos[d.slug] || "center"};" loading="lazy">`
+        : `<div class="gal-placeholder">${!disponible ? "Próximamente" : "Imagen pendiente"}</div>`;
+      const prep = (!disponible && d.imagen) ? `<span class="destino-card-flag">Próximamente</span>` : "";
+      // "sin-foto" (no "disponible") es lo que decide el contraste del
+      // título: sin foto de fondo, el blanco pensado para una fotografía
+      // oscura queda ilegible sobre el placeholder claro.
       return `
-        <a class="destino-card" href="catalogo.html?destino=${d.slug}" aria-label="Ver propuestas en ${nombre}">
+        <a class="destino-card${d.imagen ? "" : " sin-foto"}" href="catalogo.html?destino=${d.slug}" aria-label="Ver propuestas en ${nombre}">
           ${img}
           ${prep}
           <div class="info">
