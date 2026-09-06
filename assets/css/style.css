@@ -587,7 +587,7 @@ body[data-page="catalogo"] .page-intro-media{aspect-ratio:2.2;}
    el disabled de las flechas) y desaparece del todo si la fila no
    desborda. No es un overlay sobre la foto: es una máscara de opacidad,
    la fotografía en sí no cambia de color. */
-.destinos-carousel-viewport{flex:1; min-width:0; overflow-x:auto; scroll-behavior:smooth; scrollbar-width:none; -ms-overflow-style:none; cursor:grab; padding:14px 14px 28px;
+.destinos-carousel-viewport{flex:1; min-width:0; overflow-x:auto; scroll-behavior:auto; scrollbar-width:none; -ms-overflow-style:none; cursor:grab; padding:14px 14px 28px;
   mask-image:linear-gradient(to right, transparent, black 28px, black calc(100% - 28px), transparent);
   -webkit-mask-image:linear-gradient(to right, transparent, black 28px, black calc(100% - 28px), transparent);
 }
@@ -770,7 +770,7 @@ body[data-page="inicio"] .exp-carousel .testi-arrow:hover{background:var(--color
    el mismo indicador de continuidad que usa el carrusel de Destinos,
    acá sin estados edge-start/edge-end porque nunca llega a una punta
    real. Máscara de opacidad, no un overlay de color sobre la foto. */
-body[data-page="inicio"] .exp-carousel-viewport{position:relative; z-index:1; flex:1; min-width:0; overflow-x:auto; scroll-behavior:smooth; scrollbar-width:none; -ms-overflow-style:none; cursor:grab; padding:18px 18px 36px;
+body[data-page="inicio"] .exp-carousel-viewport{position:relative; z-index:1; flex:1; min-width:0; overflow-x:auto; scroll-behavior:auto; scrollbar-width:none; -ms-overflow-style:none; cursor:grab; padding:18px 18px 36px;
   mask-image:linear-gradient(to right, transparent, black 32px, black calc(100% - 32px), transparent);
   -webkit-mask-image:linear-gradient(to right, transparent, black 32px, black calc(100% - 32px), transparent);
 }
