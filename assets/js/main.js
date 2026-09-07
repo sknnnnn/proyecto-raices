@@ -3,8 +3,10 @@
    Lógica compartida por todas las páginas: menú mobile,
    año del footer, botón de WhatsApp, formulario de contacto,
    lightbox de galería, y el armado dinámico de las páginas
-   que se alimentan de los archivos de datos
-   (propuestas-data.js, destinos-data.js).
+   que se alimentan de Supabase vía assets/js/data-api.js
+   (destinos, experiencias, actividades, galería, equipo,
+   site_config — ver ese archivo para el detalle de cada
+   consulta).
 
    NAVEGACIÓN POR DOS EJES (conviven sobre la misma data):
    - Por tipo: tours.html / travesias.html / paquetes.html
@@ -18,21 +20,71 @@
    sirve para todo el sitio.
    ========================================================= */
 
-document.addEventListener("DOMContentLoaded", () => {
+/* Configuración del sitio (antes SITE_CONFIG de site-config.js), ahora
+   poblada desde Supabase (tabla site_config) vía DataAPI. La consulta
+   arranca apenas carga este script (no espera a DOMContentLoaded), y
+   "siteConfigReady" es la promesa que cualquier script de página debe
+   esperar antes de llamar whatsappLink()/mailtoLink() o leer
+   SITE_CONFIG — evita la carrera entre el fetch async y un script
+   inline de página que quiera usarlo de entrada (ver contacto.html,
+   index.html). */
+let SITE_CONFIG = {};
+const siteConfigReady = (typeof DataAPI !== "undefined")
+  ? DataAPI.getSiteConfig().then(cfg => { SITE_CONFIG = cfg; return cfg; }).catch(err => {
+      console.error("Error cargando la configuración del sitio:", err);
+      return SITE_CONFIG;
+    })
+  : Promise.resolve(SITE_CONFIG);
+window.siteConfigReady = siteConfigReady;
+
+// Arma el link de WhatsApp con mensaje precargado (si hay número cargado).
+function whatsappLink(mensaje){
+  if (!SITE_CONFIG.whatsapp) return null;
+  const texto = encodeURIComponent(mensaje || "Hola, quiero consultar por una experiencia de Proyecto Raíces.");
+  return `https://wa.me/${SITE_CONFIG.whatsapp}?text=${texto}`;
+}
+
+function mailtoLink(asunto){
+  const subject = encodeURIComponent(asunto || "Consulta desde la web");
+  return `mailto:${SITE_CONFIG.email}?subject=${subject}`;
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
   initNav();
   initHeaderScroll();
   initFooterYear();
-  initWhatsappFloat();
-  initContactForm();
   initLightbox();
 
-  renderPropuestasGrid();
-  renderPropuestaDetalle();
+  await siteConfigReady;
+  initWhatsappFloat();
+  initContactForm();
+  initFooterContacto();
+
+  renderPropuestasGrid();   // async — consulta Supabase vía DataAPI
+  renderPropuestaDetalle(); // async — consulta Supabase vía DataAPI
   renderDestinosGrid();
+  renderEquipoGrid(); // async — sólo actúa si la página tiene #equipo-grid o #equipo-mini-grid
   initTestimoniosCarousel(); // sólo actúa si la página tiene #testi-track (Inicio)
   initComentariosGrid(); // sólo actúa si la página tiene #comentarios-grid (comentarios.html)
   initGaleriaJustify(); // sólo actúa si la página tiene .gal-row (galeria.html)
 });
+
+/* Metadata de presentación por tipo de producto (label/plural/página de
+   listado). No es un dato de negocio de una experiencia puntual — es
+   configuración de UI fija, así que vive acá en vez de en Supabase o en
+   propuestas-data.js. "tipoProducto" en Supabase es la fuente de verdad
+   de qué tipo es cada experiencia; esto sólo mapea ese valor a texto.
+   Definido de forma condicional porque, durante la transición, algunas
+   páginas todavía cargan propuestas-data.js (que declara lo mismo con
+   "const" a nivel de script) — declararlo acá también con "const"
+   rompería esas páginas con un error de identificador duplicado. */
+if (typeof TIPOS_PROPUESTA === "undefined") {
+  window.TIPOS_PROPUESTA = {
+    tour:     { label: "Tour",     labelPlural: "Tours",      pagina: "tours.html" },
+    travesia: { label: "Travesía", labelPlural: "Travesías",  pagina: "travesias.html" },
+    paquete:  { label: "Paquete",  labelPlural: "Paquetes",   pagina: "paquetes.html" }
+  };
+}
 
 /* ---------- Header sólido al scrollear ----------
    En Inicio/Guías/Comentarios el header nace transparente sobre la
@@ -53,11 +105,15 @@ function initHeaderScroll(){
    bloques, sin alterar los datos ni su orden de origen. Reutilizable
    por cualquier vista que junte más de un tipo en una misma lista. */
 function interleaveByTipo(lista){
+  // Acepta tanto el shape nuevo (Supabase, campo "tipoProducto") como el
+  // viejo (PROPUESTAS, campo "tipo") — útil mientras conviven páginas
+  // migradas y no migradas en la misma transición.
   const grupos = {};
   const orden = [];
   lista.forEach(p => {
-    if (!grupos[p.tipo]) { grupos[p.tipo] = []; orden.push(p.tipo); }
-    grupos[p.tipo].push(p);
+    const tipo = p.tipoProducto || p.tipo;
+    if (!grupos[tipo]) { grupos[tipo] = []; orden.push(tipo); }
+    grupos[tipo].push(p);
   });
   const resultado = [];
   let quedan = true;
@@ -141,6 +197,23 @@ function initNav(){
 function initFooterYear(){
   const el = document.getElementById("footer-year");
   if (el) el.textContent = new Date().getFullYear();
+}
+
+/* ---------- Redes/contacto del footer ----------
+   #footer-instagram / #footer-tiktok / #footer-email están presentes en
+   el footer de todas las páginas. Se completan acá con SITE_CONFIG (ya
+   cargado por siteConfigReady antes de llamar esta función — no dispara
+   ninguna consulta nueva). Si algún valor no está disponible, el link
+   queda con href="#" en vez de mostrar un dato viejo/inventado. */
+function initFooterContacto(){
+  const igEl = document.getElementById("footer-instagram");
+  if (igEl && SITE_CONFIG.instagramUrl) igEl.href = SITE_CONFIG.instagramUrl;
+
+  const ttEl = document.getElementById("footer-tiktok");
+  if (ttEl && SITE_CONFIG.tiktokUrl) ttEl.href = SITE_CONFIG.tiktokUrl;
+
+  const emailEl = document.getElementById("footer-email");
+  if (emailEl && SITE_CONFIG.email) emailEl.href = `mailto:${SITE_CONFIG.email}`;
 }
 
 /* ---------- Botón flotante de WhatsApp ---------- */
@@ -240,14 +313,28 @@ function initLightbox(){
    (con body[data-tipo-fijo]) y catalogo.html (sin tipo fijo,
    filtrado por destino, con chips de tipo).
    ========================================================= */
-function renderPropuestasGrid(){
+async function renderPropuestasGrid(){
   const grid = document.getElementById("prop-grid");
-  if (!grid || typeof PROPUESTAS === "undefined") return;
+  if (!grid) return;
 
   const tipoFijo = document.body.getAttribute("data-tipo-fijo"); // "tour" | "travesia" | "paquete" | null
   const params = new URLSearchParams(window.location.search);
   const destinoFiltro = params.get("destino");
   const tipoFiltro = tipoFijo || params.get("tipo");
+
+  grid.innerHTML = `<div class="empty-state">Cargando…</div>`;
+
+  let destinos, lista;
+  try {
+    [destinos, lista] = await Promise.all([
+      DataAPI.getDestinosActivos(),
+      DataAPI.getExperienciasPublicadas({ tipo: tipoFiltro || undefined, destinoSlug: destinoFiltro || undefined })
+    ]);
+  } catch (err) {
+    console.error("Error cargando experiencias:", err);
+    grid.innerHTML = `<div class="empty-state">No pudimos cargar las experiencias en este momento. Probá recargar la página.</div>`;
+    return;
+  }
 
   // ---- Chips de filtro ----
   const filtrosWrap = document.getElementById("prop-filtros");
@@ -263,12 +350,12 @@ function renderPropuestasGrid(){
       // true) sólo aparece si ya tiene alguna propuesta publicada (caso
       // Choquequirao): sin eso se mostraría como una opción comercial
       // activa sin serlo (caso Paracas/Huacachina/Arequipa/Lima, sin
-      // ninguna propuesta todavía).
-      const paises = [...new Set(DESTINOS.map(d => d.pais))];
+      // ninguna propuesta todavía). d.disponible ya resuelve ese criterio.
+      const paises = [...new Set(destinos.map(d => d.pais))];
       let optionsHtml = `<option value="">Todos los destinos</option>`;
       paises.forEach(pais => {
         optionsHtml += `<optgroup label="${pais}">`;
-        DESTINOS.filter(d => d.pais === pais && (!d.esPlaceholder || getPropuestasPorDestino(d.slug).length > 0)).forEach(d => {
+        destinos.filter(d => d.pais === pais && d.disponible).forEach(d => {
           optionsHtml += `<option value="${d.slug}"${destinoFiltro === d.slug ? " selected" : ""}>${d.nombre}</option>`;
         });
         optionsHtml += `</optgroup>`;
@@ -304,25 +391,17 @@ function renderPropuestasGrid(){
     }
   }
 
-  // ---- Lista filtrada ----
-  // Cualquier listado público (con o sin tipo fijo) sólo muestra
-  // propuestas publicadas — ver getPropuestasPublicadas en
-  // propuestas-data.js. esPlaceholder no es el criterio acá: una
-  // propuesta puede tener datos reales (esPlaceholder:false) y
-  // todavía no estar publicada.
-  let lista = getPropuestasPublicadas();
-  if (tipoFiltro) lista = lista.filter(p => p.tipo === tipoFiltro);
-  if (destinoFiltro) lista = lista.filter(p => p.destino === destinoFiltro);
   // "Todos" (sin tipo fijo ni filtro de tipo): mezcla Tours/Travesías/
   // Paquetes entre sí en vez de mostrarlos agrupados en bloques. Con un
   // único tipo ya filtrado esto no cambia nada (round-robin de 1 grupo).
+  // (El filtro por tipo/destino ya se aplicó del lado de DataAPI.)
   lista = interleaveByTipo(lista);
 
   // ---- Aviso de filtro activo (sólo relevante en catalogo.html) ----
   const tituloFiltro = document.getElementById("prop-filtro-activo");
   if (tituloFiltro) {
     if (destinoFiltro && !tipoFijo) {
-      const d = getDestinoPorSlug(destinoFiltro);
+      const d = destinos.find(d => d.slug === destinoFiltro);
       tituloFiltro.innerHTML = `Mostrando propuestas en <b>${d ? d.nombre : destinoFiltro}</b> · <a href="destinos.html">ver todos los destinos</a>`;
       tituloFiltro.style.display = "block";
     } else {
@@ -358,17 +437,16 @@ function aplicarFiltroSuave(params){
 }
 
 function propuestaCardHtml(p){
-  const destino = getDestinoPorSlug(p.destino);
-  const tipoInfo = TIPOS_PROPUESTA[p.tipo];
+  const tipoInfo = TIPOS_PROPUESTA[p.tipoProducto];
   return `
-    <article class="exp-card" data-tipo="${p.tipo}">
-      <a class="img-wrap" href="propuesta.html?id=${p.id}" aria-label="Ver detalles de ${p.nombre}">
+    <article class="exp-card" data-tipo="${p.tipoProducto}">
+      <a class="img-wrap" href="propuesta.html?id=${p.slug}" aria-label="Ver detalles de ${p.nombre}">
         ${p.imagen ? `<img src="${p.imagen}" alt="${p.nombre}" loading="lazy"${p.imagenPos ? ` style="object-position:${p.imagenPos};"` : ""}>` : `<div class="gal-placeholder" style="height:100%;">Imagen pendiente</div>`}
-        <span class="cat-badge">${tipoInfo ? tipoInfo.label : p.tipo}</span>
+        <span class="cat-badge">${tipoInfo ? tipoInfo.label : p.tipoProducto}</span>
       </a>
       <div class="body">
         ${p.esPlaceholder ? `<span class="placeholder-badge">Contenido de ejemplo</span>` : ""}
-        <span class="dest-tag">${destino ? destino.nombre : p.destino}</span>
+        <span class="dest-tag">${p.destino ? p.destino.nombre : ""}</span>
         <h3>${p.nombre}</h3>
         <p class="resumen">${p.resumen}</p>
         <div class="meta">
@@ -377,7 +455,7 @@ function propuestaCardHtml(p){
           ${p.precio ? `<span>💲 ${p.precio}</span>` : ""}
         </div>
         <div class="actions">
-          <a class="btn btn-sm" href="propuesta.html?id=${p.id}">Ver detalles</a>
+          <a class="btn btn-sm" href="propuesta.html?id=${p.slug}">Ver detalles</a>
           <a class="btn btn-outline on-light btn-sm" href="contacto.html?propuesta=${encodeURIComponent(p.nombre)}">Consultar</a>
         </div>
       </div>
@@ -393,43 +471,49 @@ function propuestaCardHtml(p){
    filas para la tarjeta lateral (asideHtml). Los campos que
    no estén cargados simplemente no se muestran.
    ========================================================= */
-function renderPropuestaDetalle(){
+async function renderPropuestaDetalle(){
   const cont = document.getElementById("prop-detalle");
-  if (!cont || typeof PROPUESTAS === "undefined") return;
+  if (!cont) return;
 
   const params = new URLSearchParams(window.location.search);
   const id = params.get("id");
-  const p = getPropuestaPorId(id);
+
+  const notFoundHtml = `
+    <div class="empty-state">
+      No encontramos esa propuesta.<br>
+      <a class="btn btn-sm" style="margin-top:16px;" href="destinos.html">Volver a Destinos</a>
+    </div>`;
+
+  let p;
+  try {
+    p = id ? await DataAPI.getExperienciaPorSlug(id) : null;
+  } catch (err) {
+    console.error("Error cargando la propuesta:", err);
+    cont.innerHTML = `<div class="empty-state">No pudimos cargar esta propuesta en este momento. Probá recargar la página.</div>`;
+    return;
+  }
 
   // Una propuesta no publicada se trata igual que una inexistente: no
   // debe poder verse por más que alguien conozca o adivine su id/URL.
-  if (p && !p.publicado) {
-    cont.innerHTML = `
-      <div class="empty-state">
-        No encontramos esa propuesta.<br>
-        <a class="btn btn-sm" style="margin-top:16px;" href="destinos.html">Volver a Destinos</a>
-      </div>`;
+  if (!p || !p.publicado) {
+    cont.innerHTML = notFoundHtml;
     document.title = "Propuesta no encontrada — Proyecto Raíces";
     return;
   }
 
-  if (!p) {
-    cont.innerHTML = `
-      <div class="empty-state">
-        No encontramos esa propuesta.<br>
-        <a class="btn btn-sm" style="margin-top:16px;" href="destinos.html">Volver a Destinos</a>
-      </div>`;
-    document.title = "Propuesta no encontrada — Proyecto Raíces";
-    return;
-  }
-
-  const tipoInfo = TIPOS_PROPUESTA[p.tipo];
+  const tipoInfo = TIPOS_PROPUESTA[p.tipoProducto];
   document.title = `${p.nombre} — Proyecto Raíces`;
   const metaDesc = document.querySelector('meta[name="description"]');
   if (metaDesc) metaDesc.setAttribute("content", p.resumen);
 
-  const destino = getDestinoPorSlug(p.destino);
-  const galeria = p.galeria && p.galeria.length ? p.galeria : (p.imagen ? [p.imagen] : []);
+  const destino = p.destino;
+  let galeriaRows = [];
+  try {
+    galeriaRows = await DataAPI.getGaleria(p.id);
+  } catch (err) {
+    console.error("Error cargando la galería:", err);
+  }
+  const galeria = galeriaRows.length ? galeriaRows.map(g => g.url) : (p.imagen ? [p.imagen] : []);
   const principal = galeria[0] || null;
 
   const bcEl = document.getElementById("exp-breadcrumb");
@@ -445,7 +529,8 @@ function renderPropuestaDetalle(){
       const ref = new URL(document.referrer);
       if (ref.origin === window.location.origin && /\/catalogo\.html$/.test(ref.pathname)) {
         volverHref = "catalogo.html" + ref.search;
-        const refDestino = getDestinoPorSlug(ref.searchParams.get("destino"));
+        const refDestinoSlug = ref.searchParams.get("destino");
+        const refDestino = refDestinoSlug ? await DataAPI.getDestinoPorSlug(refDestinoSlug) : null;
         volverLabel = refDestino ? refDestino.nombre : "Catálogo";
       } else if (tipoInfo && ref.pathname === "/" + tipoInfo.pagina && ref.search) {
         volverHref = tipoInfo.pagina + ref.search;
@@ -458,15 +543,15 @@ function renderPropuestaDetalle(){
   // Tours y Travesías: el CTA principal va directo a WhatsApp con el
   // nombre de la propuesta precargado (whatsappLink ya arma la URL con
   // el mensaje codificado).
-  const tourWaHref = p.tipo === "tour" && typeof whatsappLink === "function"
+  const tourWaHref = p.tipoProducto === "tour" && typeof whatsappLink === "function"
     ? whatsappLink(`Hola, quiero consultar por el Tour "${p.nombre}".`)
     : null;
-  const travesiaWaHref = p.tipo === "travesia" && typeof whatsappLink === "function"
+  const travesiaWaHref = p.tipoProducto === "travesia" && typeof whatsappLink === "function"
     ? whatsappLink(`Hola, quiero consultar por la Travesía "${p.nombre}".`)
     : null;
 
-  // Bloques específicos según el tipo (leídos de p.detalle)
-  const especifico = renderDetalleEspecifico(p);
+  // Bloques específicos según el tipo (leídos de p.detalle + relaciones)
+  const especifico = await renderDetalleEspecifico(p);
 
   cont.innerHTML = `
     ${p.esPlaceholder ? `<div class="notice-box">⚠️ Esta es una propuesta de ejemplo, incluida sólo para mostrar cómo funciona la ficha de detalle. Reemplazá este contenido por el real antes de publicar.</div>` : ""}
@@ -486,8 +571,8 @@ function renderPropuestaDetalle(){
 
           ${especifico.bodyHtml}
 
-          ${p.tipo === "tour" || p.tipo === "travesia" ? `<div class="notice-box">Esta ${p.tipo === "tour" ? "salida" : "travesía"} puede reservarse de forma privada, sólo para tu grupo, sujeto a disponibilidad.</div>` : ""}
-          ${p.tipo === "paquete" ? `<div class="notice-box">El itinerario puede conversarse y adaptarse según las necesidades del grupo, cuando resulte viable.</div>` : ""}
+          ${p.tipoProducto === "tour" || p.tipoProducto === "travesia" ? `<div class="notice-box">Esta ${p.tipoProducto === "tour" ? "salida" : "travesía"} puede reservarse de forma privada, sólo para tu grupo, sujeto a disponibilidad.</div>` : ""}
+          ${p.tipoProducto === "paquete" ? `<div class="notice-box">El itinerario puede conversarse y adaptarse según las necesidades del grupo, cuando resulte viable.</div>` : ""}
 
           ${p.incluye && p.incluye.length ? `<h2>Qué incluye</h2><ul class="check-list">${p.incluye.map(i => `<li>${i}</li>`).join("")}</ul>` : ""}
 
@@ -498,21 +583,21 @@ function renderPropuestaDetalle(){
       </div>
 
       <aside class="exp-info-card">
-        <span class="dest-tag">${tipoInfo ? tipoInfo.label : p.tipo} · ${p.categoria}</span>
+        <span class="dest-tag">${tipoInfo ? tipoInfo.label : p.tipoProducto}</span>
         <h1 style="margin-top:8px;">${p.nombre}</h1>
         ${especifico.badgeHtml}
-        <div class="info-row"><span>Destino</span><b>${destino ? destino.nombre : p.destino}</b></div>
+        <div class="info-row"><span>Destino</span><b>${destino ? destino.nombre : ""}</b></div>
         <div class="info-row"><span>Ubicación</span><b>${p.ubicacion}</b></div>
-        ${p.tipo === "tour" || p.tipo === "travesia" ? `
+        ${p.tipoProducto === "tour" || p.tipoProducto === "travesia" ? `
         <div class="info-row"><span>Modalidad</span><b>${p.modalidad}</b></div>
         <div class="info-row"><span>Duración</span><b>${p.duracion}</b></div>` : `
         <div class="info-row"><span>Duración</span><b>${p.duracion}</b></div>
         <div class="info-row"><span>Modalidad</span><b>${p.modalidad}</b></div>`}
         ${p.precio ? `<div class="info-row"><span>Precio</span><b>${p.precio}</b></div>` : ""}
         ${especifico.asideHtml}
-        ${p.tipo === "tour"
+        ${p.tipoProducto === "tour"
           ? `<a class="btn" href="${tourWaHref || consultaHref}"${tourWaHref ? ` target="_blank" rel="noopener"` : ""}>Consultar este Tour</a>`
-          : p.tipo === "travesia"
+          : p.tipoProducto === "travesia"
           ? `<a class="btn" href="${travesiaWaHref || consultaHref}"${travesiaWaHref ? ` target="_blank" rel="noopener"` : ""}>Consultar esta Travesía</a>`
           : `<a class="btn" href="${consultaHref}">Consultar disponibilidad</a>
         <a class="btn btn-outline on-light btn-block" style="margin-top:10px;" href="${consultaHref}">Solicitar información</a>`}
@@ -521,13 +606,13 @@ function renderPropuestaDetalle(){
   `;
 }
 
-/* ---- Router: elige el helper según p.tipo ---- */
-function renderDetalleEspecifico(p){
+/* ---- Router: elige el helper según p.tipoProducto ---- */
+async function renderDetalleEspecifico(p){
   const vacio = { bodyHtml: "", asideHtml: "", badgeHtml: "" };
   if (!p.detalle) return vacio;
-  if (p.tipo === "tour") return renderDetalleTour(p.detalle);
-  if (p.tipo === "travesia") return renderDetalleTravesia(p.detalle);
-  if (p.tipo === "paquete") return renderDetallePaquete(p.detalle);
+  if (p.tipoProducto === "tour") return renderDetalleTour(p.detalle);
+  if (p.tipoProducto === "travesia") return renderDetalleTravesia(p.detalle);
+  if (p.tipoProducto === "paquete") return renderDetallePaquete(p.detalle, p);
   return vacio;
 }
 
@@ -599,21 +684,39 @@ function renderDetalleTravesia(d){
   return { bodyHtml, asideHtml, badgeHtml: personalizableBadge(d.personalizable) };
 }
 
-/* ---- PAQUETE: viaje integral, personalizable ---- */
-function renderDetallePaquete(d){
+/* ---- PAQUETE: viaje integral, personalizable ----
+   Las experiencias que integra el paquete, y las actividades que
+   incluye, ya no viven en "detalle" (d.toursIncluidos/travesiasIncluidas/
+   actividades no existen más en Supabase): se resuelven vía
+   paquete_experiencias. Las actividades del paquete se derivan de las
+   actividades de esas experiencias relacionadas (no se cargan aparte).
+   Hoy ningún paquete tiene relaciones cargadas todavía (el único
+   paquete, de ejemplo, no está publicado), así que estas listas
+   simplemente no aparecen — no se inventa ningún dato para completarlas. */
+async function renderDetallePaquete(d, p){
   let bodyHtml = "";
   bodyHtml += itinerarioSiHay(d.itinerario);
-  bodyHtml += listaSiHay("Actividades incluidas", d.actividades, "check-list");
 
-  // Tours y travesías que integra el paquete: se resuelven por id
-  // contra el mismo array PROPUESTAS y se linkean a su propia ficha.
-  const toursLinkeados = (d.toursIncluidos || []).map(getPropuestaPorId).filter(p => p && p.publicado);
-  const travesiasLinkeadas = (d.travesiasIncluidas || []).map(getPropuestaPorId).filter(p => p && p.publicado);
+  let relaciones = [];
+  try {
+    relaciones = await DataAPI.getExperienciasDeUnPaquete(p.id);
+  } catch (err) {
+    console.error("Error cargando las experiencias del paquete:", err);
+  }
+  const incluidas = relaciones.map(r => r.experiencia).filter(Boolean);
+
+  const actividadesIncluidas = [...new Map(
+    incluidas.flatMap(e => e.actividades).map(a => [a.slug, a.nombre])
+  ).values()];
+  bodyHtml += listaSiHay("Actividades incluidas", actividadesIncluidas, "check-list");
+
+  const toursLinkeados = incluidas.filter(e => e.tipoProducto === "tour");
+  const travesiasLinkeadas = incluidas.filter(e => e.tipoProducto === "travesia");
   if (toursLinkeados.length) {
-    bodyHtml += `<h2>Tours incluidos en este paquete</h2><ul class="check-list">${toursLinkeados.map(t => `<li><a href="propuesta.html?id=${t.id}">${t.nombre}</a></li>`).join("")}</ul>`;
+    bodyHtml += `<h2>Tours incluidos en este paquete</h2><ul class="check-list">${toursLinkeados.map(t => `<li><a href="propuesta.html?id=${t.slug}">${t.nombre}</a></li>`).join("")}</ul>`;
   }
   if (travesiasLinkeadas.length) {
-    bodyHtml += `<h2>Travesías incluidas en este paquete</h2><ul class="check-list">${travesiasLinkeadas.map(t => `<li><a href="propuesta.html?id=${t.id}">${t.nombre}</a></li>`).join("")}</ul>`;
+    bodyHtml += `<h2>Travesías incluidas en este paquete</h2><ul class="check-list">${travesiasLinkeadas.map(t => `<li><a href="propuesta.html?id=${t.slug}">${t.nombre}</a></li>`).join("")}</ul>`;
   }
 
   let asideHtml = "";
@@ -656,6 +759,50 @@ function renderDestinosGrid(){
   if (intCont) {
     intCont.innerHTML = DESTINOS.filter(d => d.grupo === "internacional").map(cardHtml).join("");
   }
+}
+
+/* =========================================================
+   EQUIPO (nosotros.html + resumen del equipo en Inicio)
+   Un único fetch (DataAPI.getEquipoActivo, memoizado) alimenta los
+   contenedores que puede haber en la página, cada uno con su propia
+   clase/markup pero sin duplicar la consulta ni la lógica de estados:
+     #equipo-grid       → nosotros.html (equipo-persona/equipo-foto)
+     #equipo-mini-grid  → index.html (equipo-mini-persona/equipo-mini-foto)
+   Ninguno de los dos trae el equipo hardcodeado en el HTML: ambos
+   arrancan en un estado de carga (".empty-state", ya en el HTML) y, si
+   la consulta falla o vuelve vacía, se reemplaza por un estado explícito
+   — nunca se inventan datos ni se vuelve a nombres fijos.
+   ========================================================= */
+async function renderEquipoGrid(){
+  const contenedores = [
+    { el: document.getElementById("equipo-grid"), prefix: "equipo" },
+    { el: document.getElementById("equipo-mini-grid"), prefix: "equipo-mini" }
+  ].filter(c => c.el);
+  if (!contenedores.length) return;
+
+  let equipo = [];
+  try {
+    equipo = await DataAPI.getEquipoActivo();
+  } catch (err) {
+    console.error("Error cargando el equipo:", err);
+    contenedores.forEach(c => { c.el.innerHTML = `<p class="empty-state">No pudimos cargar esta información en este momento.</p>`; });
+    return;
+  }
+
+  const personaHtml = (m, prefix) => `
+    <figure class="${prefix}-persona">
+      <div class="${prefix}-foto"><img src="${m.imagen}" alt="${m.nombre}, parte del equipo de Proyecto Raíces"${m.imagenPos ? ` style="object-position:${m.imagenPos};"` : ""} loading="lazy"></div>
+      <figcaption>
+        <h3>${m.nombre}</h3>
+        ${m.rol ? `<p>${m.rol}</p>` : ""}
+      </figcaption>
+    </figure>`;
+
+  contenedores.forEach(c => {
+    c.el.innerHTML = equipo.length
+      ? equipo.map(m => personaHtml(m, c.prefix)).join("")
+      : `<p class="empty-state">Todavía no hay integrantes cargados.</p>`;
+  });
 }
 
 /* =========================================================

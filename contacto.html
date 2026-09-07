@@ -51,19 +51,19 @@
 
       <div class="item">
         <div class="ico">✉</div>
-        <div><b>Email</b><a href="mailto:proyectoraicestravel@gmail.com">proyectoraicestravel@gmail.com</a></div>
+        <div><b>Email</b><a id="cont-email" href="#">Cargando…</a></div>
       </div>
       <div class="item">
         <div class="ico">📱</div>
-        <div><b>Instagram</b><a href="https://instagram.com/proyectotravesia" target="_blank" rel="noopener">@proyectotravesia</a></div>
+        <div><b>Instagram</b><a id="cont-instagram" href="#" target="_blank" rel="noopener">Cargando…</a></div>
       </div>
       <div class="item">
         <div class="ico">🎵</div>
-        <div><b>TikTok</b><a href="https://www.tiktok.com/@proyectotravesia" target="_blank" rel="noopener">@proyectotravesia</a></div>
+        <div><b>TikTok</b><a id="cont-tiktok" href="#" target="_blank" rel="noopener">Cargando…</a></div>
       </div>
       <div class="item">
         <div class="ico">📍</div>
-        <div><b>Base</b><span>Buenos Aires, Argentina</span></div>
+        <div><b>Base</b><span id="cont-ubicacion">Cargando…</span></div>
       </div>
 
       <div id="whatsapp-cta-holder"></div>
@@ -123,9 +123,9 @@
       <div>
         <h4>Redes &amp; contacto</h4>
         <ul>
-          <li><a href="https://instagram.com/proyectotravesia" target="_blank" rel="noopener">Instagram</a></li>
-          <li><a href="https://www.tiktok.com/@proyectotravesia" target="_blank" rel="noopener">TikTok</a></li>
-          <li><a href="mailto:proyectoraicestravel@gmail.com">Email</a></li>
+          <li><a id="footer-instagram" href="#" target="_blank" rel="noopener">Instagram</a></li>
+          <li><a id="footer-tiktok" href="#" target="_blank" rel="noopener">TikTok</a></li>
+          <li><a id="footer-email" href="#">Email</a></li>
         </ul>
       </div>
     </div>
@@ -138,21 +138,28 @@
 
 <div id="whatsapp-float-holder"></div>
 
-<script src="assets/js/site-config.js"></script>
-<script src="assets/js/destinos-data.js"></script>
-<script src="assets/js/propuestas-data.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="assets/js/supabase-client.js"></script>
+<script src="assets/js/data-api.js"></script>
 <script src="assets/js/main.js"></script>
 <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    // Select de destinos, poblado desde destinos-data.js
+  document.addEventListener("DOMContentLoaded", async () => {
+    // Select de destinos, poblado desde Supabase (DataAPI.getDestinosActivos)
     const sel = document.getElementById("destino");
-    if (sel && typeof DESTINOS !== "undefined") {
+    if (sel) {
+      let destinos = [];
+      try {
+        destinos = await DataAPI.getDestinosActivos();
+      } catch (err) {
+        console.error("Error cargando destinos:", err);
+      }
       // Mismo criterio comercial que el selector de destino de Tours/
-      // Travesías/Paquetes (ver main.js): un destino en preparación sólo
-      // se ofrece acá si ya tiene alguna propuesta publicada (Choquequirao);
-      // si todavía no tiene ninguna (Paracas/Huacachina/Arequipa/Lima/
-      // Norte Argentino) no se muestra como opción.
-      const destinosDisponibles = DESTINOS.filter(d => !d.esPlaceholder || getPropuestasPorDestino(d.slug).length > 0);
+      // Travesías/Paquetes: un destino en preparación sólo se ofrece acá
+      // si ya tiene alguna experiencia publicada (Choquequirao); si
+      // todavía no tiene ninguna (Paracas/Huacachina/Arequipa/Lima/
+      // Norte Argentino) no se muestra como opción (d.disponible ya
+      // resuelve exactamente ese criterio).
+      const destinosDisponibles = destinos.filter(d => d.disponible);
       let opts = `<option value="" selected disabled>Seleccioná un destino</option>`;
       opts += destinosDisponibles.map(d => `<option value="${d.nombre}">${d.pais} — ${d.nombre}</option>`).join("");
       opts += `<option value="Aún no sé">Aún no sé, quiero más info</option>`;
@@ -167,7 +174,47 @@
       }
     }
 
-    // CTA de WhatsApp: canal prioritario dentro de "Hablemos" (sólo activo si hay número cargado en site-config.js)
+    // Canales de contacto ("Hablemos"): valores desde site_config vía
+    // DataAPI/main.js (siteConfigReady, ya cargado — no dispara una
+    // consulta nueva). Arrancan en "Cargando…" (ver HTML); si el dato no
+    // está disponible (falló Supabase o la clave no está cargada), se
+    // muestra un estado explícito en vez de reusar el "Cargando…" para
+    // siempre o volver a un valor viejo hardcodeado.
+    await siteConfigReady;
+    const emailEl = document.getElementById("cont-email");
+    if (emailEl) {
+      if (SITE_CONFIG.email) {
+        emailEl.href = `mailto:${SITE_CONFIG.email}`;
+        emailEl.textContent = SITE_CONFIG.email;
+      } else {
+        emailEl.removeAttribute("href");
+        emailEl.textContent = "No disponible por el momento";
+      }
+    }
+    const igEl = document.getElementById("cont-instagram");
+    if (igEl) {
+      if (SITE_CONFIG.instagramUrl) {
+        igEl.href = SITE_CONFIG.instagramUrl;
+        igEl.textContent = SITE_CONFIG.instagram || SITE_CONFIG.instagramUrl;
+      } else {
+        igEl.removeAttribute("href");
+        igEl.textContent = "No disponible por el momento";
+      }
+    }
+    const ttEl = document.getElementById("cont-tiktok");
+    if (ttEl) {
+      if (SITE_CONFIG.tiktokUrl) {
+        ttEl.href = SITE_CONFIG.tiktokUrl;
+        ttEl.textContent = SITE_CONFIG.tiktok || SITE_CONFIG.tiktokUrl;
+      } else {
+        ttEl.removeAttribute("href");
+        ttEl.textContent = "No disponible por el momento";
+      }
+    }
+    const ubicEl = document.getElementById("cont-ubicacion");
+    if (ubicEl) ubicEl.textContent = SITE_CONFIG.ubicacionBase || "No disponible por el momento";
+
+    // CTA de WhatsApp: canal prioritario dentro de "Hablemos" (sólo activo si hay número cargado en site_config)
     const waHolder = document.getElementById("whatsapp-cta-holder");
     if (waHolder) {
       const link = whatsappLink();

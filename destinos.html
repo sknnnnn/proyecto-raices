@@ -85,9 +85,9 @@
       <div>
         <h4>Redes &amp; contacto</h4>
         <ul>
-          <li><a href="https://instagram.com/proyectotravesia" target="_blank" rel="noopener">Instagram</a></li>
-          <li><a href="https://www.tiktok.com/@proyectotravesia" target="_blank" rel="noopener">TikTok</a></li>
-          <li><a href="mailto:proyectoraicestravel@gmail.com">Email</a></li>
+          <li><a id="footer-instagram" href="#" target="_blank" rel="noopener">Instagram</a></li>
+          <li><a id="footer-tiktok" href="#" target="_blank" rel="noopener">TikTok</a></li>
+          <li><a id="footer-email" href="#">Email</a></li>
         </ul>
       </div>
     </div>
@@ -100,33 +100,46 @@
 
 <div id="whatsapp-float-holder"></div>
 
-<script src="assets/js/site-config.js"></script>
-<script src="assets/js/destinos-data.js"></script>
-<script src="assets/js/propuestas-data.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="assets/js/supabase-client.js"></script>
+<script src="assets/js/data-api.js"></script>
 <script src="assets/js/main.js"></script>
 <script>
   // Destinos — catálogo editorial agrupado por país/región: escala a
   // cualquier cantidad de destinos sin volverse una lista vertical
   // interminable (cada país agrupa sus propios destinos en una grilla
   // compacta que crece en filas, no en altura de bloque). El contenido
-  // (nombre/país/resumen/link) sale de DESTINOS, la misma fuente que
-  // usa el resto del sitio — no se agrega ni inventa ningún destino.
-  document.addEventListener("DOMContentLoaded", () => {
+  // (nombre/país/resumen/link/disponibilidad) sale de Supabase vía
+  // DataAPI.getDestinosActivos() — no se agrega ni inventa ningún destino.
+  document.addEventListener("DOMContentLoaded", async () => {
     const cont = document.getElementById("destinos-lista");
-    if (!cont || typeof DESTINOS === "undefined") return;
+    if (!cont) return;
+
+    cont.innerHTML = `<div class="empty-state">Cargando destinos…</div>`;
+
+    let destinos;
+    try {
+      destinos = await DataAPI.getDestinosActivos();
+    } catch (err) {
+      console.error("Error cargando destinos:", err);
+      cont.innerHTML = `<div class="empty-state">No pudimos cargar los destinos en este momento. Probá recargar la página.</div>`;
+      return;
+    }
 
     // Orden consistente con Experiencias: Argentina primero, Perú
-    // después (orden natural de DESTINOS, sin reordenar a mano acá) y,
-    // dentro de cada país, los "Próximamente" siempre al final
-    // (ordenarDestinos, ver destinos-data.js — misma lógica reutilizable
-    // que usa Experiencias para sus destino-tiles).
-    const destacados = ordenarDestinos(DESTINOS);
-
-    const objPos = { cusco: "center 55%", bariloche: "center 32%", "norte-neuquino": "center 20%", "norte-argentino": "center", choquequirao: "40% center" };
+    // después (orden natural de "orden" en Supabase, mismo orden que ya
+    // tenía destinos-data.js) y, dentro de cada país, los "Próximamente"
+    // siempre al final (mismo criterio que usaba ordenarDestinos: se
+    // ordena por esPlaceholder crudo, no por disponibilidad — así
+    // Choquequirao, con esPlaceholder:true, sigue agrupado junto a los
+    // demás "en preparación" aunque ya esté disponible comercialmente).
+    const destacados = destinos.slice().sort((a, b) =>
+      (a.esPlaceholder === b.esPlaceholder) ? 0 : a.esPlaceholder ? 1 : -1
+    );
 
     // Agrupa por país (d.pais) en el orden en que aparece cada uno por
-    // primera vez en "destacados" — un país nuevo en destinos-data.js
-    // arma su propio grupo solo, sin tocar este archivo.
+    // primera vez en "destacados" — un país nuevo en Supabase arma su
+    // propio grupo solo, sin tocar este archivo.
     const grupos = [];
     destacados.forEach(d => {
       let g = grupos.find(g => g.pais === d.pais);
@@ -136,18 +149,17 @@
 
     const tarjeta = (d) => {
       const nombre = d.nombre;
-      // "disponible" ya contempla el caso Choquequirao: esPlaceholder:true
-      // a nivel de ficha, pero con una propuesta publicada, así que no debe
-      // tratarse como Próximamente (ver destinoDisponibleComercialmente en
-      // destinos-data.js — mismo criterio que ya usaba el selector de
-      // Tours/Travesías/Paquetes/Contacto).
-      const disponible = destinoDisponibleComercialmente(d);
+      // d.disponible ya contempla el caso Choquequirao: esPlaceholder:true
+      // a nivel de ficha, pero con una experiencia publicada, así que no
+      // debe tratarse como Próximamente (mismo criterio que ya usaba el
+      // selector de Tours/Travesías/Paquetes/Contacto).
+      const disponible = d.disponible;
       // Próximamente CON foto real: se muestra en blanco y negro (única
       // excepción de color permitida), nunca oculta. Próximamente SIN
       // foto todavía: un único mensaje ("Próximamente"), sin duplicarlo
       // con un "Imagen pendiente" aparte.
       const img = d.imagen
-        ? `<img class="${!disponible ? "placeholder" : ""}" src="${d.imagen}" alt="${nombre}, ${d.pais}" style="object-position:${objPos[d.slug] || "center"};" loading="lazy">`
+        ? `<img class="${!disponible ? "placeholder" : ""}" src="${d.imagen}" alt="${nombre}, ${d.pais}" style="object-position:${d.imagenPos || "center"};" loading="lazy">`
         : `<div class="gal-placeholder">${!disponible ? "Próximamente" : "Imagen pendiente"}</div>`;
       const prep = (!disponible && d.imagen) ? `<span class="destino-card-flag">Próximamente</span>` : "";
       // "sin-foto" (no "disponible") es lo que decide el contraste del

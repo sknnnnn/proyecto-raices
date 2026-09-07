@@ -144,25 +144,8 @@
   </div>
 
   <div class="wrap equipo-mini">
-    <div class="equipo-mini-grid">
-      <figure class="equipo-mini-persona">
-        <div class="equipo-mini-foto"><img src="assets/img/santi.png" alt="Santiago, parte del equipo de Proyecto Raíces" style="object-position:center 25%;" loading="lazy"></div>
-        <figcaption>
-          <h3>Santiago</h3>
-        </figcaption>
-      </figure>
-      <figure class="equipo-mini-persona">
-        <div class="equipo-mini-foto"><img src="assets/img/trekking.jpg" alt="Belén, parte del equipo de Proyecto Raíces" style="object-position:center 20%;" loading="lazy"></div>
-        <figcaption>
-          <h3>Belén</h3>
-        </figcaption>
-      </figure>
-      <figure class="equipo-mini-persona">
-        <div class="equipo-mini-foto"><img src="assets/img/IMG_3755.JPEG" alt="Ignacio, parte del equipo de Proyecto Raíces" style="object-position:center 30%;" loading="lazy"></div>
-        <figcaption>
-          <h3>Ignacio</h3>
-        </figcaption>
-      </figure>
+    <div class="equipo-mini-grid" id="equipo-mini-grid">
+      <p class="empty-state">Cargando…</p>
     </div>
     <a href="nosotros.html" class="btn btn-outline on-light equipo-mini-cta">Conocé nuestra historia →</a>
   </div>
@@ -228,9 +211,9 @@
       <div>
         <h4>Redes &amp; contacto</h4>
         <ul>
-          <li><a href="https://instagram.com/proyectotravesia" target="_blank" rel="noopener">Instagram</a></li>
-          <li><a href="https://www.tiktok.com/@proyectotravesia" target="_blank" rel="noopener">TikTok</a></li>
-          <li><a href="mailto:proyectoraicestravel@gmail.com">Email</a></li>
+          <li><a id="footer-instagram" href="#" target="_blank" rel="noopener">Instagram</a></li>
+          <li><a id="footer-tiktok" href="#" target="_blank" rel="noopener">TikTok</a></li>
+          <li><a id="footer-email" href="#">Email</a></li>
         </ul>
       </div>
     </div>
@@ -244,42 +227,51 @@
 <div id="lightbox" class="lightbox"><button class="lightbox-close" aria-label="Cerrar">×</button><img src="" alt=""></div>
 <div id="whatsapp-float-holder"></div>
 
-<script src="assets/js/site-config.js"></script>
-<script src="assets/js/destinos-data.js"></script>
-<script src="assets/js/propuestas-data.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="assets/js/supabase-client.js"></script>
+<script src="assets/js/data-api.js"></script>
 <script src="assets/js/comentarios-data.js"></script>
 <script src="assets/js/main.js"></script>
 <script>
   // Home: destinos destacados — Cusco (protagonista) primero, después
   // Bariloche y Ushuaia (los otros dos destinos con contenido real hoy).
-  // Sólo cambia el orden de presentación acá; destinos-data.js no se modifica.
-  document.addEventListener("DOMContentLoaded", () => {
+  // Sólo cambia el orden de presentación acá; la fuente (Supabase) no se
+  // modifica.
+  document.addEventListener("DOMContentLoaded", async () => {
     const destinosHome = document.getElementById("destinos-home");
-    if (destinosHome) {
-      const ordenInicio = ["cusco", "bariloche", "ushuaia"];
-      const destacados = ordenInicio
-        .map(slug => DESTINOS.find(d => d.slug === slug))
-        .filter(Boolean)
-        .concat(DESTINOS.filter(d => !ordenInicio.includes(d.slug)));
-      destinosHome.innerHTML = destacados.slice(0, 3).map(d => `
-        <a class="dest-card ${d.esPlaceholder ? "placeholder" : ""}" href="catalogo.html?destino=${d.slug}">
-          ${d.imagen ? `<img src="${d.imagen}" alt="${d.nombre}">` : ""}
-          <div class="info">
-            <span class="tag">${d.pais}</span>
-            <h3>${d.nombre}</h3>
-            <p>${d.resumen}</p>
-          </div>
-        </a>`).join("");
+    if (!destinosHome) return;
+    let destinos = [];
+    try {
+      destinos = await DataAPI.getDestinosActivos();
+    } catch (err) {
+      console.error("Error cargando destinos:", err);
+      return;
     }
+    const ordenInicio = ["cusco", "bariloche", "ushuaia"];
+    const destacados = ordenInicio
+      .map(slug => destinos.find(d => d.slug === slug))
+      .filter(Boolean)
+      .concat(destinos.filter(d => !ordenInicio.includes(d.slug)));
+    destinosHome.innerHTML = destacados.slice(0, 3).map(d => `
+      <a class="dest-card ${d.esPlaceholder ? "placeholder" : ""}" href="catalogo.html?destino=${d.slug}">
+        ${d.imagen ? `<img src="${d.imagen}" alt="${d.nombre}">` : ""}
+        <div class="info">
+          <span class="tag">${d.pais}</span>
+          <h3>${d.nombre}</h3>
+          <p>${d.resumen}</p>
+        </div>
+      </a>`).join("");
   });
 </script>
 <script>
   // Home: CTA de WhatsApp del Hero — reutiliza SITE_CONFIG.whatsapp /
-  // whatsappLink() (site-config.js). Si todavía no hay número cargado,
-  // whatsappLink() devuelve null y el botón sigue llevando a Contacto.
-  document.addEventListener("DOMContentLoaded", () => {
+  // whatsappLink() (main.js, poblado desde site_config vía DataAPI). Si
+  // todavía no hay número cargado, whatsappLink() devuelve null y el
+  // botón sigue llevando a Contacto.
+  document.addEventListener("DOMContentLoaded", async () => {
     const waBtn = document.getElementById("hero-wa-cta");
     if (waBtn && typeof whatsappLink === "function") {
+      await siteConfigReady;
       const link = whatsappLink("Hola! Quiero reservar una experiencia con Proyecto Raíces.");
       if (link) {
         waBtn.href = link;
@@ -290,13 +282,13 @@
   });
 </script>
 <script>
-  // Home: carrusel de Experiencias — usa PROPUESTAS (propuestas-data.js)
-  // tal cual, mismo componente .exp-card que el resto del sitio. No crea
-  // datos nuevos: sólo arma el riel y lo duplica para el loop continuo.
-  document.addEventListener("DOMContentLoaded", () => {
+  // Home: carrusel de Experiencias — usa Supabase vía DataAPI, mismo
+  // componente .exp-card que el resto del sitio. No crea datos nuevos:
+  // sólo arma el riel y lo duplica para el loop continuo.
+  document.addEventListener("DOMContentLoaded", async () => {
     const track = document.getElementById("exp-home-track");
     const viewport = document.getElementById("exp-home-viewport");
-    if (!track || !viewport || typeof PROPUESTAS === "undefined") return;
+    if (!track || !viewport) return;
 
     const carousel = document.getElementById("exp-home-carousel");
     const filtrosWrap = document.getElementById("exp-home-filtros");
@@ -305,17 +297,16 @@
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     function cardHTML(p) {
-      const tipoInfo = typeof TIPOS_PROPUESTA !== "undefined" ? TIPOS_PROPUESTA[p.tipo] : null;
-      const destino = typeof getDestinoPorSlug === "function" ? getDestinoPorSlug(p.destino) : null;
+      const tipoInfo = typeof TIPOS_PROPUESTA !== "undefined" ? TIPOS_PROPUESTA[p.tipoProducto] : null;
       return `
-        <article class="exp-card" data-tipo="${p.tipo}">
+        <article class="exp-card" data-tipo="${p.tipoProducto}">
           <div class="img-wrap">
             ${p.imagen ? `<img src="${p.imagen}" alt="${p.nombre}" loading="lazy">` : `<div class="gal-placeholder" style="height:100%;">Imagen pendiente</div>`}
-            <span class="cat-badge">${tipoInfo ? tipoInfo.label : p.tipo}</span>
+            <span class="cat-badge">${tipoInfo ? tipoInfo.label : p.tipoProducto}</span>
           </div>
           <div class="body">
             ${p.esPlaceholder ? `<span class="placeholder-badge">Contenido de ejemplo</span>` : ""}
-            <span class="dest-tag">${destino ? destino.nombre : p.destino}</span>
+            <span class="dest-tag">${p.destino ? p.destino.nombre : ""}</span>
             <h3>${p.nombre}</h3>
             <p class="resumen">${p.resumen}</p>
             <div class="meta">
@@ -324,7 +315,7 @@
               ${p.precio ? `<span>💲 ${p.precio}</span>` : ""}
             </div>
             <div class="actions">
-              <a class="btn btn-sm" href="propuesta.html?id=${p.id}">Ver detalles</a>
+              <a class="btn btn-sm" href="propuesta.html?id=${p.slug}">Ver detalles</a>
             </div>
           </div>
         </article>`;
@@ -337,14 +328,24 @@
     // pisar una animación manual todavía en curso.
     let manualRAF = null;
 
+    track.innerHTML = `<p class="empty-state">Cargando…</p>`;
+
+    let reales = [];
+    try {
+      // Sólo experiencias publicadas+activas — una sola consulta, cacheada
+      // por DataAPI: cambiar el filtro de tipo no vuelve a pedir datos.
+      reales = await DataAPI.getExperienciasPublicadas();
+    } catch (err) {
+      console.error("Error cargando experiencias:", err);
+      track.innerHTML = `<p class="empty-state">No pudimos cargar las experiencias en este momento.</p>`;
+      return;
+    }
+
     function render() {
-      // Sólo propuestas publicadas (ver getPropuestasPublicadas en
-      // propuestas-data.js) — no todo lo que tenga esPlaceholder:false.
-      const reales = getPropuestasPublicadas();
       // "Todos": Tours/Travesías/Paquetes mezclados entre sí, no
       // agrupados en bloques por tipo (con un filtro activo ya es un
       // único tipo, así que interleaveByTipo no cambia nada).
-      const lista = tipoActivo ? reales.filter(p => p.tipo === tipoActivo) : interleaveByTipo(reales);
+      const lista = tipoActivo ? reales.filter(p => p.tipoProducto === tipoActivo) : interleaveByTipo(reales);
       if (manualRAF) { cancelAnimationFrame(manualRAF); manualRAF = null; }
       if (!lista.length) {
         track.innerHTML = `<p class="empty-state">Todavía no hay experiencias cargadas en esta categoría.</p>`;
