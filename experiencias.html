@@ -126,9 +126,9 @@
 <div id="lightbox" class="lightbox"><button class="lightbox-close" aria-label="Cerrar">×</button><img src="" alt=""></div>
 <div id="whatsapp-float-holder"></div>
 
-<script src="assets/js/site-config.js"></script>
-<script src="assets/js/destinos-data.js"></script>
-<script src="assets/js/propuestas-data.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="assets/js/supabase-client.js"></script>
+<script src="assets/js/data-api.js"></script>
 <script src="assets/js/main.js"></script>
 <script>
   /* Explorador de Experiencias — País → Destino → catálogo del destino.
@@ -140,35 +140,38 @@
      filtra por destino + tipo, la misma que usan las cards de
      Destinos) — no se inventa ninguna página nueva.
 
-     Los destinos salen de DESTINOS completo (destinos-data.js), igual
-     que destinos.html: se listan TODOS los destinos reales agrupados
-     por país, no sólo los que ya tienen una propuesta cargada — así
+     Los destinos salen de Supabase (DataAPI.getDestinosActivos), igual
+     que destinos.html: se listan TODOS los destinos activos agrupados
+     por país, no sólo los que ya tienen una experiencia cargada — así
      los dos puntos de entrada (Experiencias y Destinos) muestran el
-     mismo árbol de lugares. El que todavía no tiene propuestas reales
+     mismo árbol de lugares. El que todavía no tiene experiencias reales
      se marca "En preparación" (mismo flag que ya usa destinos.html) y
      su link igual lleva a catalogo.html, que muestra el estado vacío
      correspondiente. No hay contenido inventado ni una lista paralela.
-
-     "Para inspirarte" es una sección aparte, más abajo: no depende de
-     este explorador, siempre muestra las mismas 3 propuestas reales de
-     ejemplo que ya existen en PROPUESTAS.
 
      "prop-grid"/"prop-filtros" (la grilla plana que usaban antes esta
      página y Tours/Travesías/Paquetes/Catálogo) ya no están en el DOM
      de esta página: renderPropuestasGrid() en main.js no encuentra su
      contenedor acá y no hace nada, así que esas otras páginas siguen
      funcionando exactamente igual que antes. */
-  document.addEventListener("DOMContentLoaded", () => {
+  document.addEventListener("DOMContentLoaded", async () => {
     const stage = document.getElementById("exp-stage");
     const paisesWrap = document.getElementById("exp-paises");
-    if (!stage || !paisesWrap || typeof PROPUESTAS === "undefined" || typeof DESTINOS === "undefined") return;
+    if (!stage || !paisesWrap) return;
 
-    function nombreDestino(d){
-      return d.nombre;
+    stage.innerHTML = `<p class="empty-state">Cargando destinos…</p>`;
+
+    let destinos;
+    try {
+      destinos = await DataAPI.getDestinosActivos();
+    } catch (err) {
+      console.error("Error cargando destinos:", err);
+      stage.innerHTML = `<p class="empty-state">No pudimos cargar los destinos en este momento. Probá recargar la página.</p>`;
+      return;
     }
 
     const arbol = {};
-    DESTINOS.forEach(d => {
+    destinos.forEach(d => {
       arbol[d.pais] = arbol[d.pais] || {};
       arbol[d.pais][d.slug] = d;
     });
@@ -193,13 +196,19 @@
         });
       });
 
-      const destinosHtml = ordenarDestinos(Object.values(arbol[paisActivo])).map(d => {
-        const nombre = nombreDestino(d);
-        // "disponible" contempla el caso Choquequirao (esPlaceholder:true
-        // con una propuesta publicada): ver destinoDisponibleComercialmente
-        // en destinos-data.js, mismo criterio que el selector de Tours/
-        // Travesías/Paquetes/Contacto.
-        const disponible = destinoDisponibleComercialmente(d);
+      // Mismo orden que destinos.html: por esPlaceholder crudo (no por
+      // disponibilidad), así Choquequirao sigue agrupado junto a los
+      // demás "en preparación" del mismo país aunque ya esté disponible.
+      const destinosPais = Object.values(arbol[paisActivo]).slice().sort((a, b) =>
+        (a.esPlaceholder === b.esPlaceholder) ? 0 : a.esPlaceholder ? 1 : -1
+      );
+
+      const destinosHtml = destinosPais.map(d => {
+        const nombre = d.nombre;
+        // d.disponible contempla el caso Choquequirao (esPlaceholder:true
+        // con una experiencia publicada), mismo criterio que el selector
+        // de Tours/Travesías/Paquetes/Contacto.
+        const disponible = d.disponible;
         const prep = (!disponible && d.imagen) ? `<span class="destino-card-flag">Próximamente</span>` : "";
         const img = d.imagen
           ? `<img class="${!disponible ? "placeholder" : ""}" src="${d.imagen}" alt="${nombre}, ${d.pais}" loading="lazy">`
@@ -215,37 +224,43 @@
       stage.innerHTML = `<div class="exp-explorer-destinos">${destinosHtml}</div>`;
     }
 
-    // "Para inspirarte" — puerta de entrada secundaria para quien
-    // todavía no eligió destino: no depende de país/destino activo,
-    // siempre muestra las mismas propuestas reales (hoy, las únicas 3
-    // que existen en PROPUESTAS — una de cada tipo, sin elegir al azar).
+    render();
+  });
+
+  /* "Para inspirarte" — puerta de entrada secundaria para quien todavía
+     no eligió destino: no depende del explorador de arriba, siempre
+     muestra las mismas 3 experiencias reales (una de cada tipo, sin
+     elegir al azar), ahora vía Supabase (DataAPI). */
+  document.addEventListener("DOMContentLoaded", async () => {
+    const inspirateWrap = document.getElementById("exp-inspirate");
+    if (!inspirateWrap) return;
+
     function inspirateCardHtml(p){
-      const d = getDestinoPorSlug(p.destino);
-      const nombreD = d ? nombreDestino(d) : p.destino;
-      const tipoInfo = TIPOS_PROPUESTA[p.tipo];
+      const tipoInfo = TIPOS_PROPUESTA[p.tipoProducto];
       return `
-        <a class="exp-inspirate-card" href="propuesta.html?id=${p.id}">
+        <a class="exp-inspirate-card" href="propuesta.html?id=${p.slug}">
           ${p.imagen ? `<img src="${p.imagen}" alt="${p.nombre}" loading="lazy">` : `<div class="gal-placeholder" style="height:100%;">Imagen pendiente</div>`}
-          <span class="cat-badge">${tipoInfo ? tipoInfo.label : p.tipo}</span>
+          <span class="cat-badge">${tipoInfo ? tipoInfo.label : p.tipoProducto}</span>
           <span class="exp-inspirate-card-info">
             ${p.esPlaceholder ? `<span class="placeholder-badge">Contenido de ejemplo</span>` : ""}
-            <span class="exp-inspirate-card-dest">${nombreD}</span>
+            <span class="exp-inspirate-card-dest">${p.destino ? p.destino.nombre : ""}</span>
             <span class="exp-inspirate-card-name">${p.nombre}</span>
             <span class="exp-inspirate-card-cta">Ver detalles →</span>
           </span>
         </a>`;
     }
-    const inspirateWrap = document.getElementById("exp-inspirate");
-    if (inspirateWrap) {
-      // Sólo propuestas publicadas (ver getPropuestasPublicadas en
-      // propuestas-data.js), mezcladas por tipo (Tours/Travesías): sin
-      // la mezcla, tomar las primeras 3 mostraba casi siempre el mismo
-      // tipo, porque los datos están agrupados por tipo en el archivo.
-      const reales = getPropuestasPublicadas();
-      inspirateWrap.innerHTML = interleaveByTipo(reales).slice(0, 3).map(inspirateCardHtml).join("");
-    }
 
-    render();
+    let reales = [];
+    try {
+      // Sólo experiencias publicadas+activas, mezcladas por tipo (Tours/
+      // Travesías): sin la mezcla, tomar las primeras 3 mostraba casi
+      // siempre el mismo tipo, porque vienen ordenadas por "orden".
+      reales = await DataAPI.getExperienciasPublicadas();
+    } catch (err) {
+      console.error("Error cargando experiencias:", err);
+      return;
+    }
+    inspirateWrap.innerHTML = interleaveByTipo(reales).slice(0, 3).map(inspirateCardHtml).join("");
   });
 </script>
 </body>

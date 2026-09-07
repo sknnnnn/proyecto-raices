@@ -119,15 +119,24 @@
 <div id="lightbox" class="lightbox"><button class="lightbox-close" aria-label="Cerrar">×</button><img src="" alt=""></div>
 <div id="whatsapp-float-holder"></div>
 
-<script src="assets/js/site-config.js"></script>
-<script src="assets/js/destinos-data.js"></script>
-<script src="assets/js/propuestas-data.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="assets/js/supabase-client.js"></script>
+<script src="assets/js/data-api.js"></script>
 <script src="assets/js/main.js"></script>
 <script>
-  document.addEventListener("DOMContentLoaded", () => {
+  // El encabezado del destino (título/breadcrumb/hero) y la grilla de
+  // experiencias (#prop-grid, vía renderPropuestasGrid() en main.js)
+  // salen ambos de Supabase a través de DataAPI.
+  document.addEventListener("DOMContentLoaded", async () => {
     const params = new URLSearchParams(window.location.search);
     const slug = params.get("destino");
-    const d = slug ? getDestinoPorSlug(slug) : null;
+    let d = null;
+    try {
+      d = slug ? await DataAPI.getDestinoPorSlug(slug) : null;
+    } catch (err) {
+      console.error("Error cargando el destino:", err);
+      return;
+    }
     if (d) {
       const nombre = d.nombre;
       document.title = `${nombre} — Proyecto Raíces`;
@@ -139,11 +148,11 @@
       if (resumen) resumen.textContent = d.resumen;
       const media = document.getElementById("cat-media");
       if (media) {
-        // "disponible" contempla el caso Choquequirao (esPlaceholder:true
-        // con una propuesta publicada): ver destinoDisponibleComercialmente
-        // en destinos-data.js. Sin esto, el hero mostraba "Próximamente"
-        // mientras la grilla de abajo ya mostraba su experiencia real.
-        const disponible = destinoDisponibleComercialmente(d);
+        // d.disponible ya contempla el caso Choquequirao (esPlaceholder:true
+        // con una experiencia publicada). Sin esto, el hero mostraba
+        // "Próximamente" mientras la grilla de abajo ya mostraba su
+        // experiencia real.
+        const disponible = d.disponible;
         if (d.imagen) {
           media.innerHTML = `<img id="cat-img" class="${!disponible ? "placeholder" : ""}" src="${d.imagen}" alt="${nombre}" style="object-position:center;">`;
         } else {
