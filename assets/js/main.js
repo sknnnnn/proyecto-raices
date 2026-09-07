@@ -58,11 +58,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   await siteConfigReady;
   initWhatsappFloat();
   initContactForm();
+  initFooterContacto();
 
   renderPropuestasGrid();   // async — consulta Supabase vía DataAPI
   renderPropuestaDetalle(); // async — consulta Supabase vía DataAPI
   renderDestinosGrid();
-  renderEquipoGrid(); // async — sólo actúa si la página tiene #equipo-grid (nosotros.html)
+  renderEquipoGrid(); // async — sólo actúa si la página tiene #equipo-grid o #equipo-mini-grid
   initTestimoniosCarousel(); // sólo actúa si la página tiene #testi-track (Inicio)
   initComentariosGrid(); // sólo actúa si la página tiene #comentarios-grid (comentarios.html)
   initGaleriaJustify(); // sólo actúa si la página tiene .gal-row (galeria.html)
@@ -196,6 +197,23 @@ function initNav(){
 function initFooterYear(){
   const el = document.getElementById("footer-year");
   if (el) el.textContent = new Date().getFullYear();
+}
+
+/* ---------- Redes/contacto del footer ----------
+   #footer-instagram / #footer-tiktok / #footer-email están presentes en
+   el footer de todas las páginas. Se completan acá con SITE_CONFIG (ya
+   cargado por siteConfigReady antes de llamar esta función — no dispara
+   ninguna consulta nueva). Si algún valor no está disponible, el link
+   queda con href="#" en vez de mostrar un dato viejo/inventado. */
+function initFooterContacto(){
+  const igEl = document.getElementById("footer-instagram");
+  if (igEl && SITE_CONFIG.instagramUrl) igEl.href = SITE_CONFIG.instagramUrl;
+
+  const ttEl = document.getElementById("footer-tiktok");
+  if (ttEl && SITE_CONFIG.tiktokUrl) ttEl.href = SITE_CONFIG.tiktokUrl;
+
+  const emailEl = document.getElementById("footer-email");
+  if (emailEl && SITE_CONFIG.email) emailEl.href = `mailto:${SITE_CONFIG.email}`;
 }
 
 /* ---------- Botón flotante de WhatsApp ---------- */
@@ -744,36 +762,47 @@ function renderDestinosGrid(){
 }
 
 /* =========================================================
-   EQUIPO (nosotros.html)
-   El HTML ya trae a Santiago/Belén/Ignacio como contenido
-   estático (misma foto/object-position/orden que en Supabase),
-   así que no hay parpadeo visible: esto reemplaza ese contenido
-   por el mismo dato, ahora leído de la tabla "equipo" — que pasa
-   a ser la fuente de verdad para altas/bajas/cambios futuros.
+   EQUIPO (nosotros.html + resumen del equipo en Inicio)
+   Un único fetch (DataAPI.getEquipoActivo, memoizado) alimenta los
+   contenedores que puede haber en la página, cada uno con su propia
+   clase/markup pero sin duplicar la consulta ni la lógica de estados:
+     #equipo-grid       → nosotros.html (equipo-persona/equipo-foto)
+     #equipo-mini-grid  → index.html (equipo-mini-persona/equipo-mini-foto)
+   Ninguno de los dos trae el equipo hardcodeado en el HTML: ambos
+   arrancan en un estado de carga (".empty-state", ya en el HTML) y, si
+   la consulta falla o vuelve vacía, se reemplaza por un estado explícito
+   — nunca se inventan datos ni se vuelve a nombres fijos.
    ========================================================= */
 async function renderEquipoGrid(){
-  const grid = document.getElementById("equipo-grid");
-  if (!grid) return;
+  const contenedores = [
+    { el: document.getElementById("equipo-grid"), prefix: "equipo" },
+    { el: document.getElementById("equipo-mini-grid"), prefix: "equipo-mini" }
+  ].filter(c => c.el);
+  if (!contenedores.length) return;
 
-  let equipo;
+  let equipo = [];
   try {
     equipo = await DataAPI.getEquipoActivo();
   } catch (err) {
     console.error("Error cargando el equipo:", err);
-    // Se conserva el contenido estático ya presente en el HTML en vez
-    // de reemplazarlo por un estado de error — es la misma información.
+    contenedores.forEach(c => { c.el.innerHTML = `<p class="empty-state">No pudimos cargar esta información en este momento.</p>`; });
     return;
   }
-  if (!equipo.length) return;
 
-  grid.innerHTML = equipo.map(m => `
-    <figure class="equipo-persona">
-      <div class="equipo-foto"><img src="${m.imagen}" alt="${m.nombre}, parte del equipo de Proyecto Raíces"${m.imagenPos ? ` style="object-position:${m.imagenPos};"` : ""} loading="lazy"></div>
+  const personaHtml = (m, prefix) => `
+    <figure class="${prefix}-persona">
+      <div class="${prefix}-foto"><img src="${m.imagen}" alt="${m.nombre}, parte del equipo de Proyecto Raíces"${m.imagenPos ? ` style="object-position:${m.imagenPos};"` : ""} loading="lazy"></div>
       <figcaption>
         <h3>${m.nombre}</h3>
         ${m.rol ? `<p>${m.rol}</p>` : ""}
       </figcaption>
-    </figure>`).join("");
+    </figure>`;
+
+  contenedores.forEach(c => {
+    c.el.innerHTML = equipo.length
+      ? equipo.map(m => personaHtml(m, c.prefix)).join("")
+      : `<p class="empty-state">Todavía no hay integrantes cargados.</p>`;
+  });
 }
 
 /* =========================================================

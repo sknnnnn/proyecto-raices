@@ -51,19 +51,19 @@
 
       <div class="item">
         <div class="ico">✉</div>
-        <div><b>Email</b><a id="cont-email" href="mailto:proyectoraicestravel@gmail.com">proyectoraicestravel@gmail.com</a></div>
+        <div><b>Email</b><a id="cont-email" href="#">Cargando…</a></div>
       </div>
       <div class="item">
         <div class="ico">📱</div>
-        <div><b>Instagram</b><a id="cont-instagram" href="https://instagram.com/proyectotravesia" target="_blank" rel="noopener">@proyectotravesia</a></div>
+        <div><b>Instagram</b><a id="cont-instagram" href="#" target="_blank" rel="noopener">Cargando…</a></div>
       </div>
       <div class="item">
         <div class="ico">🎵</div>
-        <div><b>TikTok</b><a id="cont-tiktok" href="https://www.tiktok.com/@proyectotravesia" target="_blank" rel="noopener">@proyectotravesia</a></div>
+        <div><b>TikTok</b><a id="cont-tiktok" href="#" target="_blank" rel="noopener">Cargando…</a></div>
       </div>
       <div class="item">
         <div class="ico">📍</div>
-        <div><b>Base</b><span id="cont-ubicacion">Buenos Aires, Argentina</span></div>
+        <div><b>Base</b><span id="cont-ubicacion">Cargando…</span></div>
       </div>
 
       <div id="whatsapp-cta-holder"></div>
@@ -123,9 +123,9 @@
       <div>
         <h4>Redes &amp; contacto</h4>
         <ul>
-          <li><a href="https://instagram.com/proyectotravesia" target="_blank" rel="noopener">Instagram</a></li>
-          <li><a href="https://www.tiktok.com/@proyectotravesia" target="_blank" rel="noopener">TikTok</a></li>
-          <li><a href="mailto:proyectoraicestravel@gmail.com">Email</a></li>
+          <li><a id="footer-instagram" href="#" target="_blank" rel="noopener">Instagram</a></li>
+          <li><a id="footer-tiktok" href="#" target="_blank" rel="noopener">TikTok</a></li>
+          <li><a id="footer-email" href="#">Email</a></li>
         </ul>
       </div>
     </div>
@@ -175,25 +175,44 @@
     }
 
     // Canales de contacto ("Hablemos"): valores desde site_config vía
-    // DataAPI/main.js (siteConfigReady), en vez de hardcodeados en el HTML.
+    // DataAPI/main.js (siteConfigReady, ya cargado — no dispara una
+    // consulta nueva). Arrancan en "Cargando…" (ver HTML); si el dato no
+    // está disponible (falló Supabase o la clave no está cargada), se
+    // muestra un estado explícito en vez de reusar el "Cargando…" para
+    // siempre o volver a un valor viejo hardcodeado.
     await siteConfigReady;
     const emailEl = document.getElementById("cont-email");
-    if (emailEl && SITE_CONFIG.email) {
-      emailEl.href = `mailto:${SITE_CONFIG.email}`;
-      emailEl.textContent = SITE_CONFIG.email;
+    if (emailEl) {
+      if (SITE_CONFIG.email) {
+        emailEl.href = `mailto:${SITE_CONFIG.email}`;
+        emailEl.textContent = SITE_CONFIG.email;
+      } else {
+        emailEl.removeAttribute("href");
+        emailEl.textContent = "No disponible por el momento";
+      }
     }
     const igEl = document.getElementById("cont-instagram");
-    if (igEl && SITE_CONFIG.instagramUrl) {
-      igEl.href = SITE_CONFIG.instagramUrl;
-      igEl.textContent = SITE_CONFIG.instagram || SITE_CONFIG.instagramUrl;
+    if (igEl) {
+      if (SITE_CONFIG.instagramUrl) {
+        igEl.href = SITE_CONFIG.instagramUrl;
+        igEl.textContent = SITE_CONFIG.instagram || SITE_CONFIG.instagramUrl;
+      } else {
+        igEl.removeAttribute("href");
+        igEl.textContent = "No disponible por el momento";
+      }
     }
     const ttEl = document.getElementById("cont-tiktok");
-    if (ttEl && SITE_CONFIG.tiktokUrl) {
-      ttEl.href = SITE_CONFIG.tiktokUrl;
-      ttEl.textContent = SITE_CONFIG.tiktok || SITE_CONFIG.tiktokUrl;
+    if (ttEl) {
+      if (SITE_CONFIG.tiktokUrl) {
+        ttEl.href = SITE_CONFIG.tiktokUrl;
+        ttEl.textContent = SITE_CONFIG.tiktok || SITE_CONFIG.tiktokUrl;
+      } else {
+        ttEl.removeAttribute("href");
+        ttEl.textContent = "No disponible por el momento";
+      }
     }
     const ubicEl = document.getElementById("cont-ubicacion");
-    if (ubicEl && SITE_CONFIG.ubicacionBase) ubicEl.textContent = SITE_CONFIG.ubicacionBase;
+    if (ubicEl) ubicEl.textContent = SITE_CONFIG.ubicacionBase || "No disponible por el momento";
 
     // CTA de WhatsApp: canal prioritario dentro de "Hablemos" (sólo activo si hay número cargado en site_config)
     const waHolder = document.getElementById("whatsapp-cta-holder");
