@@ -520,6 +520,9 @@ async function renderPropuestaDetalle(){
   if (bcEl) {
     let volverHref = tipoInfo ? tipoInfo.pagina : "destinos.html";
     let volverLabel = tipoInfo ? tipoInfo.labelPlural : "Propuestas";
+    // Nivel intermedio opcional "Experiencias /", sólo cuando se llegó
+    // por el explorador país→destino de experiencias.html (ver más abajo).
+    let experienciasCrumb = "";
     // Si se llegó desde un catálogo filtrado por destino —ya sea
     // catalogo.html?destino=... o la propia página de tipo fijo
     // (tours.html/travesias.html/paquetes.html) con ?destino=...—,
@@ -532,11 +535,19 @@ async function renderPropuestaDetalle(){
         const refDestinoSlug = ref.searchParams.get("destino");
         const refDestino = refDestinoSlug ? await DataAPI.getDestinoPorSlug(refDestinoSlug) : null;
         volverLabel = refDestino ? refDestino.nombre : "Catálogo";
+        // catalogo.html llegó desde el explorador de experiencias.html
+        // (país → destino): el destino tile agrega "&origen=experiencias"
+        // a su link. Ese mismo query string es el que "volverHref" ya
+        // preserva, así que el breadcrumb sólo necesita agregar el nivel
+        // "Experiencias" delante — no duplica la resolución del destino.
+        if (ref.searchParams.get("origen") === "experiencias") {
+          experienciasCrumb = `<a href="experiencias.html">Experiencias</a> / `;
+        }
       } else if (tipoInfo && ref.pathname === "/" + tipoInfo.pagina && ref.search) {
         volverHref = tipoInfo.pagina + ref.search;
       }
     } catch (e) { /* sin referrer válido: se usa el destino por defecto */ }
-    bcEl.innerHTML = `<a href="index.html">Inicio</a> / <a href="${volverHref}">${volverLabel}</a> / ${p.nombre}`;
+    bcEl.innerHTML = `<a href="index.html">Inicio</a> / ${experienciasCrumb}<a href="${volverHref}">${volverLabel}</a> / ${p.nombre}`;
   }
 
   const consultaHref = `contacto.html?propuesta=${encodeURIComponent(p.nombre)}`;
