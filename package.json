@@ -1,0 +1,14 @@
+{
+  "name": "proyecto-raices",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Sitio estatico de Proyecto Raices (sin build tooling). package.json existe solo para la suite de tests E2E (PRO-51).",
+  "scripts": {
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.56.1"
+  }
+}
