@@ -166,7 +166,7 @@
       // título: sin foto de fondo, el blanco pensado para una fotografía
       // oscura queda ilegible sobre el placeholder claro.
       return `
-        <a class="destino-card${d.imagen ? "" : " sin-foto"}" href="catalogo.html?destino=${d.slug}" aria-label="Ver propuestas en ${nombre}">
+        <a class="destino-card${d.imagen ? "" : " sin-foto"}" href="catalogo.html?destino=${d.slug}&origen=destinos" aria-label="Ver propuestas en ${nombre}">
           ${img}
           ${prep}
           <div class="info">

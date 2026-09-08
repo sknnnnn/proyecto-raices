@@ -462,6 +462,22 @@ function propuestaCardHtml(p){
     </article>`;
 }
 
+/* ---------- Navegación contextual "← Volver a…" (PRO-48) ----------
+   Botón discreto y secundario, complementario al breadcrumb (no lo
+   reemplaza). Determinista: nunca usa history.back(), sólo enlaces
+   internos ya resueltos por quien la llama (catalogo.html según
+   ?origen=, o renderPropuestaDetalle según el mismo contexto que arma
+   el breadcrumb). Sin contexto válido (href/label null), el link queda
+   oculto — no aparece "Volver" en accesos directos. */
+function setVolverLink(id, href, label){
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (!href || !label) { el.style.display = "none"; return; }
+  el.href = href;
+  el.textContent = `← Volver a ${label}`;
+  el.style.display = "inline-block";
+}
+
 /* =========================================================
    DETALLE DE PROPUESTA (propuesta.html)
    La ficha lee "tipo" y arma automáticamente los bloques
@@ -523,6 +539,12 @@ async function renderPropuestaDetalle(){
     // Nivel intermedio opcional "Experiencias /", sólo cuando se llegó
     // por el explorador país→destino de experiencias.html (ver más abajo).
     let experienciasCrumb = "";
+    // Sólo true cuando el referrer coincidió con un contexto interno
+    // real (catálogo por destino, o la propia página de tipo fijo con
+    // filtro) — no con el fallback por defecto. El botón "← Volver a…"
+    // (PRO-48) reutiliza exactamente este mismo destino/label; en un
+    // acceso directo (sin ese contexto) el botón no debe mostrarse.
+    let tieneContexto = false;
     // Si se llegó desde un catálogo filtrado por destino —ya sea
     // catalogo.html?destino=... o la propia página de tipo fijo
     // (tours.html/travesias.html/paquetes.html) con ?destino=...—,
@@ -535,6 +557,7 @@ async function renderPropuestaDetalle(){
         const refDestinoSlug = ref.searchParams.get("destino");
         const refDestino = refDestinoSlug ? await DataAPI.getDestinoPorSlug(refDestinoSlug) : null;
         volverLabel = refDestino ? refDestino.nombre : "Catálogo";
+        tieneContexto = true;
         // catalogo.html llegó desde el explorador de experiencias.html
         // (país → destino): el destino tile agrega "&origen=experiencias"
         // a su link. Ese mismo query string es el que "volverHref" ya
@@ -543,11 +566,17 @@ async function renderPropuestaDetalle(){
         if (ref.searchParams.get("origen") === "experiencias") {
           experienciasCrumb = `<a href="experiencias.html">Experiencias</a> / `;
         }
-      } else if (tipoInfo && ref.pathname === "/" + tipoInfo.pagina && ref.search) {
+      } else if (tipoInfo && ref.pathname === "/" + tipoInfo.pagina) {
+        // El referrer es la propia página de tipo fijo (tours/travesías/
+        // paquetes): contexto válido con o sin filtro de destino en su
+        // URL — si no tenía ?destino=, ref.search queda vacío y
+        // volverHref no cambia (ya apuntaba a tipoInfo.pagina por defecto).
         volverHref = tipoInfo.pagina + ref.search;
+        tieneContexto = true;
       }
     } catch (e) { /* sin referrer válido: se usa el destino por defecto */ }
     bcEl.innerHTML = `<a href="index.html">Inicio</a> / ${experienciasCrumb}<a href="${volverHref}">${volverLabel}</a> / ${p.nombre}`;
+    setVolverLink("prop-volver", tieneContexto ? volverHref : null, tieneContexto ? volverLabel : null);
   }
 
   const consultaHref = `contacto.html?propuesta=${encodeURIComponent(p.nombre)}`;

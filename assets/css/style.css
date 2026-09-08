@@ -223,6 +223,12 @@ body[data-page="comentarios"] header:not(.is-solid) .navlinks a{text-shadow:0 2p
 .breadcrumb a{text-decoration:none; opacity:0.85;}
 .breadcrumb a:hover{opacity:1; text-decoration:underline;}
 
+/* Navegación contextual "← Volver a…" (PRO-48): discreta y secundaria,
+   coexiste con el breadcrumb sin reemplazarlo — el breadcrumb ubica,
+   este link es la acción de volver al contexto anterior. */
+.volver-link{display:inline-block; font-size:13px; color:var(--text-muted); text-decoration:none; margin:-6px 0 14px;}
+.volver-link:hover{opacity:1; text-decoration:underline;}
+
 @keyframes heroZoom{ from{transform:scale(1);} to{transform:scale(1.06);} }
 @keyframes heroRise{ from{opacity:0; transform:translateY(16px);} to{opacity:1; transform:translateY(0);} }
 @media (prefers-reduced-motion: reduce){
