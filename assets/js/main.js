@@ -322,6 +322,24 @@ async function renderPropuestasGrid(){
   const destinoFiltro = params.get("destino");
   const tipoFiltro = tipoFijo || params.get("tipo");
 
+  // Contexto explícito (PRO-48) que cada card agrega a su link hacia
+  // propuesta.html, para que el botón "← Volver a…" del detalle no
+  // dependa de document.referrer. tours.html/travesias.html/paquetes.html
+  // (data-tipo-fijo) mandan su propio tipo; catalogo.html sólo manda
+  // contexto cuando llegó con un ?origen= válido (experiencias/destinos)
+  // — un acceso directo a catalogo.html no genera ese origen, así que sus
+  // cards quedan sin contexto, igual que antes.
+  let volverCtx = "";
+  if (tipoFijo && TIPOS_PROPUESTA[tipoFijo]) {
+    const origenTipo = TIPOS_PROPUESTA[tipoFijo].pagina.replace(/\.html$/, "");
+    volverCtx = `&origen=${origenTipo}${destinoFiltro ? `&destino=${encodeURIComponent(destinoFiltro)}` : ""}`;
+  } else if (!tipoFijo && destinoFiltro) {
+    const origenCat = params.get("origen");
+    if (origenCat === "experiencias" || origenCat === "destinos") {
+      volverCtx = `&origen=${origenCat}&destino=${encodeURIComponent(destinoFiltro)}`;
+    }
+  }
+
   grid.innerHTML = `<div class="empty-state">Cargando…</div>`;
 
   let destinos, lista;
@@ -412,7 +430,7 @@ async function renderPropuestasGrid(){
   if (lista.length === 0) {
     grid.innerHTML = `<div class="empty-state">Todavía no hay propuestas cargadas para este filtro.<br>Muy pronto vamos a sumar más salidas.</div>`;
   } else {
-    grid.innerHTML = lista.map(p => propuestaCardHtml(p)).join("");
+    grid.innerHTML = lista.map(p => propuestaCardHtml(p, volverCtx)).join("");
   }
 
   // Quita el estado "apagado" que haya dejado un cambio de filtro anterior,
@@ -436,11 +454,12 @@ function aplicarFiltroSuave(params){
   }, 180);
 }
 
-function propuestaCardHtml(p){
+function propuestaCardHtml(p, volverCtx){
   const tipoInfo = TIPOS_PROPUESTA[p.tipoProducto];
+  const href = `propuesta.html?id=${p.slug}${volverCtx || ""}`;
   return `
     <article class="exp-card" data-tipo="${p.tipoProducto}">
-      <a class="img-wrap" href="propuesta.html?id=${p.slug}" aria-label="Ver detalles de ${p.nombre}">
+      <a class="img-wrap" href="${href}" aria-label="Ver detalles de ${p.nombre}">
         ${p.imagen ? `<img src="${p.imagen}" alt="${p.nombre}" loading="lazy"${p.imagenPos ? ` style="object-position:${p.imagenPos};"` : ""}>` : `<div class="gal-placeholder" style="height:100%;">Imagen pendiente</div>`}
         <span class="cat-badge">${tipoInfo ? tipoInfo.label : p.tipoProducto}</span>
       </a>
@@ -455,7 +474,7 @@ function propuestaCardHtml(p){
           ${p.precio ? `<span>💲 ${p.precio}</span>` : ""}
         </div>
         <div class="actions">
-          <a class="btn btn-sm" href="propuesta.html?id=${p.slug}">Ver detalles</a>
+          <a class="btn btn-sm" href="${href}">Ver detalles</a>
           <a class="btn btn-outline on-light btn-sm" href="contacto.html?propuesta=${encodeURIComponent(p.nombre)}">Consultar</a>
         </div>
       </div>
@@ -545,36 +564,32 @@ async function renderPropuestaDetalle(){
     // (PRO-48) reutiliza exactamente este mismo destino/label; en un
     // acceso directo (sin ese contexto) el botón no debe mostrarse.
     let tieneContexto = false;
-    // Si se llegó desde un catálogo filtrado por destino —ya sea
-    // catalogo.html?destino=... o la propia página de tipo fijo
-    // (tours.html/travesias.html/paquetes.html) con ?destino=...—,
-    // "volver" respeta ese mismo destino/filtro en vez de mandar siempre
-    // a la grilla plana sin filtrar — evita perder el contexto.
+    // Contexto explícito por query params (PRO-48): ya no depende de
+    // document.referrer. Las cards que llevan a propuesta.html (ver
+    // propuestaCardHtml en este mismo archivo) agregan "?origen=" y,
+    // cuando corresponde, "&destino=" — mismo mecanismo que catalogo.html
+    // ya usa para su propio botón "← Volver a…".
+    const origen = params.get("origen"); // "experiencias" | "destinos" | "tours" | "travesias" | "paquetes" | null
+    const destinoCtxSlug = params.get("destino");
     try {
-      const ref = new URL(document.referrer);
-      if (ref.origin === window.location.origin && /\/catalogo\.html$/.test(ref.pathname)) {
-        volverHref = "catalogo.html" + ref.search;
-        const refDestinoSlug = ref.searchParams.get("destino");
-        const refDestino = refDestinoSlug ? await DataAPI.getDestinoPorSlug(refDestinoSlug) : null;
+      if ((origen === "experiencias" || origen === "destinos") && destinoCtxSlug) {
+        const refDestino = await DataAPI.getDestinoPorSlug(destinoCtxSlug);
+        volverHref = `catalogo.html?destino=${encodeURIComponent(destinoCtxSlug)}&origen=${origen}`;
         volverLabel = refDestino ? refDestino.nombre : "Catálogo";
         tieneContexto = true;
-        // catalogo.html llegó desde el explorador de experiencias.html
-        // (país → destino): el destino tile agrega "&origen=experiencias"
-        // a su link. Ese mismo query string es el que "volverHref" ya
-        // preserva, así que el breadcrumb sólo necesita agregar el nivel
-        // "Experiencias" delante — no duplica la resolución del destino.
-        if (ref.searchParams.get("origen") === "experiencias") {
+        // Nivel intermedio "Experiencias /" sólo cuando se llegó por el
+        // explorador país→destino de experiencias.html.
+        if (origen === "experiencias") {
           experienciasCrumb = `<a href="experiencias.html">Experiencias</a> / `;
         }
-      } else if (tipoInfo && ref.pathname === "/" + tipoInfo.pagina) {
-        // El referrer es la propia página de tipo fijo (tours/travesías/
-        // paquetes): contexto válido con o sin filtro de destino en su
-        // URL — si no tenía ?destino=, ref.search queda vacío y
-        // volverHref no cambia (ya apuntaba a tipoInfo.pagina por defecto).
-        volverHref = tipoInfo.pagina + ref.search;
+      } else if (tipoInfo && origen === tipoInfo.pagina.replace(/\.html$/, "")) {
+        // Contexto válido con o sin filtro de destino — si no había
+        // ?destino=, volverHref no cambia (ya apuntaba a tipoInfo.pagina
+        // por defecto).
+        volverHref = tipoInfo.pagina + (destinoCtxSlug ? `?destino=${encodeURIComponent(destinoCtxSlug)}` : "");
         tieneContexto = true;
       }
-    } catch (e) { /* sin referrer válido: se usa el destino por defecto */ }
+    } catch (e) { /* sin contexto válido: se usa el destino por defecto */ }
     bcEl.innerHTML = `<a href="index.html">Inicio</a> / ${experienciasCrumb}<a href="${volverHref}">${volverLabel}</a> / ${p.nombre}`;
     setVolverLink("prop-volver", tieneContexto ? volverHref : null, tieneContexto ? volverLabel : null);
   }
