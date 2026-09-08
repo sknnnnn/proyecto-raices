@@ -37,6 +37,7 @@
 <section class="page-intro">
   <div class="wrap">
     <div class="breadcrumb" id="cat-breadcrumb"><a href="index.html">Inicio</a> / <a href="destinos.html">Destinos</a> / Catálogo</div>
+    <a id="cat-volver" class="volver-link" href="#" style="display:none;">← Volver</a>
     <div class="page-intro-grid" style="--intro-cols:1fr 0.95fr;">
       <div class="page-intro-text compact">
         <div class="kicker" id="cat-kicker">Destinos</div>
@@ -130,6 +131,18 @@
   document.addEventListener("DOMContentLoaded", async () => {
     const params = new URLSearchParams(window.location.search);
     const slug = params.get("destino");
+
+    // "← Volver a…" (PRO-48): sólo con origen interno válido. El
+    // parámetro "origen" ya lo agregan destinos.html y experiencias.html
+    // a sus links hacia acá — no es un mecanismo nuevo, es el mismo que
+    // ya usa el breadcrumb de propuesta.html para el nivel "Experiencias".
+    const origen = params.get("origen");
+    if (origen === "experiencias") {
+      setVolverLink("cat-volver", "experiencias.html", "Experiencias");
+    } else if (origen === "destinos") {
+      setVolverLink("cat-volver", "destinos.html", "Destinos");
+    }
+
     let d = null;
     try {
       d = slug ? await DataAPI.getDestinoPorSlug(slug) : null;

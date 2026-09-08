@@ -136,9 +136,13 @@
      El explorador es SOLO selector de lugar: País → Destino. Termina
      ahí — no muestra Tours/Travesías/Paquetes ni ningún otro nivel de
      navegación; eso se resuelve en catalogo.html. Cada destino tile
-     linkea a catalogo.html?destino=slug (ruta real que ya existe y ya
-     filtra por destino + tipo, la misma que usan las cards de
-     Destinos) — no se inventa ninguna página nueva.
+     linkea a catalogo.html?destino=slug&origen=experiencias (misma ruta
+     real que ya existe y ya filtra por destino + tipo, la misma que usan
+     las cards de Destinos) — no se inventa ninguna página nueva. El
+     "origen=experiencias" es sólo para que el breadcrumb del detalle
+     (propuesta.html, ver renderPropuestaDetalle en main.js) sepa agregar
+     el nivel "Experiencias" cuando se llegó por este camino; catalogo.html
+     lo ignora por completo para su propio filtrado.
 
      Los destinos salen de Supabase (DataAPI.getDestinosActivos), igual
      que destinos.html: se listan TODOS los destinos activos agrupados
@@ -214,7 +218,7 @@
           ? `<img class="${!disponible ? "placeholder" : ""}" src="${d.imagen}" alt="${nombre}, ${d.pais}" loading="lazy">`
           : `<div class="gal-placeholder">${!disponible ? "Próximamente" : "Imagen pendiente"}</div>`;
         return `
-          <a class="exp-destino-tile${d.imagen ? "" : " sin-foto"}" href="catalogo.html?destino=${d.slug}">
+          <a class="exp-destino-tile${d.imagen ? "" : " sin-foto"}" href="catalogo.html?destino=${d.slug}&origen=experiencias">
             ${img}
             ${prep}
             <span class="exp-destino-tile-label">${nombre}</span>
