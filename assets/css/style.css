@@ -739,9 +739,11 @@ body[data-page="catalogo"] .exp-card:nth-child(3n+1) .img-wrap{aspect-ratio:1.1;
 .exp-card h3{font-size:19px; line-height:1.2;}
 /* Texto completo, nunca truncado (corrección puntual post-PRO-10:
    line-clamp+overflow:hidden cortaba descripciones reales, ej. "Tour
-   Mirabus — Bus Panorámico"). flex:1 sigue absorbiendo la diferencia
-   de alto entre cards vecinas, ahora dejando ver el texto entero. */
-.exp-card .resumen{font-size:13.5px; color:var(--text-secondary); flex:1;}
+   Mirabus — Bus Panorámico"). Sin flex:1: el bloque ocupa sólo lo que
+   su propio texto necesita — así la metadata queda pegada justo
+   después de la descripción en vez de flotar más abajo cuando el
+   texto es corto (el empuje hacia abajo ahora lo hace .actions). */
+.exp-card .resumen{font-size:13.5px; color:var(--text-secondary);}
 /* Catálogo (destino): título y resumen reservan un piso de alto (2
    líneas) para que la card mezcla Tours/Travesías/Paquetes quede
    pareja con texto corto — pero SIN recortar el nombre con "…" (PRO-10:
@@ -761,7 +763,12 @@ body[data-page="catalogo"] .exp-card .resumen{min-height:63px;}
    (carrusel de Inicio) o 2 (Ver detalles + Consultar), justify-content
    centra el bloque completo, dejando el mismo margen a ambos lados —
    sin depender de cuántos botones haya. */
-.exp-card .actions{display:flex; justify-content:center; gap:10px; margin-top:var(--space-3); flex-wrap:wrap;}
+/* margin-top:auto (en vez de un valor fijo) es lo que ahora empuja el
+   CTA al piso de la card: como .resumen ya no tiene flex:1, todo el
+   espacio libre restante de la columna se acumula acá, después de la
+   metadata, en vez de adentro del bloque de descripción. padding-top
+   asegura un mínimo de aire aunque no haya espacio libre que empujar. */
+.exp-card .actions{display:flex; justify-content:center; gap:10px; margin-top:auto; padding-top:var(--space-3); flex-wrap:wrap;}
 /* CTA como acción sólida integrada en el ancho de la card, no una
    pastilla chica flotando: flex:1 en cada botón reparte el ancho
    disponible en partes iguales (1 botón = ancho completo, 2 = mitad
@@ -814,7 +821,6 @@ body[data-page="inicio"] .exp-carousel .exp-card .body{flex:1; padding:16px 2px 
    distinta altura dentro del mismo riel. min-height, no line-clamp:
    el nombre nunca se corta con "…", sólo se reserva el lugar. */
 body[data-page="inicio"] .exp-carousel .exp-card h3{min-height:46px;}
-body[data-page="inicio"] .exp-carousel .exp-card .actions{margin-top:auto; padding-top:var(--space-3);}
 @media (max-width:640px){
   body[data-page="inicio"] .exp-carousel .exp-card{width:76vw; flex-basis:76vw; min-height:440px; height:auto;}
   body[data-page="inicio"] .exp-carousel .testi-arrow{display:none;}
