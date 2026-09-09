@@ -72,3 +72,43 @@ test("Filtros del catálogo por destino cambian el resultado de forma coherente"
   await expect(grid).toHaveCount(1);
   await expect(grid.first()).toContainText("Ruta andina integral");
 });
+
+/*
+ * Corrección puntual post-PRO-10: el resumen ya no se recorta con
+ * line-clamp/overflow:hidden, y .actions centra el grupo de botones
+ * (1 acción en el carrusel de Inicio, 2 en catalogo.html) en vez de
+ * alinearlo a la izquierda.
+ */
+test("Descripción completa (sin recorte) y CTA centrado con 2 acciones", async ({ page }) => {
+  await page.goto("/catalogo.html?destino=cusco&origen=experiencias");
+
+  const cityTourCard = page.locator(".exp-card", { hasText: "City Tour" });
+  const resumen = cityTourCard.locator(".resumen");
+  await expect(resumen).toHaveText("Recorrido por Qoricancha y Sacsayhuamán.");
+  // Sin overflow oculto: el texto completo entra en su propia caja.
+  const clipped = await resumen.evaluate((el) => el.scrollHeight > el.clientHeight + 1);
+  expect(clipped).toBe(false);
+
+  const actions = cityTourCard.locator(".actions");
+  await expect(actions.locator("a")).toHaveCount(2);
+  const cardBox = await cityTourCard.boundingBox();
+  const actionsBox = await actions.boundingBox();
+  const leftGap = actionsBox.x - cardBox.x;
+  const rightGap = (cardBox.x + cardBox.width) - (actionsBox.x + actionsBox.width);
+  expect(Math.abs(leftGap - rightGap)).toBeLessThan(3);
+});
+
+test("CTA centrado con 1 sola acción (carrusel de Inicio)", async ({ page }) => {
+  await page.goto("/index.html");
+
+  const firstCard = page.locator("#exp-home-track .exp-card").first();
+  await expect(firstCard).toBeVisible();
+  const actions = firstCard.locator(".actions");
+  await expect(actions.locator("a")).toHaveCount(1);
+
+  const cardBox = await firstCard.boundingBox();
+  const actionsBox = await actions.boundingBox();
+  const leftGap = actionsBox.x - cardBox.x;
+  const rightGap = (cardBox.x + cardBox.width) - (actionsBox.x + actionsBox.width);
+  expect(Math.abs(leftGap - rightGap)).toBeLessThan(3);
+});
