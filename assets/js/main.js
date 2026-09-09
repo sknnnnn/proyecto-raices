@@ -643,11 +643,8 @@ async function renderPropuestaDetalle(){
         ${especifico.badgeHtml}
         <div class="info-row"><span>Destino</span><b>${destino ? destino.nombre : ""}</b></div>
         <div class="info-row"><span>Ubicación</span><b>${p.ubicacion}</b></div>
-        ${p.tipoProducto === "tour" || p.tipoProducto === "travesia" ? `
-        <div class="info-row"><span>Modalidad</span><b>${p.modalidad}</b></div>
-        <div class="info-row"><span>Duración</span><b>${p.duracion}</b></div>` : `
         <div class="info-row"><span>Duración</span><b>${p.duracion}</b></div>
-        <div class="info-row"><span>Modalidad</span><b>${p.modalidad}</b></div>`}
+        <div class="info-row"><span>Modalidad</span><b>${p.modalidad}</b></div>
         ${p.precio ? `<div class="info-row"><span>Precio</span><b>${p.precio}</b></div>` : ""}
         ${especifico.asideHtml}
         ${p.tipoProducto === "tour"
