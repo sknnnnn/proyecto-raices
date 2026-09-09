@@ -1287,16 +1287,20 @@ body[data-page="experiencias"] .exp-explorer-paises{margin-bottom:var(--space-7)
    que .destino-card.sin-foto en Destinos. */
 .exp-destino-tile.sin-foto .exp-destino-tile-label{color:var(--color-tinta); text-shadow:none;}
 
-/* "Para inspirarte" — deliberadamente chica y secundaria: sin kicker
-   grande ni h2, sin carrusel (son sólo 3), tarjetas más chicas que las
-   de arriba para que quede claro que este bloque acompaña, no compite
-   con "¿Por dónde empezamos?". Mismo lenguaje visual (foto + overlay +
-   info abajo) que .destino-card en Destinos, con su propia composición. */
+/* "Para inspirarte" (PRO-11) — selección editorial (6-8 experiencias
+   reales, prioriza destacada:true y variedad de destino/tipo, ver
+   experiencias.html) con más ritmo que el explorador de arriba: una
+   experiencia protagonista (.exp-inspirate-card--feature, ocupa 2 filas)
+   y el resto en una grilla más chica alrededor — mismo lenguaje visual
+   (foto + overlay + info abajo) que .destino-card en Destinos, sólo
+   cambia la composición. Sigue siendo secundaria: sin kicker grande ni
+   h2 propio, no compite con "¿Por dónde empezamos?". */
 body[data-page="experiencias"] .exp-inspirate{padding:0 0 var(--space-8);}
 .exp-inspirate .kicker{margin-bottom:8px;}
 .exp-inspirate h3{font-family:var(--font-heading); font-size:20px; color:var(--text-primary); max-width:440px; margin-bottom:var(--space-5);}
-.exp-inspirate-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:var(--space-4);}
-.exp-inspirate-card{position:relative; display:block; aspect-ratio:0.85; border-radius:var(--radius-lg); overflow:hidden; box-shadow:var(--shadow-sm); text-decoration:none; color:inherit; transition:box-shadow var(--duration-base) var(--ease), transform var(--duration-base) var(--ease);}
+.exp-inspirate-grid{display:grid; grid-template-columns:1.4fr repeat(3,1fr); grid-auto-rows:200px; gap:var(--space-4);}
+.exp-inspirate-card{position:relative; display:block; height:100%; border-radius:var(--radius-lg); overflow:hidden; box-shadow:var(--shadow-sm); text-decoration:none; color:inherit; transition:box-shadow var(--duration-base) var(--ease), transform var(--duration-base) var(--ease);}
+.exp-inspirate-card--feature{grid-row:1 / 3;}
 .exp-inspirate-card:hover{transform:translateY(-3px); box-shadow:var(--shadow-md);}
 .exp-inspirate-card img,
 .exp-inspirate-card .gal-placeholder{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;}
@@ -1304,6 +1308,8 @@ body[data-page="experiencias"] .exp-inspirate{padding:0 0 var(--space-8);}
 .exp-inspirate-card-info{position:absolute; left:0; right:0; bottom:0; z-index:2; padding:16px; display:flex; flex-direction:column; gap:4px;}
 .exp-inspirate-card-dest{font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:var(--color-amarillo); text-shadow:0 2px 8px rgba(0,0,0,0.5);}
 .exp-inspirate-card-name{font-family:var(--font-heading); font-weight:700; font-size:16px; color:#fff; line-height:1.2;}
+.exp-inspirate-card--feature .exp-inspirate-card-info{padding:22px;}
+.exp-inspirate-card--feature .exp-inspirate-card-name{font-size:24px;}
 .exp-inspirate-card-cta{font-family:var(--font-heading); font-weight:700; font-size:12px; color:#fff; text-shadow:0 2px 8px rgba(0,0,0,0.5); opacity:0; transform:translateY(4px); transition:opacity var(--duration-base) var(--ease), transform var(--duration-base) var(--ease);}
 .exp-inspirate-card:hover .exp-inspirate-card-cta{opacity:1; transform:none;}
 @media (hover:none){
@@ -1313,12 +1319,21 @@ body[data-page="experiencias"] .exp-inspirate{padding:0 0 var(--space-8);}
 @media (max-width:860px){
   body[data-page="experiencias"] .page-intro-media{max-width:none;}
   .exp-destino-tile{width:200px;}
+  /* Tablet: 2 columnas chicas en vez de 3 (con 4 quedaban demasiado
+     angostas) — la protagonista sigue ocupando 2 filas en la primera
+     columna, el resto se acomoda solo en 2x3. */
+  .exp-inspirate-grid{grid-template-columns:1.3fr repeat(2,1fr); grid-auto-rows:180px;}
 }
 @media (max-width:640px){
   .exp-explorer-destinos{gap:var(--space-3);}
   .exp-destino-tile{width:45vw; max-width:200px;}
-  .exp-inspirate-grid{grid-template-columns:1fr; gap:var(--space-3); max-width:340px;}
-  .exp-inspirate-card{aspect-ratio:1.3;}
+  /* Mobile: columna única, sin filas fijas — cada card vuelve a su
+     propio aspect-ratio en vez de estirarse a una celda de grilla. La
+     protagonista se mantiene un poco más alta para conservar algo de
+     jerarquía aunque no haya composición asimétrica posible en 1 columna. */
+  .exp-inspirate-grid{grid-template-columns:1fr; grid-auto-rows:auto; gap:var(--space-3); max-width:340px;}
+  .exp-inspirate-card{height:auto; aspect-ratio:1.3;}
+  .exp-inspirate-card--feature{grid-row:auto; aspect-ratio:1.05;}
 }
 
 /* ---------- Nosotros — página editorial ----------

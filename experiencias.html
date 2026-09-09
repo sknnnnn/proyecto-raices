@@ -233,18 +233,32 @@
     render();
   });
 
-  /* "Para inspirarte" — puerta de entrada secundaria para quien todavía
-     no eligió destino: no depende del explorador de arriba, siempre
-     muestra las mismas 3 experiencias reales (una de cada tipo, sin
-     elegir al azar), ahora vía Supabase (DataAPI). */
+  /* "Para inspirarte" (PRO-11) — puerta de entrada secundaria para quien
+     todavía no eligió destino: selección editorial de 6-8 experiencias
+     reales (vía Supabase/DataAPI, nada inventado ni hardcodeado), no
+     las primeras que vengan.
+
+     Criterio, en dos pasadas sobre reales.filter(publicado) (ya viene
+     filtrado por DataAPI):
+       1) Prioridad a p.destacada (campo real de Supabase, ya expuesto
+          por DataAPI — es la señal de curación editorial que ya existe,
+          no una nueva). Dentro de cada grupo (destacadas / resto), se
+          intercala por tipo con interleaveByTipo (la misma función que
+          ya usa renderPropuestasGrid) para no repetir Tour/Tour/Tour.
+       2) Primera pasada: variedad de destino ante todo — una por
+          destino hasta llenar el cupo. Si sobran lugares (pocos
+          destinos cargados todavía), segunda pasada completa con lo
+          que quede, sin duplicar.
+     La primera experiencia elegida se marca como protagonista
+     (--feature) para la composición asimétrica del grid. */
   document.addEventListener("DOMContentLoaded", async () => {
     const inspirateWrap = document.getElementById("exp-inspirate");
     if (!inspirateWrap) return;
 
-    function inspirateCardHtml(p){
+    function inspirateCardHtml(p, featured){
       const tipoInfo = TIPOS_PROPUESTA[p.tipoProducto];
       return `
-        <a class="exp-inspirate-card" href="propuesta.html?id=${p.slug}">
+        <a class="exp-inspirate-card${featured ? " exp-inspirate-card--feature" : ""}" href="propuesta.html?id=${p.slug}">
           ${p.imagen ? `<img src="${p.imagen}" alt="${p.nombre}" loading="lazy">` : `<div class="gal-placeholder" style="height:100%;">Imagen pendiente</div>`}
           <span class="cat-badge">${tipoInfo ? tipoInfo.label : p.tipoProducto}</span>
           <span class="exp-inspirate-card-info">
@@ -256,17 +270,37 @@
         </a>`;
     }
 
+    const CUPO = 7;
     let reales = [];
     try {
-      // Sólo experiencias publicadas+activas, mezcladas por tipo (Tours/
-      // Travesías): sin la mezcla, tomar las primeras 3 mostraba casi
-      // siempre el mismo tipo, porque vienen ordenadas por "orden".
       reales = await DataAPI.getExperienciasPublicadas();
     } catch (err) {
       console.error("Error cargando experiencias:", err);
       return;
     }
-    inspirateWrap.innerHTML = interleaveByTipo(reales).slice(0, 3).map(inspirateCardHtml).join("");
+
+    const prioridad = [
+      ...interleaveByTipo(reales.filter(p => p.destacada)),
+      ...interleaveByTipo(reales.filter(p => !p.destacada))
+    ];
+
+    const seleccion = [];
+    const destinosUsados = new Set();
+    prioridad.forEach(p => {
+      if (seleccion.length >= CUPO) return;
+      const destSlug = p.destino ? p.destino.slug : null;
+      if (destSlug && destinosUsados.has(destSlug)) return;
+      seleccion.push(p);
+      if (destSlug) destinosUsados.add(destSlug);
+    });
+    if (seleccion.length < CUPO) {
+      prioridad.forEach(p => {
+        if (seleccion.length >= CUPO || seleccion.includes(p)) return;
+        seleccion.push(p);
+      });
+    }
+
+    inspirateWrap.innerHTML = seleccion.map((p, i) => inspirateCardHtml(p, i === 0)).join("");
   });
 </script>
 </body>
