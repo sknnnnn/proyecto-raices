@@ -762,6 +762,12 @@ body[data-page="catalogo"] .exp-card .resumen{min-height:63px;}
    centra el bloque completo, dejando el mismo margen a ambos lados —
    sin depender de cuántos botones haya. */
 .exp-card .actions{display:flex; justify-content:center; gap:10px; margin-top:var(--space-3); flex-wrap:wrap;}
+/* CTA como acción sólida integrada en el ancho de la card, no una
+   pastilla chica flotando: flex:1 en cada botón reparte el ancho
+   disponible en partes iguales (1 botón = ancho completo, 2 = mitad
+   cada uno), texto centrado adentro. min-width:0 evita overflow si el
+   texto fuera más largo que el espacio disponible. */
+.exp-card .actions .btn-sm{flex:1 1 0; min-width:0; text-align:center; padding:14px 20px; font-size:14px;}
 .exp-card .actions .btn-outline{background:transparent;}
 
 /* ---------- Experiencias — carrusel de Inicio ----------
@@ -909,7 +915,6 @@ body[data-tipo-fijo] .exp-card .dest-tag{font-size:12.5px; letter-spacing:0.1em;
    porque el font-size es fijo (24px) en vez de clamp(). */
 body[data-tipo-fijo] .exp-card h3{font-size:24px; line-height:1.22; min-height:2.44em;}
 body[data-tipo-fijo] .exp-card .resumen{font-size:14.5px; line-height:1.5;}
-body[data-tipo-fijo] .exp-card .meta{font-size:12.5px; gap:16px;}
 
 .placeholder-badge{display:inline-block; font-size:11px; text-transform:uppercase; letter-spacing:0.06em; background:var(--color-amarillo); color:var(--color-tinta); padding:3px 9px; border-radius:999px; margin-bottom:6px; font-family:var(--font-body);}
 .empty-state{text-align:center; padding:60px 20px; color:var(--text-muted);}
