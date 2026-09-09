@@ -738,15 +738,23 @@ body[data-page="catalogo"] .exp-card:nth-child(3n+1) .img-wrap{aspect-ratio:1.1;
 .exp-card .dest-tag{font-size:11.5px; text-transform:uppercase; letter-spacing:0.08em; color:var(--color-amarillo);}
 .exp-card h3{font-size:19px; line-height:1.2;}
 .exp-card .resumen{font-size:13.5px; color:var(--text-secondary); flex:1; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;}
-/* Catálogo (destino): título y resumen reservan siempre el mismo alto
-   (2 líneas), en vez de encogerse con texto corto — la card mezcla
-   Tours/Travesías/Paquetes de un mismo destino y con esto queda pareja
-   sin importar el largo del título o la foto de cada propuesta. */
-body[data-page="catalogo"] .exp-card h3{display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; min-height:46px;}
+/* Catálogo (destino): título y resumen reservan un piso de alto (2
+   líneas) para que la card mezcla Tours/Travesías/Paquetes quede
+   pareja con texto corto — pero SIN recortar el nombre con "…" (PRO-10:
+   un título más largo que el piso simplemente crece la card, nunca se
+   corta). min-height es sólo un mínimo, no un máximo. */
+body[data-page="catalogo"] .exp-card h3{min-height:46px;}
 body[data-page="catalogo"] .exp-card .resumen{min-height:63px;}
 .exp-card .meta{display:flex; gap:14px; font-size:11.5px; color:var(--text-muted); flex-wrap:wrap;}
 .exp-card .meta span{display:flex; align-items:center; gap:5px;}
-.exp-card .actions{display:flex; gap:10px; margin-top:4px; flex-wrap:wrap;}
+/* Separación real entre el contenido y la acción (antes 4px: el CTA
+   quedaba pegado al resumen/meta en vez de leerse como un paso propio
+   de la jerarquía imagen→chip→título→info→acción, PRO-10). "Consultar"
+   (secundaria) se apaga en reposo para no competir en peso con "Ver
+   detalles" (primaria) — cambio acotado a los botones dentro de la
+   card, no toca .btn-outline.on-light en el resto del sitio. */
+.exp-card .actions{display:flex; gap:10px; margin-top:var(--space-3); flex-wrap:wrap;}
+.exp-card .actions .btn-outline{background:transparent;}
 
 /* ---------- Experiencias — carrusel de Inicio ----------
    Reutiliza .exp-card/.filtro-btn/.testi-arrow tal cual (mismo
@@ -787,8 +795,13 @@ body[data-page="inicio"] .exp-carousel .exp-card{flex:0 0 300px; width:300px; mi
 body[data-page="inicio"] .exp-carousel .exp-card .img-wrap,
 body[data-page="inicio"] .exp-carousel .exp-card:nth-child(3n+1) .img-wrap{flex:none; aspect-ratio:1.15;}
 body[data-page="inicio"] .exp-carousel .exp-card .body{flex:1; padding:16px 2px 4px;}
+/* Piso de alto para el título (PRO-10): sin esto, una card con nombre
+   de una línea y su vecina con nombre de dos quedaban con el CTA a
+   distinta altura dentro del mismo riel. min-height, no line-clamp:
+   el nombre nunca se corta con "…", sólo se reserva el lugar. */
+body[data-page="inicio"] .exp-carousel .exp-card h3{min-height:46px;}
 body[data-page="inicio"] .exp-carousel .exp-card .resumen{display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;}
-body[data-page="inicio"] .exp-carousel .exp-card .actions{margin-top:auto; padding-top:10px;}
+body[data-page="inicio"] .exp-carousel .exp-card .actions{margin-top:auto; padding-top:var(--space-3);}
 @media (max-width:640px){
   body[data-page="inicio"] .exp-carousel .exp-card{width:76vw; flex-basis:76vw; min-height:440px; height:auto;}
   body[data-page="inicio"] .exp-carousel .testi-arrow{display:none;}
@@ -844,7 +857,12 @@ body[data-page="experiencias"] .exp-card:hover{transform:none; box-shadow:none;}
 body[data-page="experiencias"] .exp-card .img-wrap{height:auto; border-radius:44px 12px 44px 12px;}
 body[data-page="experiencias"] .exp-card .cat-badge{background:rgba(20,18,12,0.55); font-family:var(--font-body); font-weight:600; letter-spacing:0.1em; font-size:10.5px; padding:6px 12px;}
 body[data-page="experiencias"] .exp-card .body{padding:0;}
-body[data-page="experiencias"] .exp-card h3{font-size:clamp(24px,2.4vw,32px); line-height:1.12;}
+/* min-height (no clamp) en em, ligado al propio line-height de la
+   variante: reserva ~2 líneas como piso sin cortar títulos largos
+   (PRO-10) — acá no hay resumen/meta (están ocultos abajo) que
+   absorba la diferencia, así que el piso evita que un nombre corto
+   deje el bloque título+CTA visualmente descentrado dentro de la fila. */
+body[data-page="experiencias"] .exp-card h3{font-size:clamp(24px,2.4vw,32px); line-height:1.12; min-height:2.24em;}
 body[data-page="experiencias"] .exp-card .resumen, body[data-page="experiencias"] .exp-card .meta{display:none;}
 
 /* Tours, Travesías y Paquetes ya no comparten una única composición
@@ -880,7 +898,9 @@ body[data-tipo-fijo] .exp-card .img-wrap{height:300px; border-radius:var(--radiu
 body[data-tipo-fijo] .exp-card .cat-badge{display:none;}
 body[data-tipo-fijo] .exp-card .body{padding:var(--space-4) 0 0; gap:10px;}
 body[data-tipo-fijo] .exp-card .dest-tag{font-size:12.5px; letter-spacing:0.1em;}
-body[data-tipo-fijo] .exp-card h3{font-size:24px; line-height:1.22;}
+/* Mismo piso de alto que el resto de las variantes (PRO-10), acá en em
+   porque el font-size es fijo (24px) en vez de clamp(). */
+body[data-tipo-fijo] .exp-card h3{font-size:24px; line-height:1.22; min-height:2.44em;}
 body[data-tipo-fijo] .exp-card .resumen{font-size:14.5px; line-height:1.5; -webkit-line-clamp:3;}
 body[data-tipo-fijo] .exp-card .meta{font-size:12.5px; gap:16px;}
 
