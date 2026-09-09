@@ -305,17 +305,13 @@
           <div class="img-wrap">
             ${p.imagen ? `<img src="${p.imagen}" alt="${p.nombre}" loading="lazy">` : `<div class="gal-placeholder" style="height:100%;">Imagen pendiente</div>`}
             <span class="cat-badge">${tipoInfo ? tipoInfo.label : p.tipoProducto}</span>
+            <div class="img-meta">${p.duracion} · ${p.modalidad}</div>
           </div>
           <div class="body">
             ${p.esPlaceholder ? `<span class="placeholder-badge">Contenido de ejemplo</span>` : ""}
             <span class="dest-tag">${p.destino ? p.destino.nombre : ""}</span>
             <h3>${p.nombre}</h3>
             <p class="resumen">${p.resumen}</p>
-            <div class="meta">
-              <span>⏱ ${p.duracion}</span>
-              <span>👥 ${p.modalidad}</span>
-              ${p.precio ? `<span>💲 ${p.precio}</span>` : ""}
-            </div>
             <div class="actions">
               <a class="btn btn-sm" href="propuesta.html?id=${p.slug}">Ver detalles</a>
             </div>

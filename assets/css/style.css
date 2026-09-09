@@ -734,14 +734,23 @@ body[data-page="catalogo"] .exp-card:nth-child(3n+1) .img-wrap{aspect-ratio:1.1;
 .exp-card .img-wrap img{width:100%; height:100%; object-fit:cover; transition:transform .6s ease;}
 .exp-card:hover .img-wrap img{transform:scale(1.055);}
 .exp-card .cat-badge{position:absolute; top:12px; left:12px; background:rgba(20,18,12,0.55); font-family:var(--font-body); font-weight:600; color:#fff; font-size:10.5px; text-transform:uppercase; letter-spacing:0.1em; padding:6px 12px; border-radius:999px;}
+/* Duración · Modalidad como franja sobre el pie de la foto (no en
+   .body): mismo componente para Catálogo, Tours, Travesías y
+   Paquetes vía el .img-wrap compartido — no hace falta repetir la
+   regla por variante. El degradé no arranca en 0% transparente sino
+   ya con algo de opacidad, para garantizar contraste real aunque la
+   modalidad sea larga y ocupe 2 líneas (no se corta ni se oculta). */
+.exp-card .img-meta{position:absolute; left:0; right:0; bottom:0; z-index:2; padding:22px 14px 12px; background:linear-gradient(180deg, rgba(20,18,12,0) 0%, rgba(20,18,12,0.55) 35%, rgba(20,18,12,0.85) 100%); color:#fff; font-family:var(--font-body); font-size:12.5px; line-height:1.4; text-shadow:0 1px 4px rgba(0,0,0,0.45);}
 .exp-card .body{padding:16px 2px 0; display:flex; flex-direction:column; gap:8px; flex:1;}
 .exp-card .dest-tag{font-size:11.5px; text-transform:uppercase; letter-spacing:0.08em; color:var(--color-amarillo);}
 .exp-card h3{font-size:19px; line-height:1.2;}
 /* Texto completo, nunca truncado (corrección puntual post-PRO-10:
    line-clamp+overflow:hidden cortaba descripciones reales, ej. "Tour
-   Mirabus — Bus Panorámico"). flex:1 sigue absorbiendo la diferencia
-   de alto entre cards vecinas, ahora dejando ver el texto entero. */
-.exp-card .resumen{font-size:13.5px; color:var(--text-secondary); flex:1;}
+   Mirabus — Bus Panorámico"). Sin flex:1: el bloque ocupa sólo lo que
+   su propio texto necesita — así la metadata queda pegada justo
+   después de la descripción en vez de flotar más abajo cuando el
+   texto es corto (el empuje hacia abajo ahora lo hace .actions). */
+.exp-card .resumen{font-size:13.5px; color:var(--text-secondary);}
 /* Catálogo (destino): título y resumen reservan un piso de alto (2
    líneas) para que la card mezcla Tours/Travesías/Paquetes quede
    pareja con texto corto — pero SIN recortar el nombre con "…" (PRO-10:
@@ -761,7 +770,18 @@ body[data-page="catalogo"] .exp-card .resumen{min-height:63px;}
    (carrusel de Inicio) o 2 (Ver detalles + Consultar), justify-content
    centra el bloque completo, dejando el mismo margen a ambos lados —
    sin depender de cuántos botones haya. */
-.exp-card .actions{display:flex; justify-content:center; gap:10px; margin-top:var(--space-3); flex-wrap:wrap;}
+/* margin-top:auto (en vez de un valor fijo) es lo que ahora empuja el
+   CTA al piso de la card: como .resumen ya no tiene flex:1, todo el
+   espacio libre restante de la columna se acumula acá, después de la
+   metadata, en vez de adentro del bloque de descripción. padding-top
+   asegura un mínimo de aire aunque no haya espacio libre que empujar. */
+.exp-card .actions{display:flex; justify-content:center; gap:10px; margin-top:auto; padding-top:var(--space-3); flex-wrap:wrap;}
+/* CTA como acción sólida integrada en el ancho de la card, no una
+   pastilla chica flotando: flex:1 en cada botón reparte el ancho
+   disponible en partes iguales (1 botón = ancho completo, 2 = mitad
+   cada uno), texto centrado adentro. min-width:0 evita overflow si el
+   texto fuera más largo que el espacio disponible. */
+.exp-card .actions .btn-sm{flex:1 1 0; min-width:0; text-align:center; padding:14px 20px; font-size:14px;}
 .exp-card .actions .btn-outline{background:transparent;}
 
 /* ---------- Experiencias — carrusel de Inicio ----------
@@ -808,7 +828,6 @@ body[data-page="inicio"] .exp-carousel .exp-card .body{flex:1; padding:16px 2px 
    distinta altura dentro del mismo riel. min-height, no line-clamp:
    el nombre nunca se corta con "…", sólo se reserva el lugar. */
 body[data-page="inicio"] .exp-carousel .exp-card h3{min-height:46px;}
-body[data-page="inicio"] .exp-carousel .exp-card .actions{margin-top:auto; padding-top:var(--space-3);}
 @media (max-width:640px){
   body[data-page="inicio"] .exp-carousel .exp-card{width:76vw; flex-basis:76vw; min-height:440px; height:auto;}
   body[data-page="inicio"] .exp-carousel .testi-arrow{display:none;}
@@ -909,7 +928,6 @@ body[data-tipo-fijo] .exp-card .dest-tag{font-size:12.5px; letter-spacing:0.1em;
    porque el font-size es fijo (24px) en vez de clamp(). */
 body[data-tipo-fijo] .exp-card h3{font-size:24px; line-height:1.22; min-height:2.44em;}
 body[data-tipo-fijo] .exp-card .resumen{font-size:14.5px; line-height:1.5;}
-body[data-tipo-fijo] .exp-card .meta{font-size:12.5px; gap:16px;}
 
 .placeholder-badge{display:inline-block; font-size:11px; text-transform:uppercase; letter-spacing:0.06em; background:var(--color-amarillo); color:var(--color-tinta); padding:3px 9px; border-radius:999px; margin-bottom:6px; font-family:var(--font-body);}
 .empty-state{text-align:center; padding:60px 20px; color:var(--text-muted);}
