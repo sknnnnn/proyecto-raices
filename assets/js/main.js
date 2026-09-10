@@ -471,7 +471,7 @@ function propuestaCardHtml(p, volverCtx){
         <p class="resumen">${p.resumen}</p>
         <div class="actions">
           <a class="btn btn-sm" href="${href}">Ver detalles</a>
-          <a class="btn btn-outline on-light btn-sm" href="contacto.html?propuesta=${encodeURIComponent(p.nombre)}">Consultar</a>
+          <a class="btn btn-outline on-light btn-sm" href="contacto.html?propuesta=${encodeURIComponent(p.nombre)}">Reserva ahora</a>
         </div>
       </div>
     </article>`;
@@ -644,10 +644,10 @@ async function renderPropuestaDetalle(){
         ${p.precio ? `<div class="info-row"><span>Precio</span><b>${p.precio}</b></div>` : ""}
         ${especifico.asideHtml}
         ${p.tipoProducto === "tour"
-          ? `<a class="btn" href="${tourWaHref || consultaHref}"${tourWaHref ? ` target="_blank" rel="noopener"` : ""}>Consultar este Tour</a>`
+          ? `<a class="btn" href="${tourWaHref || consultaHref}"${tourWaHref ? ` target="_blank" rel="noopener"` : ""}>Reserva ahora</a>`
           : p.tipoProducto === "travesia"
-          ? `<a class="btn" href="${travesiaWaHref || consultaHref}"${travesiaWaHref ? ` target="_blank" rel="noopener"` : ""}>Consultar esta Travesía</a>`
-          : `<a class="btn" href="${consultaHref}">Consultar disponibilidad</a>
+          ? `<a class="btn" href="${travesiaWaHref || consultaHref}"${travesiaWaHref ? ` target="_blank" rel="noopener"` : ""}>Reserva ahora</a>`
+          : `<a class="btn" href="${consultaHref}">Reserva ahora</a>
         <a class="btn btn-outline on-light btn-block" style="margin-top:10px;" href="${consultaHref}">Solicitar información</a>`}
       </aside>
     </div>
