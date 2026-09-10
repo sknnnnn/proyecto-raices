@@ -876,7 +876,8 @@ body[data-page="nosotros"] main,
 body[data-page="galeria"] main,
 body[data-page="contacto"] main,
 body[data-page="catalogo"] main,
-body[data-page="propuesta"] main{
+body[data-page="propuesta"] main,
+body[data-page="calendario"] main{
   background-color:var(--exp-canvas-base);
   background-repeat:no-repeat;
   background-image:
@@ -896,7 +897,8 @@ body[data-page="nosotros"] main section:not(.cta-band),
 body[data-page="galeria"] main section:not(.cta-band):not(.comunidad),
 body[data-page="contacto"] main section:not(.cta-band),
 body[data-page="catalogo"] main section:not(.cta-band),
-body[data-page="propuesta"] main section{background:transparent;}
+body[data-page="propuesta"] main section,
+body[data-page="calendario"] main section:not(.cta-band){background:transparent;}
 
 /* Experiencias — catálogo visual: mismas tarjetas/datos que Tours,
    Travesías, Paquetes y Catálogo, sólo con más presencia fotográfica
