@@ -729,7 +729,7 @@ function renderDetalleTravesia(d){
   asideHtml += infoRowSiHay("Dificultad", d.dificultad || "Consultar");
   asideHtml += infoRowSiHay("Alojamiento", d.alojamiento || "Consultar");
   // Campo opcional del contrato PRO-40: sin fallback, se oculta si no existe.
-  asideHtml += infoRowSiHay("Comidas incluidas", d.comidas);
+  asideHtml += infoRowSiHay("Comidas", d.comidas);
   // d.fechasNota es una aclaración corta y discreta (ej. "A confirmar")
   // que va debajo de la fecha, separada del dato principal.
   const fechasValor = (d.fechas && d.fechas.length) ? d.fechas.join(" · ") : "Consultar";
@@ -779,7 +779,7 @@ async function renderDetallePaquete(d, p){
   asideHtml += infoRowSiHay("Vuelos", d.vuelos);
   asideHtml += infoRowSiHay("Traslados", d.traslados);
   asideHtml += infoRowSiHay("Alojamiento", d.alojamiento);
-  asideHtml += infoRowSiHay("Comidas incluidas", d.comidas);
+  asideHtml += infoRowSiHay("Comidas", d.comidas);
 
   return { bodyHtml, asideHtml, badgeHtml: personalizableBadge(d.personalizable) };
 }
