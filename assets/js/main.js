@@ -630,6 +630,8 @@ async function renderPropuestaDetalle(){
           ${p.noIncluye && p.noIncluye.length ? `<h2>Qué no incluye</h2><ul class="cross-list">${p.noIncluye.map(i => `<li>${i}</li>`).join("")}</ul>` : ""}
 
           ${p.infoImportante ? `<h2>Información importante</h2><p>${p.infoImportante}</p>` : ""}
+
+          ${listaSiHay("Actividades", p.actividades.map(a => a.nombre), "check-list")}
         </div>
       </div>
 
@@ -703,6 +705,11 @@ function renderDetalleTour(d){
   asideHtml += infoRowSiHay("Salida", d.salida || "Consultar");
   asideHtml += infoRowSiHay("Regreso", d.regreso || "Consultar");
   asideHtml += infoRowSiHay("Punto de encuentro", d.puntoDeEncuentro || "Consultar");
+  // Campos opcionales del contrato PRO-40: sólo se muestran si el dato
+  // existe en Supabase (sin fallback "Consultar" ni valor inventado).
+  asideHtml += infoRowSiHay("Fecha", d.fecha);
+  asideHtml += infoRowSiHay("Desnivel", d.desnivel);
+  asideHtml += infoRowSiHay("Dificultad", d.dificultad);
   if (d.seConvierteEnTravesiaAlCombinar) {
     asideHtml += infoRowSiHay("Duración combinada", d.duracionCombinada);
   }
@@ -723,6 +730,8 @@ function renderDetalleTravesia(d){
   asideHtml += infoRowSiHay("Distancia", d.distanciaTotal || "Consultar");
   asideHtml += infoRowSiHay("Dificultad", d.dificultad || "Consultar");
   asideHtml += infoRowSiHay("Alojamiento", d.alojamiento || "Consultar");
+  // Campo opcional del contrato PRO-40: sin fallback, se oculta si no existe.
+  asideHtml += infoRowSiHay("Comidas", d.comidas);
   // d.fechasNota es una aclaración corta y discreta (ej. "A confirmar")
   // que va debajo de la fecha, separada del dato principal.
   const fechasValor = (d.fechas && d.fechas.length) ? d.fechas.join(" · ") : "Consultar";

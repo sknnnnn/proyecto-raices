@@ -191,6 +191,7 @@ const DataAPI = (() => {
       .from("experiencias")
       .select(EXPERIENCIA_SELECT)
       .eq("slug", slug)
+      .eq("activo", true)
       .maybeSingle();
     if (error) throw error;
     if (!data) return null;
