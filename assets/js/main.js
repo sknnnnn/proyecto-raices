@@ -630,8 +630,6 @@ async function renderPropuestaDetalle(){
           ${p.noIncluye && p.noIncluye.length ? `<h2>Qué no incluye</h2><ul class="cross-list">${p.noIncluye.map(i => `<li>${i}</li>`).join("")}</ul>` : ""}
 
           ${p.infoImportante ? `<h2>Información importante</h2><p>${p.infoImportante}</p>` : ""}
-
-          ${listaSiHay("Actividades", p.actividades.map(a => a.nombre), "check-list")}
         </div>
       </div>
 
@@ -731,7 +729,7 @@ function renderDetalleTravesia(d){
   asideHtml += infoRowSiHay("Dificultad", d.dificultad || "Consultar");
   asideHtml += infoRowSiHay("Alojamiento", d.alojamiento || "Consultar");
   // Campo opcional del contrato PRO-40: sin fallback, se oculta si no existe.
-  asideHtml += infoRowSiHay("Comidas", d.comidas);
+  asideHtml += infoRowSiHay("Comidas incluidas", d.comidas);
   // d.fechasNota es una aclaración corta y discreta (ej. "A confirmar")
   // que va debajo de la fecha, separada del dato principal.
   const fechasValor = (d.fechas && d.fechas.length) ? d.fechas.join(" · ") : "Consultar";
@@ -781,7 +779,7 @@ async function renderDetallePaquete(d, p){
   asideHtml += infoRowSiHay("Vuelos", d.vuelos);
   asideHtml += infoRowSiHay("Traslados", d.traslados);
   asideHtml += infoRowSiHay("Alojamiento", d.alojamiento);
-  asideHtml += infoRowSiHay("Comidas", d.comidas);
+  asideHtml += infoRowSiHay("Comidas incluidas", d.comidas);
 
   return { bodyHtml, asideHtml, badgeHtml: personalizableBadge(d.personalizable) };
 }
