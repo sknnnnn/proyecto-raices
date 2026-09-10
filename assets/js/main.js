@@ -589,6 +589,17 @@ async function renderPropuestaDetalle(){
     setVolverLink("prop-volver", tieneContexto ? volverHref : null, tieneContexto ? volverLabel : null);
   }
 
+  // Nota de reserva privada/logística (PRO-XX): vive junto a Detalle,
+  // no en el cuerpo de la ficha — no interrumpe la lectura de la
+  // Descripción ni duplica el badge "Personalizable" (funciones
+  // distintas: el badge comunica la característica, esta nota explica
+  // la condición de reserva).
+  const notaReservaHtml = p.tipoProducto === "tour" || p.tipoProducto === "travesia"
+    ? `<div class="notice-box">Esta ${p.tipoProducto === "tour" ? "salida" : "travesía"} puede reservarse de forma privada, sólo para tu grupo, sujeto a disponibilidad.</div>`
+    : p.tipoProducto === "paquete"
+    ? `<div class="notice-box">El itinerario puede conversarse y adaptarse según las necesidades del grupo, cuando resulte viable.</div>`
+    : "";
+
   const consultaHref = `contacto.html?propuesta=${encodeURIComponent(p.nombre)}`;
   // Tours y Travesías: el CTA principal va directo a WhatsApp con el
   // nombre de la propuesta precargado (whatsappLink ya arma la URL con
@@ -621,9 +632,6 @@ async function renderPropuestaDetalle(){
 
           ${especifico.bodyHtml}
 
-          ${p.tipoProducto === "tour" || p.tipoProducto === "travesia" ? `<div class="notice-box">Esta ${p.tipoProducto === "tour" ? "salida" : "travesía"} puede reservarse de forma privada, sólo para tu grupo, sujeto a disponibilidad.</div>` : ""}
-          ${p.tipoProducto === "paquete" ? `<div class="notice-box">El itinerario puede conversarse y adaptarse según las necesidades del grupo, cuando resulte viable.</div>` : ""}
-
           ${p.incluye && p.incluye.length ? `<h2>Qué incluye</h2><ul class="check-list">${p.incluye.map(i => `<li>${i}</li>`).join("")}</ul>` : ""}
 
           ${p.noIncluye && p.noIncluye.length ? `<h2>Qué no incluye</h2><ul class="cross-list">${p.noIncluye.map(i => `<li>${i}</li>`).join("")}</ul>` : ""}
@@ -638,6 +646,7 @@ async function renderPropuestaDetalle(){
         ${especifico.badgeHtml}
         ${detalleBaseHtml(p)}
         ${p.precio ? `<div class="info-row"><span>Precio</span><b>${p.precio}</b></div>` : ""}
+        ${notaReservaHtml}
         ${p.tipoProducto === "tour"
           ? `<a class="btn" href="${tourWaHref || consultaHref}"${tourWaHref ? ` target="_blank" rel="noopener"` : ""}>Reserva ahora</a>`
           : p.tipoProducto === "travesia"
@@ -678,7 +687,7 @@ function itinerarioSiHay(itinerario){
 
 function personalizableBadge(esPersonalizable){
   if (!esPersonalizable) return "";
-  return `<div class="placeholder-badge" style="background:var(--celeste); color:#fff; margin-bottom:14px;">Personalizable</div>`;
+  return `<span class="placeholder-badge badge-personalizable">Personalizable</span>`;
 }
 
 function fechasSiHay(fechas, nota){

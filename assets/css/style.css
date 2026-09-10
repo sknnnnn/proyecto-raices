@@ -958,10 +958,28 @@ body[data-tipo-fijo] .exp-card h3{font-size:24px; line-height:1.22; min-height:2
 body[data-tipo-fijo] .exp-card .resumen{font-size:14.5px; line-height:1.5;}
 
 .placeholder-badge{display:inline-block; font-size:11px; text-transform:uppercase; letter-spacing:0.06em; background:var(--color-amarillo); color:var(--color-tinta); padding:3px 9px; border-radius:999px; margin-bottom:6px; font-family:var(--font-body);}
+/* Badge "Personalizable" junto al título de la ficha — celeste de la
+   paleta con texto oscuro para contraste garantizado (el fondo blanco
+   con texto blanco que tenía antes lo dejaba invisible). */
+.placeholder-badge.badge-personalizable{background:var(--color-celeste); color:var(--color-tinta); margin-bottom:14px;}
 .empty-state{text-align:center; padding:60px 20px; color:var(--text-muted);}
 
 /* ---------- Detalle de experiencia ---------- */
 .exp-detail-grid{display:grid; grid-template-columns:1.5fr 1fr; gap:56px; align-items:start;}
+/* La ficha individual (propuesta.html) vive sobre el mismo lienzo
+   oscuro que Experiencias/Tours/Travesías/Paquetes; acá, en cambio, el
+   contenido (foto+descripción+detalle) se presenta como un panel claro
+   de la paleta (--bg-surface, no blanco puro) para que tenga identidad
+   propia y buen contraste de lectura. El breadcrumb queda fuera de este
+   panel, sobre el lienzo oscuro, así el header (transparente al tope
+   de la página) no pierde contraste. */
+body[data-page="propuesta"] .exp-detail-grid{
+  background:var(--bg-surface);
+  color:var(--color-tinta);
+  border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-lg);
+  padding:40px;
+}
 .exp-gallery-main{border-radius:10px; overflow:hidden; margin-bottom:16px; height:420px;}
 .exp-gallery-main img{width:100%; height:100%; object-fit:cover;}
 .exp-gallery-thumbs{display:grid; grid-template-columns:repeat(4,1fr); gap:10px;}
@@ -1183,6 +1201,7 @@ footer li a:hover{opacity:1; color:var(--color-amarillo);}
   .page-hero{min-height:400px;}
   .page-hero .wrap{padding-bottom:60px;}
   .exp-info-card{position:static;}
+  body[data-page="propuesta"] .exp-detail-grid{padding:22px; border-radius:var(--radius-md);}
   .page-intro{padding:48px 0 8px;}
   .page-intro-grid{grid-template-columns:1fr; gap:36px; padding-bottom:36px;}
   .page-intro-text h1{font-size:clamp(38px,8vw,64px);}
