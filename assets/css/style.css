@@ -997,7 +997,7 @@ body[data-page="propuesta"] .exp-detail-grid{
 .exp-body h2:first-child{margin-top:0;}
 .exp-body ul{padding-left:20px; font-size:15px; line-height:1.8;}
 .exp-body p{font-size:15px; line-height:1.8;}
-.check-list li::marker{color:var(--color-amarillo);}
+.check-list li::marker{color:var(--color-marron);}
 .cross-list li::marker{color:var(--color-naranja);}
 .notice-box{background:var(--color-amarillo); color:var(--color-tinta); border-radius:8px; padding:18px 22px; font-size:14px; margin-top:16px;}
 
