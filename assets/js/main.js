@@ -537,7 +537,6 @@ async function renderPropuestaDetalle(){
   const metaDesc = document.querySelector('meta[name="description"]');
   if (metaDesc) metaDesc.setAttribute("content", p.resumen);
 
-  const destino = p.destino;
   let galeriaRows = [];
   try {
     galeriaRows = await DataAPI.getGaleria(p.id);
@@ -637,12 +636,8 @@ async function renderPropuestaDetalle(){
         <span class="dest-tag">${tipoInfo ? tipoInfo.label : p.tipoProducto}</span>
         <h1 style="margin-top:8px;">${p.nombre}</h1>
         ${especifico.badgeHtml}
-        <div class="info-row"><span>Destino</span><b>${destino ? destino.nombre : ""}</b></div>
-        <div class="info-row"><span>Ubicación</span><b>${p.ubicacion}</b></div>
-        <div class="info-row"><span>Duración</span><b>${p.duracion}</b></div>
-        <div class="info-row"><span>Modalidad</span><b>${p.modalidad}</b></div>
+        ${detalleBaseHtml(p)}
         ${p.precio ? `<div class="info-row"><span>Precio</span><b>${p.precio}</b></div>` : ""}
-        ${especifico.asideHtml}
         ${p.tipoProducto === "tour"
           ? `<a class="btn" href="${tourWaHref || consultaHref}"${tourWaHref ? ` target="_blank" rel="noopener"` : ""}>Reserva ahora</a>`
           : p.tipoProducto === "travesia"
@@ -656,7 +651,7 @@ async function renderPropuestaDetalle(){
 
 /* ---- Router: elige el helper según p.tipoProducto ---- */
 async function renderDetalleEspecifico(p){
-  const vacio = { bodyHtml: "", asideHtml: "", badgeHtml: "" };
+  const vacio = { bodyHtml: "", badgeHtml: "" };
   if (!p.detalle) return vacio;
   if (p.tipoProducto === "tour") return renderDetalleTour(p.detalle);
   if (p.tipoProducto === "travesia") return renderDetalleTravesia(p.detalle);
@@ -686,6 +681,39 @@ function personalizableBadge(esPersonalizable){
   return `<div class="placeholder-badge" style="background:var(--celeste); color:#fff; margin-bottom:14px;">Personalizable</div>`;
 }
 
+function fechasSiHay(fechas, nota){
+  if (!fechas || !fechas.length) return "";
+  const notaHtml = nota ? `<small class="nota">${nota}</small>` : "";
+  return `<div class="info-row"><span>Fechas</span><b>${fechas.join(" · ")}${notaHtml}</b></div>`;
+}
+
+/* ---- Detalle: set fijo de campos por tipo_producto ----
+   Única fuente de verdad de qué se muestra en el bloque "Detalle" de la
+   ficha pública: Supabase puede tener muchos más atributos en
+   detalle{}, pero acá se decide, una sola vez por tipo, cuáles son
+   relevantes para el usuario. Todo lo que no exista se oculta solo
+   (infoRowSiHay/fechasSiHay), sin fallback ni valor inventado. */
+function detalleBaseHtml(p){
+  const d = p.detalle || {};
+  let html = "";
+  html += infoRowSiHay("Destino", p.destino ? p.destino.nombre : "");
+  html += infoRowSiHay("Duración", p.duracion);
+  html += infoRowSiHay("Modalidad", p.modalidad);
+
+  if (p.tipoProducto === "tour") {
+    html += infoRowSiHay("Dificultad", d.dificultad);
+    html += infoRowSiHay("Fecha", d.fecha);
+    html += infoRowSiHay("Salida", d.salida);
+    html += infoRowSiHay("Regreso", d.regreso);
+  } else if (p.tipoProducto === "travesia") {
+    html += infoRowSiHay("Dificultad", d.dificultad);
+    html += fechasSiHay(d.fechas, d.fechasNota);
+  } else if (p.tipoProducto === "paquete") {
+    html += fechasSiHay(d.fechas, d.fechasNota);
+  }
+  return html;
+}
+
 /* ---- TOUR: actividad de un día ---- */
 function renderDetalleTour(d){
   let bodyHtml = "";
@@ -695,24 +723,7 @@ function renderDetalleTour(d){
   bodyHtml += listaSiHay("Recorrido", d.recorrido, "check-list");
   bodyHtml += itinerarioSiHay(d.itinerarioCombinado);
 
-  // Ficha técnica uniforme: los 29 Tours muestran siempre estos 4 campos,
-  // en el mismo orden — cuando un dato no está disponible en la info
-  // original, se usa "Consultar" en vez de ocultar la fila o inventar un valor.
-  let asideHtml = "";
-  asideHtml += infoRowSiHay("Distancia", d.distancia || "Consultar");
-  asideHtml += infoRowSiHay("Salida", d.salida || "Consultar");
-  asideHtml += infoRowSiHay("Regreso", d.regreso || "Consultar");
-  asideHtml += infoRowSiHay("Punto de encuentro", d.puntoDeEncuentro || "Consultar");
-  // Campos opcionales del contrato PRO-40: sólo se muestran si el dato
-  // existe en Supabase (sin fallback "Consultar" ni valor inventado).
-  asideHtml += infoRowSiHay("Fecha", d.fecha);
-  asideHtml += infoRowSiHay("Desnivel", d.desnivel);
-  asideHtml += infoRowSiHay("Dificultad", d.dificultad);
-  if (d.seConvierteEnTravesiaAlCombinar) {
-    asideHtml += infoRowSiHay("Duración combinada", d.duracionCombinada);
-  }
-
-  return { bodyHtml, asideHtml, badgeHtml: "" };
+  return { bodyHtml, badgeHtml: "" };
 }
 
 /* ---- TRAVESÍA: varios días, personalizable ---- */
@@ -721,22 +732,7 @@ function renderDetalleTravesia(d){
   bodyHtml += itinerarioSiHay(d.itinerario);
   bodyHtml += listaSiHay("Qué no cubre la logística", d.logisticaNoIncluida, "cross-list");
 
-  // Ficha rápida uniforme: las 11 Travesías muestran siempre estos 4
-  // campos, en el mismo orden — cuando un dato no está confirmado en la
-  // fuente, se usa "Consultar" en vez de ocultar la fila o inventar un valor.
-  let asideHtml = "";
-  asideHtml += infoRowSiHay("Distancia", d.distanciaTotal || "Consultar");
-  asideHtml += infoRowSiHay("Dificultad", d.dificultad || "Consultar");
-  asideHtml += infoRowSiHay("Alojamiento", d.alojamiento || "Consultar");
-  // Campo opcional del contrato PRO-40: sin fallback, se oculta si no existe.
-  asideHtml += infoRowSiHay("Comidas", d.comidas);
-  // d.fechasNota es una aclaración corta y discreta (ej. "A confirmar")
-  // que va debajo de la fecha, separada del dato principal.
-  const fechasValor = (d.fechas && d.fechas.length) ? d.fechas.join(" · ") : "Consultar";
-  const fechasNotaHtml = d.fechasNota ? `<small class="nota">${d.fechasNota}</small>` : "";
-  asideHtml += `<div class="info-row"><span>Fechas</span><b>${fechasValor}${fechasNotaHtml}</b></div>`;
-
-  return { bodyHtml, asideHtml, badgeHtml: personalizableBadge(d.personalizable) };
+  return { bodyHtml, badgeHtml: personalizableBadge(d.personalizable) };
 }
 
 /* ---- PAQUETE: viaje integral, personalizable ----
@@ -774,14 +770,7 @@ async function renderDetallePaquete(d, p){
     bodyHtml += `<h2>Travesías incluidas en este paquete</h2><ul class="check-list">${travesiasLinkeadas.map(t => `<li><a href="propuesta.html?id=${t.slug}">${t.nombre}</a></li>`).join("")}</ul>`;
   }
 
-  let asideHtml = "";
-  asideHtml += infoRowSiHay("Transporte", d.transporte);
-  asideHtml += infoRowSiHay("Vuelos", d.vuelos);
-  asideHtml += infoRowSiHay("Traslados", d.traslados);
-  asideHtml += infoRowSiHay("Alojamiento", d.alojamiento);
-  asideHtml += infoRowSiHay("Comidas", d.comidas);
-
-  return { bodyHtml, asideHtml, badgeHtml: personalizableBadge(d.personalizable) };
+  return { bodyHtml, badgeHtml: personalizableBadge(d.personalizable) };
 }
 
 /* =========================================================
