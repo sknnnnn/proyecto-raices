@@ -48,7 +48,7 @@
     <h1 class="hero-inicio-tagline">TURISMO AVENTURA · ARGENTINA &amp; PERÚ</h1>
     <div class="hero-ctas">
       <a href="experiencias.html" class="btn">Ver experiencias</a>
-      <a href="contacto.html" id="hero-wa-cta" class="btn btn-outline on-dark">WhatsApp</a>
+      <a href="calendario.html" class="btn btn-outline on-dark">Calendario de viajes</a>
     </div>
   </div>
 </section>
@@ -266,26 +266,7 @@
         </div>
       </a>`).join("");
   });
-</script>
-<script>
-  // Home: CTA de WhatsApp del Hero — reutiliza SITE_CONFIG.whatsapp /
-  // whatsappLink() (main.js, poblado desde site_config vía DataAPI). Si
-  // todavía no hay número cargado, whatsappLink() devuelve null y el
-  // botón sigue llevando a Contacto.
-  document.addEventListener("DOMContentLoaded", async () => {
-    const waBtn = document.getElementById("hero-wa-cta");
-    if (waBtn && typeof whatsappLink === "function") {
-      await siteConfigReady;
-      const link = whatsappLink("Hola! Quiero reservar una experiencia con Proyecto Raíces.");
-      if (link) {
-        waBtn.href = link;
-        waBtn.target = "_blank";
-        waBtn.rel = "noopener";
-      }
-    }
-  });
-</script>
-<script>
+</script><script>
   // Home: carrusel de Experiencias — usa Supabase vía DataAPI, mismo
   // componente .exp-card que el resto del sitio. No crea datos nuevos:
   // sólo arma el riel y lo duplica para el loop continuo.
