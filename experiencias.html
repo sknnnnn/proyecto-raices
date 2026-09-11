@@ -12,7 +12,7 @@
 <link rel="icon" href="assets/img/logo-amarillo.png">
 <link rel="stylesheet" href="assets/css/style.css">
 </head>
-<body data-page="experiencias">
+<body data-page="experiencias" data-catalogo-full>
 <a class="skip-link" href="#main">Saltar al contenido</a>
 
 <header>
@@ -54,19 +54,11 @@
 <section class="exp-explorer">
   <div class="wrap">
     <div class="section-head exp-explorer-head">
-      <div class="kicker">Elegí tu destino</div>
-      <h2>¿Por dónde empezamos?</h2>
+      <div class="kicker">Catálogo completo</div>
+      <h2>Todas las experiencias</h2>
     </div>
-    <div class="filtros exp-explorer-paises" id="exp-paises"></div>
-    <div id="exp-stage"></div>
-  </div>
-</section>
-
-<section class="exp-inspirate">
-  <div class="wrap">
-    <div class="kicker">Para inspirarte</div>
-    <h3>¿Todavía no sabés qué destino elegir?</h3>
-    <div class="exp-inspirate-grid" id="exp-inspirate"></div>
+    <div id="prop-filtros"></div>
+    <div class="exp-grid" id="prop-grid"></div>
   </div>
 </section>
 
@@ -134,176 +126,5 @@
 <script src="assets/js/supabase-client.js"></script>
 <script src="assets/js/data-api.js"></script>
 <script src="assets/js/main.js"></script>
-<script>
-  /* Explorador de Experiencias — País → Destino → catálogo del destino.
-
-     El explorador es SOLO selector de lugar: País → Destino. Termina
-     ahí — no muestra Tours/Travesías/Paquetes ni ningún otro nivel de
-     navegación; eso se resuelve en catalogo.html. Cada destino tile
-     linkea a catalogo.html?destino=slug&origen=experiencias (misma ruta
-     real que ya existe y ya filtra por destino + tipo, la misma que usan
-     las cards de Destinos) — no se inventa ninguna página nueva. El
-     "origen=experiencias" es sólo para que el breadcrumb del detalle
-     (propuesta.html, ver renderPropuestaDetalle en main.js) sepa agregar
-     el nivel "Experiencias" cuando se llegó por este camino; catalogo.html
-     lo ignora por completo para su propio filtrado.
-
-     Los destinos salen de Supabase (DataAPI.getDestinosActivos), igual
-     que destinos.html: se listan TODOS los destinos activos agrupados
-     por país, no sólo los que ya tienen una experiencia cargada — así
-     los dos puntos de entrada (Experiencias y Destinos) muestran el
-     mismo árbol de lugares. El que todavía no tiene experiencias reales
-     se marca "En preparación" (mismo flag que ya usa destinos.html) y
-     su link igual lleva a catalogo.html, que muestra el estado vacío
-     correspondiente. No hay contenido inventado ni una lista paralela.
-
-     "prop-grid"/"prop-filtros" (la grilla plana que usaban antes esta
-     página y Tours/Travesías/Paquetes/Catálogo) ya no están en el DOM
-     de esta página: renderPropuestasGrid() en main.js no encuentra su
-     contenedor acá y no hace nada, así que esas otras páginas siguen
-     funcionando exactamente igual que antes. */
-  document.addEventListener("DOMContentLoaded", async () => {
-    const stage = document.getElementById("exp-stage");
-    const paisesWrap = document.getElementById("exp-paises");
-    if (!stage || !paisesWrap) return;
-
-    stage.innerHTML = `<p class="empty-state">Cargando destinos…</p>`;
-
-    let destinos;
-    try {
-      destinos = await DataAPI.getDestinosActivos();
-    } catch (err) {
-      console.error("Error cargando destinos:", err);
-      stage.innerHTML = `<p class="empty-state">No pudimos cargar los destinos en este momento. Probá recargar la página.</p>`;
-      return;
-    }
-
-    const arbol = {};
-    destinos.forEach(d => {
-      arbol[d.pais] = arbol[d.pais] || {};
-      arbol[d.pais][d.slug] = d;
-    });
-
-    const paises = Object.keys(arbol);
-    if (!paises.length) {
-      stage.innerHTML = `<p class="empty-state">Todavía no hay destinos cargados.</p>`;
-      return;
-    }
-
-    let paisActivo = paises[0];
-
-    function render(){
-      paisesWrap.innerHTML = paises.map(pais =>
-        `<button type="button" class="filtro-btn ${pais === paisActivo ? "active" : ""}" data-pais="${pais}">${pais}</button>`
-      ).join("");
-      paisesWrap.querySelectorAll("[data-pais]").forEach(btn => {
-        btn.addEventListener("click", () => {
-          if (btn.getAttribute("data-pais") === paisActivo) return;
-          paisActivo = btn.getAttribute("data-pais");
-          render();
-        });
-      });
-
-      // Mismo orden que destinos.html: por esPlaceholder crudo (no por
-      // disponibilidad), así Choquequirao sigue agrupado junto a los
-      // demás "en preparación" del mismo país aunque ya esté disponible.
-      const destinosPais = Object.values(arbol[paisActivo]).slice().sort((a, b) =>
-        (a.esPlaceholder === b.esPlaceholder) ? 0 : a.esPlaceholder ? 1 : -1
-      );
-
-      const destinosHtml = destinosPais.map(d => {
-        const nombre = d.nombre;
-        // d.disponible contempla el caso Choquequirao (esPlaceholder:true
-        // con una experiencia publicada), mismo criterio que el selector
-        // de Tours/Travesías/Paquetes/Contacto.
-        const disponible = d.disponible;
-        const prep = (!disponible && d.imagen) ? `<span class="destino-card-flag">Próximamente</span>` : "";
-        const img = d.imagen
-          ? `<img class="${!disponible ? "placeholder" : ""}" src="${d.imagen}" alt="${nombre}, ${d.pais}" loading="lazy">`
-          : `<div class="gal-placeholder">${!disponible ? "Próximamente" : "Imagen pendiente"}</div>`;
-        return `
-          <a class="exp-destino-tile${d.imagen ? "" : " sin-foto"}" href="catalogo.html?destino=${d.slug}&origen=experiencias">
-            ${img}
-            ${prep}
-            <span class="exp-destino-tile-label">${nombre}</span>
-          </a>`;
-      }).join("");
-
-      stage.innerHTML = `<div class="exp-explorer-destinos">${destinosHtml}</div>`;
-    }
-
-    render();
-  });
-
-  /* "Para inspirarte" (PRO-11) — puerta de entrada secundaria para quien
-     todavía no eligió destino: selección editorial de 6-8 experiencias
-     reales (vía Supabase/DataAPI, nada inventado ni hardcodeado), no
-     las primeras que vengan.
-
-     Criterio, en dos pasadas sobre reales.filter(publicado) (ya viene
-     filtrado por DataAPI):
-       1) Prioridad a p.destacada (campo real de Supabase, ya expuesto
-          por DataAPI — es la señal de curación editorial que ya existe,
-          no una nueva). Dentro de cada grupo (destacadas / resto), se
-          intercala por tipo con interleaveByTipo (la misma función que
-          ya usa renderPropuestasGrid) para no repetir Tour/Tour/Tour.
-       2) Primera pasada: variedad de destino ante todo — una por
-          destino hasta llenar el cupo. Si sobran lugares (pocos
-          destinos cargados todavía), segunda pasada completa con lo
-          que quede, sin duplicar.
-     La primera experiencia elegida se marca como protagonista
-     (--feature) para la composición asimétrica del grid. */
-  document.addEventListener("DOMContentLoaded", async () => {
-    const inspirateWrap = document.getElementById("exp-inspirate");
-    if (!inspirateWrap) return;
-
-    function inspirateCardHtml(p, featured){
-      const tipoInfo = TIPOS_PROPUESTA[p.tipoProducto];
-      return `
-        <a class="exp-inspirate-card${featured ? " exp-inspirate-card--feature" : ""}" href="propuesta.html?id=${p.slug}">
-          ${p.imagen ? `<img src="${p.imagen}" alt="${p.nombre}" loading="lazy">` : `<div class="gal-placeholder" style="height:100%;">Imagen pendiente</div>`}
-          <span class="cat-badge">${tipoInfo ? tipoInfo.label : p.tipoProducto}</span>
-          <span class="exp-inspirate-card-info">
-            ${p.esPlaceholder ? `<span class="placeholder-badge">Contenido de ejemplo</span>` : ""}
-            <span class="exp-inspirate-card-dest">${p.destino ? p.destino.nombre : ""}</span>
-            <span class="exp-inspirate-card-name">${p.nombre}</span>
-            <span class="exp-inspirate-card-cta">Ver detalles →</span>
-          </span>
-        </a>`;
-    }
-
-    const CUPO = 7;
-    let reales = [];
-    try {
-      reales = await DataAPI.getExperienciasPublicadas();
-    } catch (err) {
-      console.error("Error cargando experiencias:", err);
-      return;
-    }
-
-    const prioridad = [
-      ...interleaveByTipo(reales.filter(p => p.destacada)),
-      ...interleaveByTipo(reales.filter(p => !p.destacada))
-    ];
-
-    const seleccion = [];
-    const destinosUsados = new Set();
-    prioridad.forEach(p => {
-      if (seleccion.length >= CUPO) return;
-      const destSlug = p.destino ? p.destino.slug : null;
-      if (destSlug && destinosUsados.has(destSlug)) return;
-      seleccion.push(p);
-      if (destSlug) destinosUsados.add(destSlug);
-    });
-    if (seleccion.length < CUPO) {
-      prioridad.forEach(p => {
-        if (seleccion.length >= CUPO || seleccion.includes(p)) return;
-        seleccion.push(p);
-      });
-    }
-
-    inspirateWrap.innerHTML = seleccion.map((p, i) => inspirateCardHtml(p, i === 0)).join("");
-  });
-</script>
 </body>
 </html>

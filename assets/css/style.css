@@ -736,6 +736,16 @@ img.placeholder{filter:grayscale(1);}
 .filtro-destino-select{font-family:var(--font-body); font-size:13px; padding:9px 34px 9px 18px; border-radius:999px; border:1.5px solid rgba(140,136,124,0.4); background:var(--color-crema); color:var(--color-tinta); cursor:pointer; max-width:100%; appearance:none; background-image:url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%234a463c' d='M5.5 7.5l4.5 4.5 4.5-4.5z'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; background-size:14px;}
 .filtro-destino-select:hover{border-color:var(--color-naranja);}
 
+/* Catálogo completo de Experiencias (PRO-62): chips de tipo + selector
+   de destino en una misma fila editorial (no un toolbar de dashboard con
+   los grupos en puntas opuestas) — ambos reutilizan .filtros/
+   .filtro-destino-group tal cual, sólo se agrupan juntos. La etiqueta
+   "Destino" queda accesible pero oculta visualmente: el propio selector
+   ya se explica solo ("Todos los destinos ▾"), como los chips. */
+.exp-catalogo-filtros{display:flex; flex-wrap:wrap; align-items:center; gap:12px 20px; margin-bottom:44px;}
+.exp-catalogo-filtros .filtros{margin-bottom:0;}
+.exp-catalogo-filtros .filtro-destino-label{position:absolute; width:1px; height:1px; margin:-1px; padding:0; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+
 .exp-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:40px 28px;}
 /* Catálogo — mismo lenguaje ya usado en Tours/Travesías/Paquetes/
    Experiencias: sin caja blanca, foto con esquina orgánica y chip
@@ -745,11 +755,12 @@ img.placeholder{filter:grayscale(1);}
 .exp-card:hover{transform:translateY(-3px);}
 .exp-card .img-wrap{display:block; position:relative; height:auto; aspect-ratio:1.1; overflow:hidden; border-radius:36px 10px 36px 10px; box-shadow:0 14px 30px rgba(33,29,22,.14);}
 .exp-card:nth-child(3n+1) .img-wrap{aspect-ratio:1.7;}
-/* Catálogo (destino): mismo formato de card para las 3 columnas — sin
-   esta excepción, la foto más ancha de cada 1º card por fila quedaba
-   con una card más baja que el resto. La imagen se adapta con
-   object-fit, la card no cambia de tamaño. */
-body[data-page="catalogo"] .exp-card:nth-child(3n+1) .img-wrap{aspect-ratio:1.1;}
+/* Catálogo (destino/Experiencias): mismo formato de card para las 3
+   columnas — sin esta excepción, la foto más ancha de cada 1º card por
+   fila quedaba con una card más baja que el resto. La imagen se adapta
+   con object-fit, la card no cambia de tamaño. */
+body[data-page="catalogo"] .exp-card:nth-child(3n+1) .img-wrap,
+body[data-page="experiencias"] .exp-card:nth-child(3n+1) .img-wrap{aspect-ratio:1.1;}
 .exp-card .img-wrap img{width:100%; height:100%; object-fit:cover; transition:transform .6s ease;}
 .exp-card:hover .img-wrap img{transform:scale(1.055);}
 .exp-card .cat-badge{position:absolute; top:12px; left:12px; background:rgba(20,18,12,0.55); font-family:var(--font-body); font-weight:600; color:#fff; font-size:10.5px; text-transform:uppercase; letter-spacing:0.1em; padding:6px 12px; border-radius:999px;}
@@ -775,8 +786,10 @@ body[data-page="catalogo"] .exp-card:nth-child(3n+1) .img-wrap{aspect-ratio:1.1;
    pareja con texto corto — pero SIN recortar el nombre con "…" (PRO-10:
    un título más largo que el piso simplemente crece la card, nunca se
    corta). min-height es sólo un mínimo, no un máximo. */
-body[data-page="catalogo"] .exp-card h3{min-height:46px;}
-body[data-page="catalogo"] .exp-card .resumen{min-height:63px;}
+body[data-page="catalogo"] .exp-card h3,
+body[data-page="experiencias"] .exp-card h3{min-height:46px;}
+body[data-page="catalogo"] .exp-card .resumen,
+body[data-page="experiencias"] .exp-card .resumen{min-height:63px;}
 .exp-card .meta{display:flex; gap:14px; font-size:11.5px; color:var(--text-muted); flex-wrap:wrap;}
 .exp-card .meta span{display:flex; align-items:center; gap:5px;}
 /* Separación real entre el contenido y la acción (antes 4px: el CTA
@@ -900,43 +913,10 @@ body[data-page="catalogo"] main section:not(.cta-band),
 body[data-page="propuesta"] main section,
 body[data-page="calendario"] main section:not(.cta-band){background:transparent;}
 
-/* Experiencias — catálogo visual: mismas tarjetas/datos que Tours,
-   Travesías, Paquetes y Catálogo, sólo con más presencia fotográfica
-   en esta página puntual (no afecta a las demás). */
-/* Experiencias — catálogo editorial: cada experiencia ocupa su propia
-   fila grande (foto + ficha), alternando el lado de la foto en vez de
-   repetir la misma tarjeta chica. Misma data/markup que Tours,
-   Travesías, Paquetes y Catálogo — sólo cambia la composición acá. */
-body[data-page="experiencias"] .exp-grid{grid-template-columns:1fr; gap:96px; max-width:1080px; margin:0 auto;}
-body[data-page="experiencias"] .exp-card{display:grid; align-items:center; gap:44px; background:transparent; border:none; border-radius:0; transition:none;}
-body[data-page="experiencias"] .exp-card:hover{transform:none; box-shadow:none;}
-body[data-page="experiencias"] .exp-card .img-wrap{height:auto; border-radius:44px 12px 44px 12px;}
-body[data-page="experiencias"] .exp-card .cat-badge{background:rgba(20,18,12,0.55); font-family:var(--font-body); font-weight:600; letter-spacing:0.1em; font-size:10.5px; padding:6px 12px;}
-body[data-page="experiencias"] .exp-card .body{padding:0;}
-/* min-height (no clamp) en em, ligado al propio line-height de la
-   variante: reserva ~2 líneas como piso sin cortar títulos largos
-   (PRO-10) — acá no hay resumen/meta (están ocultos abajo) que
-   absorba la diferencia, así que el piso evita que un nombre corto
-   deje el bloque título+CTA visualmente descentrado dentro de la fila. */
-body[data-page="experiencias"] .exp-card h3{font-size:clamp(24px,2.4vw,32px); line-height:1.12; min-height:2.24em;}
-body[data-page="experiencias"] .exp-card .resumen, body[data-page="experiencias"] .exp-card .meta{display:none;}
-
-/* Tours, Travesías y Paquetes ya no comparten una única composición
-   alternada: cada tipo tiene su propio ritmo, coherente con lo que es
-   vivir esa experiencia (salida corta y protagonista / recorrido con
-   aire y verticalidad / viaje integral y amplio). */
-body[data-page="experiencias"] .exp-card[data-tipo="tour"]{grid-template-columns:1.65fr 1fr;}
-body[data-page="experiencias"] .exp-card[data-tipo="tour"] .img-wrap{aspect-ratio:1.25; border-radius:50px 14px 50px 14px;}
-body[data-page="experiencias"] .exp-card[data-tipo="tour"] h3{font-size:clamp(28px,3.2vw,40px);}
-
-body[data-page="experiencias"] .exp-card[data-tipo="travesia"]{grid-template-columns:0.8fr 1.2fr;}
-body[data-page="experiencias"] .exp-card[data-tipo="travesia"] .img-wrap{order:2; aspect-ratio:0.74; max-width:360px; margin-left:auto; border-radius:14px 50px 14px 50px;}
-body[data-page="experiencias"] .exp-card[data-tipo="travesia"] .body{order:1; padding-right:var(--space-7);}
-
-body[data-page="experiencias"] .exp-card[data-tipo="paquete"]{grid-template-columns:1fr; gap:32px;}
-body[data-page="experiencias"] .exp-card[data-tipo="paquete"] .img-wrap{aspect-ratio:2.3; border-radius:50px 14px 50px 14px;}
-body[data-page="experiencias"] .exp-card[data-tipo="paquete"] .body{text-align:center; display:flex; flex-direction:column; align-items:center;}
-body[data-page="experiencias"] .exp-card[data-tipo="paquete"] .actions{justify-content:center;}
+/* Experiencias (PRO-62): catálogo completo en una única grilla uniforme
+   de cards — mismo componente .exp-grid/.exp-card que Catálogo (sin
+   composición alternada por tipo; esa variante editorial se descartó
+   al convertir esta página en el catálogo principal con filtros). */
 
 /* Tours / Travesías / Paquetes — mismo componente .exp-card/.exp-grid
    que Catálogo, pero acá la foto gana protagonismo real: de 3 columnas
@@ -1179,17 +1159,6 @@ footer li a:hover{opacity:1; color:var(--color-amarillo);}
   .hero-inicio-logo{height:clamp(110px,22vw,210px);}
   .hero-inicio .eyebrow{margin-bottom:var(--space-6); font-size:13px;}
   .hero-inicio-tagline{margin:var(--space-6) 0 var(--space-7);}
-  body[data-page="experiencias"] .exp-grid{gap:56px;}
-  body[data-page="experiencias"] .exp-card,
-  body[data-page="experiencias"] .exp-card[data-tipo="tour"],
-  body[data-page="experiencias"] .exp-card[data-tipo="travesia"],
-  body[data-page="experiencias"] .exp-card[data-tipo="paquete"]{grid-template-columns:1fr; gap:22px;}
-  body[data-page="experiencias"] .exp-card .img-wrap,
-  body[data-page="experiencias"] .exp-card[data-tipo="tour"] .img-wrap,
-  body[data-page="experiencias"] .exp-card[data-tipo="travesia"] .img-wrap{order:0; max-width:none; margin-left:0; aspect-ratio:1.5;}
-  body[data-page="experiencias"] .exp-card .body,
-  body[data-page="experiencias"] .exp-card[data-tipo="travesia"] .body{order:0; padding-right:0;}
-  body[data-page="experiencias"] .exp-card[data-tipo="paquete"] .img-wrap{aspect-ratio:1.7;}
   .gal-row img{height:220px;}
   .testi-grid, .guias-grid, .valores-grid{grid-template-columns:1fr;}
   body[data-page="inicio"] .catalogo-home .valores-grid{grid-template-columns:1fr;}
@@ -1235,17 +1204,6 @@ footer li a:hover{opacity:1; color:var(--color-amarillo);}
   body[data-tipo-fijo] .exp-card .img-wrap{height:220px;}
   .gal-row{gap:var(--space-2);}
   .gal-row img{height:140px;}
-  body[data-page="experiencias"] .exp-grid{gap:44px;}
-  body[data-page="experiencias"] .exp-card,
-  body[data-page="experiencias"] .exp-card[data-tipo="tour"],
-  body[data-page="experiencias"] .exp-card[data-tipo="travesia"],
-  body[data-page="experiencias"] .exp-card[data-tipo="paquete"]{grid-template-columns:1fr; gap:18px;}
-  body[data-page="experiencias"] .exp-card .img-wrap,
-  body[data-page="experiencias"] .exp-card[data-tipo="tour"] .img-wrap,
-  body[data-page="experiencias"] .exp-card[data-tipo="travesia"] .img-wrap{order:0; max-width:none; margin-left:0; aspect-ratio:1.35; border-radius:36px 12px 36px 12px;}
-  body[data-page="experiencias"] .exp-card[data-tipo="paquete"] .img-wrap{border-radius:36px 12px 36px 12px;}
-  body[data-page="experiencias"] .exp-card .body,
-  body[data-page="experiencias"] .exp-card[data-tipo="travesia"] .body{order:0; padding-right:0;}
   .wrap{padding:0 var(--gutter-mobile);}
   nav{padding:14px var(--gutter-mobile);}
   .hero-inicio{padding-bottom:5vh;}
@@ -1309,80 +1267,18 @@ footer li a:hover{opacity:1; color:var(--color-amarillo);}
   .destinos-inspirate-item span{font-size:15px; padding:14px 16px;}
 }
 
-/* ---------- Experiencias — explorador editorial (Etapa 1) ----------
-   El explorador es SOLO selector de lugar: "¿Por dónde empezamos?"
-   (País → Destino, foto + nombre) y termina ahí — no hay Tipo, ni
-   Tours/Travesías/Paquetes, ni ningún encabezado intermedio dentro del
-   explorador (eso se define en una etapa posterior). "Para inspirarte"
-   es una puerta secundaria más abajo, con 3 experiencias reales
-   sueltas, para quien todavía no decidió a dónde ir. El lienzo de
-   fondo ya está resuelto arriba (body[data-page="experiencias"] main +
-   section transparent) — acá sólo se agregan los "destino tiles" (foto
-   + nombre, sin descripción: son punto de entrada visual, no ficha) y
-   las cards mínimas de "Para inspirarte". */
+/* ---------- Experiencias — catálogo principal (PRO-62) ----------
+   Experiencias es exclusivamente el catálogo completo: chips de tipo +
+   selector de destino (.exp-catalogo-filtros, ver arriba) y la grilla
+   de resultados en la misma página, sin secciones secundarias. El
+   lienzo de fondo ya está resuelto arriba (body[data-page="experiencias"]
+   main + section transparent). */
 body[data-page="experiencias"] .page-intro-media{max-width:560px; margin-left:auto;}
 body[data-page="experiencias"] .exp-explorer{padding:var(--space-7) 0 var(--space-8);}
 body[data-page="experiencias"] .exp-explorer-head{margin-bottom:var(--space-6);}
-body[data-page="experiencias"] .exp-explorer-paises{margin-bottom:var(--space-7);}
-
-.exp-explorer-destinos{display:flex; flex-wrap:wrap; gap:var(--space-4);}
-.exp-destino-tile{position:relative; flex:0 0 auto; width:220px; aspect-ratio:1; display:block; border-radius:var(--radius-lg); overflow:hidden; box-shadow:var(--shadow-sm); text-decoration:none; transition:box-shadow var(--duration-base) var(--ease), transform var(--duration-base) var(--ease);}
-.exp-destino-tile:hover{transform:translateY(-2px); box-shadow:var(--shadow-md);}
-.exp-destino-tile img, .exp-destino-tile .gal-placeholder{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;}
-.exp-destino-tile .gal-placeholder{display:flex; align-items:center; justify-content:center;}
-.exp-destino-tile-label{position:absolute; left:0; right:0; bottom:0; z-index:1; padding:16px; font-family:var(--font-heading); font-weight:700; font-size:18px; color:#fff; text-shadow:0 2px 8px rgba(0,0,0,0.5);}
-/* Sin foto de fondo (placeholder claro en vez de fotografía oscura): el
-   blanco + text-shadow pensados para foto quedan ilegibles. Mismo ajuste
-   que .destino-card.sin-foto en Destinos. */
-.exp-destino-tile.sin-foto .exp-destino-tile-label{color:var(--color-tinta); text-shadow:none;}
-
-/* "Para inspirarte" (PRO-11) — selección editorial (6-8 experiencias
-   reales, prioriza destacada:true y variedad de destino/tipo, ver
-   experiencias.html) con más ritmo que el explorador de arriba: una
-   experiencia protagonista (.exp-inspirate-card--feature, ocupa 2 filas)
-   y el resto en una grilla más chica alrededor — mismo lenguaje visual
-   (foto + overlay + info abajo) que .destino-card en Destinos, sólo
-   cambia la composición. Sigue siendo secundaria: sin kicker grande ni
-   h2 propio, no compite con "¿Por dónde empezamos?". */
-body[data-page="experiencias"] .exp-inspirate{padding:0 0 var(--space-8);}
-.exp-inspirate .kicker{margin-bottom:8px;}
-.exp-inspirate h3{font-family:var(--font-heading); font-size:20px; color:var(--text-primary); max-width:440px; margin-bottom:var(--space-5);}
-.exp-inspirate-grid{display:grid; grid-template-columns:1.4fr repeat(3,1fr); grid-auto-rows:200px; gap:var(--space-4);}
-.exp-inspirate-card{position:relative; display:block; height:100%; border-radius:var(--radius-lg); overflow:hidden; box-shadow:var(--shadow-sm); text-decoration:none; color:inherit; transition:box-shadow var(--duration-base) var(--ease), transform var(--duration-base) var(--ease);}
-.exp-inspirate-card--feature{grid-row:1 / 3;}
-.exp-inspirate-card:hover{transform:translateY(-3px); box-shadow:var(--shadow-md);}
-.exp-inspirate-card img,
-.exp-inspirate-card .gal-placeholder{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;}
-.exp-inspirate-card .cat-badge{position:absolute; top:12px; left:12px; z-index:2; background:rgba(20,18,12,0.55); font-family:var(--font-body); font-weight:600; color:#fff; font-size:10.5px; text-transform:uppercase; letter-spacing:0.1em; padding:6px 12px; border-radius:999px;}
-.exp-inspirate-card-info{position:absolute; left:0; right:0; bottom:0; z-index:2; padding:16px; display:flex; flex-direction:column; gap:4px;}
-.exp-inspirate-card-dest{font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:var(--color-amarillo); text-shadow:0 2px 8px rgba(0,0,0,0.5);}
-.exp-inspirate-card-name{font-family:var(--font-heading); font-weight:700; font-size:16px; color:#fff; line-height:1.2;}
-.exp-inspirate-card--feature .exp-inspirate-card-info{padding:22px;}
-.exp-inspirate-card--feature .exp-inspirate-card-name{font-size:24px;}
-.exp-inspirate-card-cta{font-family:var(--font-heading); font-weight:700; font-size:12px; color:#fff; text-shadow:0 2px 8px rgba(0,0,0,0.5); opacity:0; transform:translateY(4px); transition:opacity var(--duration-base) var(--ease), transform var(--duration-base) var(--ease);}
-.exp-inspirate-card:hover .exp-inspirate-card-cta{opacity:1; transform:none;}
-@media (hover:none){
-  .exp-inspirate-card-cta{opacity:1; transform:none;}
-}
 
 @media (max-width:860px){
   body[data-page="experiencias"] .page-intro-media{max-width:none;}
-  .exp-destino-tile{width:200px;}
-  /* Tablet: 2 columnas chicas en vez de 3 (con 4 quedaban demasiado
-     angostas) — la protagonista sigue ocupando 2 filas en la primera
-     columna, el resto se acomoda solo en 2x3. */
-  .exp-inspirate-grid{grid-template-columns:1.3fr repeat(2,1fr); grid-auto-rows:180px;}
-}
-@media (max-width:640px){
-  .exp-explorer-destinos{gap:var(--space-3);}
-  .exp-destino-tile{width:45vw; max-width:200px;}
-  /* Mobile: columna única, sin filas fijas — cada card vuelve a su
-     propio aspect-ratio en vez de estirarse a una celda de grilla. La
-     protagonista se mantiene un poco más alta para conservar algo de
-     jerarquía aunque no haya composición asimétrica posible en 1 columna. */
-  .exp-inspirate-grid{grid-template-columns:1fr; grid-auto-rows:auto; gap:var(--space-3); max-width:340px; margin-inline:auto;}
-  .exp-inspirate-card{height:auto; aspect-ratio:1.3;}
-  .exp-inspirate-card--feature{grid-row:auto; aspect-ratio:1.05;}
 }
 
 /* ---------- Nosotros — página editorial ----------

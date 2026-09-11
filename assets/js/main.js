@@ -318,6 +318,7 @@ async function renderPropuestasGrid(){
   if (!grid) return;
 
   const tipoFijo = document.body.getAttribute("data-tipo-fijo"); // "tour" | "travesia" | "paquete" | null
+  const catalogoFull = document.body.hasAttribute("data-catalogo-full"); // experiencias.html (PRO-62)
   const params = new URLSearchParams(window.location.search);
   const destinoFiltro = params.get("destino");
   const tipoFiltro = tipoFijo || params.get("tipo");
@@ -333,7 +334,11 @@ async function renderPropuestasGrid(){
   if (tipoFijo && TIPOS_PROPUESTA[tipoFijo]) {
     const origenTipo = TIPOS_PROPUESTA[tipoFijo].pagina.replace(/\.html$/, "");
     volverCtx = `&origen=${origenTipo}${destinoFiltro ? `&destino=${encodeURIComponent(destinoFiltro)}` : ""}`;
-  } else if (!tipoFijo && destinoFiltro) {
+  } else if (catalogoFull) {
+    // experiencias.html es ahora el catálogo principal (PRO-62): el
+    // "← Volver" del detalle debe apuntar acá directo, no a catalogo.html.
+    volverCtx = `&origen=experiencias${destinoFiltro ? `&destino=${encodeURIComponent(destinoFiltro)}` : ""}`;
+  } else if (destinoFiltro) {
     const origenCat = params.get("origen");
     if (origenCat === "experiencias" || origenCat === "destinos") {
       volverCtx = `&origen=${origenCat}&destino=${encodeURIComponent(destinoFiltro)}`;
@@ -388,6 +393,53 @@ async function renderPropuestasGrid(){
         const slug = select.value;
         const p = new URLSearchParams(window.location.search);
         if (slug) p.set("destino", slug); else p.delete("destino");
+        aplicarFiltroSuave(p);
+      });
+    } else if (catalogoFull) {
+      // experiencias.html como catálogo principal (PRO-62): chips de tipo
+      // + selector de destino agrupado por país, combinables entre sí —
+      // mismos patrones que ya usan por separado tours/travesias/paquetes
+      // (selector de destino) y catalogo.html (chips de tipo), ahora
+      // juntos en el mismo punto de entrada.
+      let chipsHtml = `<button class="filtro-btn ${!tipoFiltro ? "active" : ""}" data-tipo="">Todos</button>`;
+      Object.keys(TIPOS_PROPUESTA).forEach(key => {
+        chipsHtml += `<button class="filtro-btn ${tipoFiltro === key ? "active" : ""}" data-tipo="${key}">${TIPOS_PROPUESTA[key].labelPlural}</button>`;
+      });
+
+      const paisesFull = [...new Set(destinos.map(d => d.pais))];
+      let optionsFullHtml = `<option value="">Todos los destinos</option>`;
+      paisesFull.forEach(pais => {
+        optionsFullHtml += `<optgroup label="${pais}">`;
+        destinos.filter(d => d.pais === pais && d.disponible).forEach(d => {
+          optionsFullHtml += `<option value="${d.slug}"${destinoFiltro === d.slug ? " selected" : ""}>${d.nombre}</option>`;
+        });
+        optionsFullHtml += `</optgroup>`;
+      });
+
+      filtrosWrap.innerHTML = `
+        <div class="exp-catalogo-filtros">
+          <div class="filtros">${chipsHtml}</div>
+          <div class="filtro-destino-group">
+            <label class="filtro-destino-label" for="prop-destino-select">Destino</label>
+            <select class="filtro-destino-select" id="prop-destino-select">${optionsFullHtml}</select>
+          </div>
+        </div>`;
+
+      filtrosWrap.querySelectorAll(".filtro-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const tipo = btn.getAttribute("data-tipo");
+          const p = new URLSearchParams(window.location.search);
+          if (tipo) p.set("tipo", tipo); else p.delete("tipo");
+          if (destinoFiltro) p.set("destino", destinoFiltro);
+          aplicarFiltroSuave(p);
+        });
+      });
+      const destinoSelectFull = document.getElementById("prop-destino-select");
+      destinoSelectFull.addEventListener("change", () => {
+        const slug = destinoSelectFull.value;
+        const p = new URLSearchParams(window.location.search);
+        if (slug) p.set("destino", slug); else p.delete("destino");
+        if (tipoFiltro) p.set("tipo", tipoFiltro);
         aplicarFiltroSuave(p);
       });
     } else {
@@ -550,9 +602,6 @@ async function renderPropuestaDetalle(){
   if (bcEl) {
     let volverHref = tipoInfo ? tipoInfo.pagina : "destinos.html";
     let volverLabel = tipoInfo ? tipoInfo.labelPlural : "Propuestas";
-    // Nivel intermedio opcional "Experiencias /", sólo cuando se llegó
-    // por el explorador país→destino de experiencias.html (ver más abajo).
-    let experienciasCrumb = "";
     // Sólo true cuando el referrer coincidió con un contexto interno
     // real (catálogo por destino, o la propia página de tipo fijo con
     // filtro) — no con el fallback por defecto. El botón "← Volver a…"
@@ -567,25 +616,27 @@ async function renderPropuestaDetalle(){
     const origen = params.get("origen"); // "experiencias" | "destinos" | "tours" | "travesias" | "paquetes" | null
     const destinoCtxSlug = params.get("destino");
     try {
-      if ((origen === "experiencias" || origen === "destinos") && destinoCtxSlug) {
+      if (origen === "destinos" && destinoCtxSlug) {
         const refDestino = await DataAPI.getDestinoPorSlug(destinoCtxSlug);
         volverHref = `catalogo.html?destino=${encodeURIComponent(destinoCtxSlug)}&origen=${origen}`;
         volverLabel = refDestino ? refDestino.nombre : "Catálogo";
         tieneContexto = true;
-        // Nivel intermedio "Experiencias /" sólo cuando se llegó por el
-        // explorador país→destino de experiencias.html.
-        if (origen === "experiencias") {
-          experienciasCrumb = `<a href="experiencias.html">Experiencias</a> / `;
-        }
       } else if (tipoInfo && origen === tipoInfo.pagina.replace(/\.html$/, "")) {
         // Contexto válido con o sin filtro de destino — si no había
         // ?destino=, volverHref no cambia (ya apuntaba a tipoInfo.pagina
         // por defecto).
         volverHref = tipoInfo.pagina + (destinoCtxSlug ? `?destino=${encodeURIComponent(destinoCtxSlug)}` : "");
         tieneContexto = true;
+      } else if (origen === "experiencias") {
+        // experiencias.html es el catálogo principal (PRO-62): el
+        // "← Volver" apunta directo ahí (con el destino filtrado, si
+        // había uno), sin nivel intermedio.
+        volverHref = `experiencias.html${destinoCtxSlug ? `?destino=${encodeURIComponent(destinoCtxSlug)}` : ""}`;
+        volverLabel = "Experiencias";
+        tieneContexto = true;
       }
     } catch (e) { /* sin contexto válido: se usa el destino por defecto */ }
-    bcEl.innerHTML = `<a href="index.html">Inicio</a> / ${experienciasCrumb}<a href="${volverHref}">${volverLabel}</a> / ${p.nombre}`;
+    bcEl.innerHTML = `<a href="index.html">Inicio</a> / <a href="${volverHref}">${volverLabel}</a> / ${p.nombre}`;
     setVolverLink("prop-volver", tieneContexto ? volverHref : null, tieneContexto ? volverLabel : null);
   }
 
