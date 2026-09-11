@@ -736,31 +736,35 @@ img.placeholder{filter:grayscale(1);}
 .filtro-destino-select{font-family:var(--font-body); font-size:13px; padding:9px 34px 9px 18px; border-radius:999px; border:1.5px solid rgba(140,136,124,0.4); background:var(--color-crema); color:var(--color-tinta); cursor:pointer; max-width:100%; appearance:none; background-image:url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%234a463c' d='M5.5 7.5l4.5 4.5 4.5-4.5z'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; background-size:14px;}
 .filtro-destino-select:hover{border-color:var(--color-naranja);}
 
-/* Catálogo completo de Experiencias (PRO-62): chips de tipo + selector
-   de destino en una misma fila editorial (no un toolbar de dashboard con
-   los grupos en puntas opuestas) — ambos reutilizan .filtros/
-   .filtro-destino-group tal cual, sólo se agrupan juntos. */
-.exp-catalogo-filtros{display:flex; flex-wrap:wrap; align-items:center; gap:12px 20px; margin-bottom:44px;}
+/* Catálogo completo de Experiencias (PRO-62): chips de tipo en su
+   propia fila; el bloque de destino ("Destino" + selector, apilados)
+   queda a la derecha, alineado por abajo para que el selector quede a
+   la misma altura que la fila de chips. */
+.exp-catalogo-filtros{display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:14px 24px; margin-bottom:44px;}
 .exp-catalogo-filtros .filtros{margin-bottom:0;}
+.exp-catalogo-filtros .filtro-destino-group{display:flex; flex-direction:column; align-items:flex-start; gap:6px;}
+@media (max-width:640px){
+  .exp-catalogo-filtros{align-items:flex-start;}
+}
 
 /* Ajuste visual de filtros (Experiencias): sin caja blanca, integrados
    al fondo verde de la sección — texto crema con contraste, activo en
    amarillo Raíces, hover sutil (nunca todo el chip en amarillo), radio
-   moderado en vez de pill. Divisor fino entre Tipo y Destino: dos
-   niveles de filtro, no un panel de admin. Lógica sin cambios. */
+   moderado en vez de pill. Lógica sin cambios. */
 .exp-catalogo-filtros .filtro-btn{background:transparent; border-color:rgba(236,231,216,0.35); border-radius:var(--radius-md); color:var(--text-primary);}
 .exp-catalogo-filtros .filtro-btn:hover{background:rgba(233,224,115,0.12); border-color:var(--color-amarillo);}
 .exp-catalogo-filtros .filtro-btn.active{background:var(--color-amarillo); border-color:var(--color-amarillo); color:var(--color-tinta);}
 
-.exp-catalogo-filtros .filtro-destino-group{position:relative; padding-left:24px;}
-.exp-catalogo-filtros .filtro-destino-group::before{content:""; position:absolute; left:0; top:50%; transform:translateY(-50%); width:1px; height:24px; background:rgba(236,231,216,0.3);}
 .exp-catalogo-filtros .filtro-destino-label{font-size:12px; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-secondary);}
-.exp-catalogo-filtros .filtro-destino-select{background-color:rgba(236,231,216,0.08); border-color:rgba(236,231,216,0.35); border-radius:var(--radius-md); color:var(--text-primary); background-image:url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23ECE7D8' d='M5.5 7.5l4.5 4.5 4.5-4.5z'/%3E%3C/svg%3E");}
+.exp-catalogo-filtros .filtro-destino-select{background-color:rgba(236,231,216,0.08); border-color:rgba(236,231,216,0.35); border-radius:var(--radius-md); color:var(--text-primary); accent-color:var(--color-amarillo); background-image:url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23ECE7D8' d='M5.5 7.5l4.5 4.5 4.5-4.5z'/%3E%3C/svg%3E");}
 .exp-catalogo-filtros .filtro-destino-select:hover{background-color:rgba(236,231,216,0.14); border-color:var(--color-amarillo);}
-@media (max-width:640px){
-  .exp-catalogo-filtros .filtro-destino-group{padding-left:0;}
-  .exp-catalogo-filtros .filtro-destino-group::before{display:none;}
-}
+/* Menú desplegable nativo: sin esto hereda fondo blanco del SO con el
+   texto crema del select por encima (ilegible). Soporte de color en
+   <option>/<optgroup> varía por navegador, pero degrada a lo nativo sin
+   romper nada — no toca agrupación por país ni comportamiento. */
+.exp-catalogo-filtros .filtro-destino-select option{background-color:var(--color-verde-complementario); color:var(--text-primary);}
+.exp-catalogo-filtros .filtro-destino-select option:checked{background-color:var(--color-amarillo); color:var(--color-tinta);}
+.exp-catalogo-filtros .filtro-destino-select optgroup{background-color:var(--color-verde-complementario); color:var(--text-secondary);}
 
 .exp-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:40px 28px;}
 /* Catálogo — mismo lenguaje ya usado en Tours/Travesías/Paquetes/
