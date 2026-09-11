@@ -906,43 +906,10 @@ body[data-page="catalogo"] main section:not(.cta-band),
 body[data-page="propuesta"] main section,
 body[data-page="calendario"] main section:not(.cta-band){background:transparent;}
 
-/* Experiencias — catálogo visual: mismas tarjetas/datos que Tours,
-   Travesías, Paquetes y Catálogo, sólo con más presencia fotográfica
-   en esta página puntual (no afecta a las demás). */
-/* Experiencias — catálogo editorial: cada experiencia ocupa su propia
-   fila grande (foto + ficha), alternando el lado de la foto en vez de
-   repetir la misma tarjeta chica. Misma data/markup que Tours,
-   Travesías, Paquetes y Catálogo — sólo cambia la composición acá. */
-body[data-page="experiencias"] .exp-grid{grid-template-columns:1fr; gap:96px; max-width:1080px; margin:0 auto;}
-body[data-page="experiencias"] .exp-card{display:grid; align-items:center; gap:44px; background:transparent; border:none; border-radius:0; transition:none;}
-body[data-page="experiencias"] .exp-card:hover{transform:none; box-shadow:none;}
-body[data-page="experiencias"] .exp-card .img-wrap{height:auto; border-radius:44px 12px 44px 12px;}
-body[data-page="experiencias"] .exp-card .cat-badge{background:rgba(20,18,12,0.55); font-family:var(--font-body); font-weight:600; letter-spacing:0.1em; font-size:10.5px; padding:6px 12px;}
-body[data-page="experiencias"] .exp-card .body{padding:0;}
-/* min-height (no clamp) en em, ligado al propio line-height de la
-   variante: reserva ~2 líneas como piso sin cortar títulos largos
-   (PRO-10) — acá no hay resumen/meta (están ocultos abajo) que
-   absorba la diferencia, así que el piso evita que un nombre corto
-   deje el bloque título+CTA visualmente descentrado dentro de la fila. */
-body[data-page="experiencias"] .exp-card h3{font-size:clamp(24px,2.4vw,32px); line-height:1.12; min-height:2.24em;}
-body[data-page="experiencias"] .exp-card .resumen, body[data-page="experiencias"] .exp-card .meta{display:none;}
-
-/* Tours, Travesías y Paquetes ya no comparten una única composición
-   alternada: cada tipo tiene su propio ritmo, coherente con lo que es
-   vivir esa experiencia (salida corta y protagonista / recorrido con
-   aire y verticalidad / viaje integral y amplio). */
-body[data-page="experiencias"] .exp-card[data-tipo="tour"]{grid-template-columns:1.65fr 1fr;}
-body[data-page="experiencias"] .exp-card[data-tipo="tour"] .img-wrap{aspect-ratio:1.25; border-radius:50px 14px 50px 14px;}
-body[data-page="experiencias"] .exp-card[data-tipo="tour"] h3{font-size:clamp(28px,3.2vw,40px);}
-
-body[data-page="experiencias"] .exp-card[data-tipo="travesia"]{grid-template-columns:0.8fr 1.2fr;}
-body[data-page="experiencias"] .exp-card[data-tipo="travesia"] .img-wrap{order:2; aspect-ratio:0.74; max-width:360px; margin-left:auto; border-radius:14px 50px 14px 50px;}
-body[data-page="experiencias"] .exp-card[data-tipo="travesia"] .body{order:1; padding-right:var(--space-7);}
-
-body[data-page="experiencias"] .exp-card[data-tipo="paquete"]{grid-template-columns:1fr; gap:32px;}
-body[data-page="experiencias"] .exp-card[data-tipo="paquete"] .img-wrap{aspect-ratio:2.3; border-radius:50px 14px 50px 14px;}
-body[data-page="experiencias"] .exp-card[data-tipo="paquete"] .body{text-align:center; display:flex; flex-direction:column; align-items:center;}
-body[data-page="experiencias"] .exp-card[data-tipo="paquete"] .actions{justify-content:center;}
+/* Experiencias (PRO-62): catálogo completo en una única grilla uniforme
+   de cards — mismo componente .exp-grid/.exp-card que Catálogo (sin
+   composición alternada por tipo; esa variante editorial se descartó
+   al convertir esta página en el catálogo principal con filtros). */
 
 /* Tours / Travesías / Paquetes — mismo componente .exp-card/.exp-grid
    que Catálogo, pero acá la foto gana protagonismo real: de 3 columnas
@@ -1185,17 +1152,6 @@ footer li a:hover{opacity:1; color:var(--color-amarillo);}
   .hero-inicio-logo{height:clamp(110px,22vw,210px);}
   .hero-inicio .eyebrow{margin-bottom:var(--space-6); font-size:13px;}
   .hero-inicio-tagline{margin:var(--space-6) 0 var(--space-7);}
-  body[data-page="experiencias"] .exp-grid{gap:56px;}
-  body[data-page="experiencias"] .exp-card,
-  body[data-page="experiencias"] .exp-card[data-tipo="tour"],
-  body[data-page="experiencias"] .exp-card[data-tipo="travesia"],
-  body[data-page="experiencias"] .exp-card[data-tipo="paquete"]{grid-template-columns:1fr; gap:22px;}
-  body[data-page="experiencias"] .exp-card .img-wrap,
-  body[data-page="experiencias"] .exp-card[data-tipo="tour"] .img-wrap,
-  body[data-page="experiencias"] .exp-card[data-tipo="travesia"] .img-wrap{order:0; max-width:none; margin-left:0; aspect-ratio:1.5;}
-  body[data-page="experiencias"] .exp-card .body,
-  body[data-page="experiencias"] .exp-card[data-tipo="travesia"] .body{order:0; padding-right:0;}
-  body[data-page="experiencias"] .exp-card[data-tipo="paquete"] .img-wrap{aspect-ratio:1.7;}
   .gal-row img{height:220px;}
   .testi-grid, .guias-grid, .valores-grid{grid-template-columns:1fr;}
   body[data-page="inicio"] .catalogo-home .valores-grid{grid-template-columns:1fr;}
@@ -1241,17 +1197,6 @@ footer li a:hover{opacity:1; color:var(--color-amarillo);}
   body[data-tipo-fijo] .exp-card .img-wrap{height:220px;}
   .gal-row{gap:var(--space-2);}
   .gal-row img{height:140px;}
-  body[data-page="experiencias"] .exp-grid{gap:44px;}
-  body[data-page="experiencias"] .exp-card,
-  body[data-page="experiencias"] .exp-card[data-tipo="tour"],
-  body[data-page="experiencias"] .exp-card[data-tipo="travesia"],
-  body[data-page="experiencias"] .exp-card[data-tipo="paquete"]{grid-template-columns:1fr; gap:18px;}
-  body[data-page="experiencias"] .exp-card .img-wrap,
-  body[data-page="experiencias"] .exp-card[data-tipo="tour"] .img-wrap,
-  body[data-page="experiencias"] .exp-card[data-tipo="travesia"] .img-wrap{order:0; max-width:none; margin-left:0; aspect-ratio:1.35; border-radius:36px 12px 36px 12px;}
-  body[data-page="experiencias"] .exp-card[data-tipo="paquete"] .img-wrap{border-radius:36px 12px 36px 12px;}
-  body[data-page="experiencias"] .exp-card .body,
-  body[data-page="experiencias"] .exp-card[data-tipo="travesia"] .body{order:0; padding-right:0;}
   .wrap{padding:0 var(--gutter-mobile);}
   nav{padding:14px var(--gutter-mobile);}
   .hero-inicio{padding-bottom:5vh;}
