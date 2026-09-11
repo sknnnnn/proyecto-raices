@@ -738,9 +738,11 @@ img.placeholder{filter:grayscale(1);}
 
 /* Catálogo completo de Experiencias (PRO-62): chips de tipo en su
    propia fila; el bloque de destino ("Destino" + selector, apilados)
-   queda a la derecha, alineado por abajo para que el selector quede a
-   la misma altura que la fila de chips. */
-.exp-catalogo-filtros{display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:14px 24px; margin-bottom:44px;}
+   sigue inmediatamente después de los chips, en la misma fila — no
+   pegado al extremo derecho del contenedor (sin justify-content:
+   space-between). Alineado por abajo para que el selector quede a la
+   misma altura que la fila de chips. */
+.exp-catalogo-filtros{display:flex; flex-wrap:wrap; align-items:flex-end; gap:14px 40px; margin-bottom:44px;}
 .exp-catalogo-filtros .filtros{margin-bottom:0;}
 .exp-catalogo-filtros .filtro-destino-group{display:flex; flex-direction:column; align-items:flex-start; gap:6px;}
 @media (max-width:640px){
@@ -756,12 +758,15 @@ img.placeholder{filter:grayscale(1);}
 .exp-catalogo-filtros .filtro-btn.active{background:var(--color-amarillo); border-color:var(--color-amarillo); color:var(--color-tinta);}
 
 .exp-catalogo-filtros .filtro-destino-label{font-size:12px; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-secondary);}
-.exp-catalogo-filtros .filtro-destino-select{background-color:rgba(236,231,216,0.08); border-color:rgba(236,231,216,0.35); border-radius:var(--radius-md); color:var(--text-primary); accent-color:var(--color-amarillo); background-image:url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23ECE7D8' d='M5.5 7.5l4.5 4.5 4.5-4.5z'/%3E%3C/svg%3E");}
+.exp-catalogo-filtros .filtro-destino-select{background-color:rgba(236,231,216,0.08); border-color:rgba(236,231,216,0.35); border-radius:var(--radius-md); color:var(--text-primary); accent-color:var(--color-amarillo); color-scheme:dark; background-image:url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23ECE7D8' d='M5.5 7.5l4.5 4.5 4.5-4.5z'/%3E%3C/svg%3E");}
 .exp-catalogo-filtros .filtro-destino-select:hover{background-color:rgba(236,231,216,0.14); border-color:var(--color-amarillo);}
 /* Menú desplegable nativo: sin esto hereda fondo blanco del SO con el
    texto crema del select por encima (ilegible). Soporte de color en
    <option>/<optgroup> varía por navegador, pero degrada a lo nativo sin
-   romper nada — no toca agrupación por país ni comportamiento. */
+   romper nada — no toca agrupación por país ni comportamiento.
+   color-scheme:dark es lo que saca la barra blanca residual (scrollbar/
+   chrome nativo del popup, que si no se declara usa la paleta clara del
+   SO por defecto aunque las opciones ya estén coloreadas). */
 .exp-catalogo-filtros .filtro-destino-select option{background-color:var(--color-verde-complementario); color:var(--text-primary);}
 .exp-catalogo-filtros .filtro-destino-select option:checked{background-color:var(--color-amarillo); color:var(--color-tinta);}
 .exp-catalogo-filtros .filtro-destino-select optgroup{background-color:var(--color-verde-complementario); color:var(--text-secondary);}
