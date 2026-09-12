@@ -659,6 +659,82 @@ img.placeholder{filter:grayscale(1);}
 .destino-feature-cta:hover{color:var(--color-marron); transform:translateX(4px);}
 .destino-feature-flag{display:inline-block; font-size:12px; text-transform:uppercase; letter-spacing:0.08em; color:#8a8470; border:1px dashed #c9c3ae; padding:5px 12px; border-radius:999px; margin-top:22px;}
 
+/* =========================================================
+   PÁGINA EDITORIAL DE DESTINO (destino.html) — PRO-34
+   ========================================================= */
+
+/* "En este lugar" — composición editorial con foto protagonista +
+   secundarias (reemplaza la fila justificada .gal-row acá: con sólo
+   1 a 4 fotos por destino, una fila justificada se ve como una lista
+   pegada al margen en vez de una composición intencional). Mismo
+   radio orgánico y sombra que ya usa .about-photo en el resto del
+   sitio; mismo mecanismo de lightbox ([data-lightbox]) sin tocar
+   initLightbox(). data-fotos="1|2|3|4" define el reparto de columnas
+   y filas; g-1 es siempre la foto protagonista. */
+.destino-fotos{display:grid; gap:var(--space-3);}
+.destino-fotos .g-foto{position:relative; overflow:hidden; border-radius:28px 10px 28px 10px; box-shadow:var(--shadow-md); height:100%;}
+.destino-fotos img, .destino-fotos .gal-placeholder{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; cursor:zoom-in; transition:transform .5s ease;}
+.destino-fotos .gal-placeholder{position:static; cursor:default;}
+.destino-fotos .g-foto:hover img{transform:scale(1.035);}
+
+/* La altura de cada fila/celda sale del aspect-ratio del CONTENEDOR (no
+   de cada foto): así la fila protagonista puede ocupar dos filas sin
+   depender de un "stretch" implícito sobre una altura que, si no está
+   definida en algún punto de la cadena, termina colapsando en 0. */
+.destino-fotos[data-fotos="1"]{grid-template-columns:1fr; aspect-ratio:2.1;}
+
+.destino-fotos[data-fotos="2"]{grid-template-columns:1.35fr 1fr; aspect-ratio:2.5;}
+
+.destino-fotos[data-fotos="3"]{grid-template-columns:1.4fr 1fr; grid-template-rows:1fr 1fr; aspect-ratio:1.9;}
+.destino-fotos[data-fotos="3"] .g-1{grid-row:1 / 3;}
+
+.destino-fotos[data-fotos="4"]{grid-template-columns:1.4fr 1fr 1fr; grid-template-rows:1fr 1fr; aspect-ratio:2.3;}
+.destino-fotos[data-fotos="4"] .g-1{grid-row:1 / 3;}
+
+/* Tablet/mobile: la protagonista + secundarias deja de tener sentido con
+   tan poco ancho — se simplifica a una grilla pareja de 2 columnas (o 1
+   en mobile chico), cada foto con su propia proporción, sin spans. */
+@media (max-width:860px){
+  .destino-fotos[data-fotos="2"],
+  .destino-fotos[data-fotos="3"],
+  .destino-fotos[data-fotos="4"]{grid-template-columns:1fr 1fr; grid-template-rows:none; aspect-ratio:auto;}
+  .destino-fotos[data-fotos="2"] .g-foto,
+  .destino-fotos[data-fotos="3"] .g-foto,
+  .destino-fotos[data-fotos="4"] .g-foto{grid-row:auto; grid-column:auto; height:auto; aspect-ratio:1.2;}
+}
+@media (max-width:640px){
+  .destino-fotos[data-fotos="1"],
+  .destino-fotos[data-fotos="2"],
+  .destino-fotos[data-fotos="3"],
+  .destino-fotos[data-fotos="4"]{grid-template-columns:1fr; aspect-ratio:auto;}
+  .destino-fotos[data-fotos="1"] .g-foto,
+  .destino-fotos[data-fotos="2"] .g-foto,
+  .destino-fotos[data-fotos="3"] .g-foto,
+  .destino-fotos[data-fotos="4"] .g-foto{grid-row:auto; grid-column:auto; height:auto; aspect-ratio:1.35;}
+}
+
+/* Datos clave del destino — misma fila con divisores (.stat-row) que ya
+   usa Inicio, sin convertirla en cards: sólo cambia la tipografía interna
+   para que el conteo de experiencias (el único dato cuantitativo) pese
+   más que país/tipo (los datos principales, pero cualitativos). */
+.destino-datos .dato-kicker{display:block; font-family:var(--font-body); font-size:12px; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-secondary); margin-bottom:6px;}
+.destino-datos .dato-valor{display:block; font-family:var(--font-heading); font-weight:700; font-size:24px; line-height:1.15; color:var(--text-primary);}
+.destino-datos .stat-cantidad .dato-numero{display:block; font-family:var(--font-heading); font-weight:700; font-size:42px; line-height:1; color:var(--color-naranja);}
+.destino-datos .stat-cantidad .dato-numero em{font-style:normal; font-weight:400; font-size:15px; color:var(--text-primary); margin-left:8px;}
+.destino-datos .stat-cantidad .dato-caption{display:block; margin-top:5px; font-size:13px; color:var(--text-secondary);}
+@media (max-width:640px){
+  .destino-datos .stat-cantidad .dato-numero{font-size:34px;}
+}
+
+/* Información del destino + Qué podés vivir */
+.destino-info-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:var(--space-6) var(--space-5); margin-top:8px;}
+.destino-info-bloque h3{font-family:var(--font-heading); font-size:16px; color:var(--color-amarillo); margin-bottom:8px;}
+.destino-info-bloque p{font-size:14.5px; line-height:1.6; color:var(--text-secondary); max-width:34ch;}
+.destino-info-pendiente{font-size:14px; font-style:italic; color:var(--text-secondary); max-width:520px; margin-top:8px;}
+.destino-vivir h3{font-family:var(--font-heading); font-size:16px; color:var(--color-amarillo); margin-bottom:12px;}
+.destino-vivir-tags{display:flex; flex-wrap:wrap; gap:10px;}
+.destino-vivir-tag{display:inline-block; font-family:var(--font-body); font-size:13px; color:var(--text-primary); border:1px solid rgba(236,231,216,0.3); border-radius:999px; padding:6px 16px;}
+
 /* Patagonia — foto grande con ficha superpuesta en el borde */
 .destino-a{position:relative; max-width:900px; margin:0 0 170px;}
 .destino-a-photo{aspect-ratio:1.5; border-radius:44px 12px 44px 12px; overflow:hidden; box-shadow:var(--shadow-xl);}
@@ -785,7 +861,8 @@ img.placeholder{filter:grayscale(1);}
    fila quedaba con una card más baja que el resto. La imagen se adapta
    con object-fit, la card no cambia de tamaño. */
 body[data-page="catalogo"] .exp-card:nth-child(3n+1) .img-wrap,
-body[data-page="experiencias"] .exp-card:nth-child(3n+1) .img-wrap{aspect-ratio:1.1;}
+body[data-page="experiencias"] .exp-card:nth-child(3n+1) .img-wrap,
+body[data-page="destinos"] .exp-card:nth-child(3n+1) .img-wrap{aspect-ratio:1.1;}
 .exp-card .img-wrap img{width:100%; height:100%; object-fit:cover; transition:transform .6s ease;}
 .exp-card:hover .img-wrap img{transform:scale(1.055);}
 .exp-card .cat-badge{position:absolute; top:12px; left:12px; background:rgba(20,18,12,0.55); font-family:var(--font-body); font-weight:600; color:#fff; font-size:10.5px; text-transform:uppercase; letter-spacing:0.1em; padding:6px 12px; border-radius:999px;}

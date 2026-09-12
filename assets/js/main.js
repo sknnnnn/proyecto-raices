@@ -931,18 +931,69 @@ async function renderDestinoEditorial(){
     : `<div class="gal-placeholder">${!disponible ? "Próximamente" : "Imagen pendiente"}</div>`;
   const prepFlag = !disponible ? `<span class="destino-card-flag" style="position:static; display:inline-block; vertical-align:middle; margin-left:10px;">Próximamente</span>` : "";
 
-  // "En este lugar" — fotos reales de las experiencias ya publicadas de
-  // este destino (sin repetir la misma imagen dos veces). Sin ninguna
-  // todavía, el mismo placeholder que el resto del sitio.
+  // "En este lugar" — composición editorial con foto protagonista +
+  // secundarias, armada con las fotos reales de las experiencias ya
+  // publicadas de este destino (sin repetir la misma imagen dos veces,
+  // sin inventar ni pedir fotos externas). Como mucho 4 fotos: son las
+  // que encabezan la composición, no un listado completo — la galería
+  // completa de cada experiencia se ve en su propia ficha.
   const fotos = [];
   experiencias.forEach(p => {
-    if (p.imagen && !fotos.some(f => f.src === p.imagen)) fotos.push({ src: p.imagen, alt: p.nombre });
+    if (p.imagen && !fotos.some(f => f.src === p.imagen)) fotos.push({ src: p.imagen, alt: p.nombre, pos: p.imagenPos || "center" });
   });
-  const fotosHtml = fotos.length
-    ? fotos.slice(0, 6).map(f => `<img src="${f.src}" alt="${f.alt}" data-lightbox="${f.src}" loading="lazy">`).join("")
-    : `<div class="gal-placeholder" style="width:100%; height:220px;">Imagen pendiente</div>`;
+  const fotosUsadas = fotos.slice(0, 4);
+  const galeriaHtml = fotosUsadas.length
+    ? `<div class="destino-fotos" data-fotos="${fotosUsadas.length}">${fotosUsadas.map((f, i) => `
+        <div class="g-foto g-${i + 1}"><img src="${f.src}" alt="${f.alt}" style="object-position:${f.pos};" data-lightbox="${f.src}" loading="lazy"></div>`).join("")}</div>`
+    : `<div class="destino-fotos" data-fotos="1"><div class="g-foto g-1"><div class="gal-placeholder" style="aspect-ratio:1.9;">Imagen pendiente</div></div></div>`;
 
   const tiposDisponibles = [...new Set(experiencias.map(p => TIPOS_PROPUESTA[p.tipoProducto] ? TIPOS_PROPUESTA[p.tipoProducto].label : p.tipoProducto))];
+
+  // Datos clave: país/región y tipo de experiencia son los datos
+  // principales (cualitativos); la cantidad de experiencias es el único
+  // dato cuantitativo, por eso pesa más visualmente (dato-numero).
+  const datosClaveHtml = `
+    <div class="stat-row destino-datos">
+      <div class="stat">
+        <span class="dato-kicker">${d.region ? "Región · " + d.pais : "País"}</span>
+        <b class="dato-valor">${d.region || d.pais}</b>
+      </div>
+      <div class="stat stat-cantidad">
+        <span class="dato-numero">${experiencias.length}<em>experiencia${experiencias.length === 1 ? "" : "s"}</em></span>
+        <span class="dato-caption">Disponible${experiencias.length === 1 ? "" : "s"} hoy</span>
+      </div>
+      <div class="stat">
+        <span class="dato-kicker">Tipo de experiencia</span>
+        <b class="dato-valor">${tiposDisponibles.length ? tiposDisponibles.join(" · ") : "—"}</b>
+      </div>
+    </div>`;
+
+  // Información del destino: campos editoriales cortos (cuándo ir, cómo
+  // llegar, naturaleza y cultura). Todavía no existe ese contenido cargado
+  // para ningún destino (no hay campo en la base para eso) — en vez de
+  // "próximamente" repetido tres veces, una única nota discreta. El día
+  // que existan, este mismo bloque los va a mostrar como texto editorial
+  // corto sin tocar el resto de la función.
+  const infoCampos = [
+    { key: "cuandoIr", titulo: "Cuándo ir" },
+    { key: "comoLlegar", titulo: "Cómo llegar" },
+    { key: "naturalezaCultura", titulo: "Naturaleza y cultura" }
+  ].filter(c => d[c.key]);
+  const infoHtml = infoCampos.length
+    ? `<div class="destino-info-grid">${infoCampos.map(c => `<div class="destino-info-bloque"><h3>${c.titulo}</h3><p>${d[c.key]}</p></div>`).join("")}</div>`
+    : `<p class="destino-info-pendiente">Todavía estamos completando la información de temporada, acceso, naturaleza y cultura de ${nombre} — apenas esté lista, la vas a ver acá.</p>`;
+
+  // "Qué podés vivir" — actividades reales ya etiquetadas en las
+  // experiencias publicadas de este destino (misma relación que usa el
+  // filtro de actividades del catálogo). Sin experiencias reales, no hay
+  // nada que mostrar acá: no se inventa ninguna actividad.
+  const actividades = [...new Set(experiencias.flatMap(p => (p.actividades || []).map(a => a.nombre)))];
+  const vivirHtml = actividades.length
+    ? `<div class="destino-vivir" style="margin-top:var(--space-7);">
+        <h3>Qué podés vivir</h3>
+        <div class="destino-vivir-tags">${actividades.map(a => `<span class="destino-vivir-tag">${a}</span>`).join("")}</div>
+      </div>`
+    : "";
 
   // Volver a esta ficha de destino desde propuesta.html (PRO-48): mismo
   // mecanismo de "origen"/"destino" por query param que ya usan
@@ -970,19 +1021,16 @@ async function renderDestinoEditorial(){
           <div class="kicker">En este lugar</div>
           <h2>Así se ve, en las experiencias que ya recorrimos</h2>
         </div>
-        <div class="gal-row">${fotosHtml}</div>
+        ${galeriaHtml}
+      </div>
+    </section>
 
-        <div class="stat-row">
-          <div class="stat"><b>${d.region || d.pais}</b><span>${d.region ? "Región · " + d.pais : "País"}</span></div>
-          <div class="stat"><b>${experiencias.length}</b><span>Experiencia${experiencias.length === 1 ? "" : "s"} disponible${experiencias.length === 1 ? "" : "s"} hoy</span></div>
-          <div class="stat"><b>${tiposDisponibles.length ? tiposDisponibles.join(" · ") : "—"}</b><span>Tipos de experiencia</span></div>
-        </div>
+    <section>
+      <div class="wrap">
+        ${datosClaveHtml}
         <div class="kicker" style="margin-top:var(--space-7);">Información del destino</div>
-        <div>
-          <span class="placeholder-badge">Cuándo ir — próximamente</span>
-          <span class="placeholder-badge">Cómo llegar — próximamente</span>
-          <span class="placeholder-badge">Naturaleza y cultura del lugar — próximamente</span>
-        </div>
+        ${infoHtml}
+        ${vivirHtml}
       </div>
     </section>
 
