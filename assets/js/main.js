@@ -954,10 +954,12 @@ async function renderDestinoEditorial(){
   const presentaTexto = d.resumen || `Estamos redactando la presentación editorial de ${nombre} — muy pronto vas a poder leerla acá.`;
 
   // Los tres tópicos editoriales del destino (Cuándo ir / Cómo llegar /
-  // Naturaleza y cultura), compuestos como una secuencia editorial vertical
-  // (título grande + contenido secundario, sin cards ni columnas iguales)
-  // integrada al hero. Los tres campos todavía no existen en la base para
-  // ningún destino: se muestran igual, cada uno con su propio "Próximamente".
+  // Naturaleza y cultura), dentro de la MISMA columna de texto que
+  // nombre/país/presentación (no un bloque aparte debajo de la grilla):
+  // subtítulos chicos en amarillo, contenido secundario, continuidad
+  // vertical con el resto del hero, sin cards ni columnas iguales. Los
+  // tres campos todavía no existen en la base para ningún destino: se
+  // muestran igual, cada uno con su propio "Próximamente".
   const heroTopicosHtml = `
     <div class="destino-hero-topicos">
       <div class="destino-hero-topico"><h3>Cuándo ir</h3><p>${d.cuandoIr || "Próximamente"}</p></div>
@@ -984,8 +986,10 @@ async function renderDestinoEditorial(){
          ${destacada.imagen
            ? `<img src="${destacada.imagen}" alt="${destacada.nombre}"${destacada.imagenPos ? ` style="object-position:${destacada.imagenPos};"` : ""} loading="lazy">`
            : `<div class="gal-placeholder" style="height:100%;">Imagen pendiente</div>`}
-         ${tipoDestacada ? `<span class="cat-badge">${tipoDestacada.label}</span>` : ""}
-         <h3>${destacada.nombre}</h3>
+         <div class="destino-exp-destacada-info">
+           ${tipoDestacada ? `<span class="cat-badge">${tipoDestacada.label}</span>` : ""}
+           <h3>${destacada.nombre}</h3>
+         </div>
        </a>
        <a class="btn destino-exp-cta" href="experiencias.html?destino=${d.slug}">Ver todas las experiencias de ${nombre} →</a>`
     : `<div class="empty-state">Todavía no hay experiencias cargadas para este destino.<br>Muy pronto vamos a sumar más salidas.</div>`;
@@ -999,10 +1003,10 @@ async function renderDestinoEditorial(){
             <div class="kicker">${d.pais}</div>
             <h1>${nombre}${prepFlag}</h1>
             <p class="destino-hero-intro">${presentaTexto}</p>
+            ${heroTopicosHtml}
           </div>
           <div class="page-intro-media">${coverImg}</div>
         </div>
-        ${heroTopicosHtml}
       </div>
     </section>
 
