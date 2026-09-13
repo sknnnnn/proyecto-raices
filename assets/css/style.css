@@ -655,11 +655,6 @@ img.placeholder{filter:grayscale(1);}
   .destinos-group-title{margin-bottom:16px;}
 }
 .destino-feature-text p{font-size:18px; line-height:1.6; color:var(--text-secondary); max-width:420px;}
-.destino-feature-cta{display:inline-flex; align-items:center; gap:8px; margin-top:22px; font-family:var(--font-heading); font-weight:700; font-size:15px; color:var(--color-naranja); text-decoration:underline; text-underline-offset:4px; transition:transform .25s ease, color .2s ease;}
-.destino-feature-cta:hover{color:var(--color-marron); transform:translateX(4px);}
-/* Dentro de destino.html (PRO-34): CTA grande y separado, cierre de la
-   sección Experiencias — no el link chico de arriba. */
-.destino-exp-destacada + .destino-feature-cta{display:flex; margin-top:var(--space-6); padding-top:var(--space-5); border-top:1px solid rgba(236,231,216,0.16); font-size:clamp(18px,2vw,22px); text-transform:uppercase; letter-spacing:0.03em; text-decoration:none;}
 .destino-feature-flag{display:inline-block; font-size:12px; text-transform:uppercase; letter-spacing:0.08em; color:#8a8470; border:1px dashed #c9c3ae; padding:5px 12px; border-radius:999px; margin-top:22px;}
 
 /* =========================================================
@@ -718,24 +713,28 @@ img.placeholder{filter:grayscale(1);}
 
 /* ---------- Página editorial de destino — hero informativo (PRO-34) ----------
    El hero deja de ser sólo presentación visual: además de nombre + país +
-   foto, incorpora la presentación editorial y, como secuencia editorial
-   vertical (título grande + contenido secundario, sin cards ni columnas
-   iguales), los tres tópicos del destino — Cuándo ir / Cómo llegar /
-   Naturaleza y cultura. Después del hero y la galería, Destino ya no
-   duplica el catálogo: muestra una sola experiencia destacada como foto +
-   nombre superpuesto (sin card comercial) y un CTA grande hacia
-   experiencias.html. */
+   foto, incorpora la presentación editorial (protagonista, con más peso
+   que el resto) y, como zona editorial secundaria — tipografía chica en
+   amarillo, sin cards ni columnas iguales — los tres tópicos del destino:
+   Cuándo ir / Cómo llegar / Naturaleza y cultura. Después del hero y la
+   galería, Destino ya no duplica el catálogo: muestra una sola experiencia
+   destacada como foto + nombre superpuesto (sin card comercial) y el
+   mismo botón (.btn) que ya usan las cards del sitio. */
 
-.destino-hero-topicos{margin-top:var(--space-7); padding-top:var(--space-6); border-top:1px solid rgba(236,231,216,0.14); display:flex; flex-direction:column; gap:var(--space-6);}
-.destino-hero-topico h3{font-family:var(--font-heading); font-weight:700; font-size:clamp(24px,2.8vw,34px); line-height:1.1; color:var(--text-primary); text-transform:uppercase; letter-spacing:0.01em; margin-bottom:8px;}
-.destino-hero-topico p{font-size:15px; line-height:1.6; color:var(--text-secondary); max-width:56ch;}
+.destino-hero-intro{font-size:20px; line-height:1.55; color:var(--text-primary); max-width:480px;}
+
+.destino-hero-topicos{margin-top:var(--space-6); padding-top:var(--space-5); border-top:1px solid rgba(236,231,216,0.14); max-width:460px; display:flex; flex-direction:column; gap:var(--space-4);}
+.destino-hero-topico h3{font-family:var(--font-heading); font-weight:700; font-size:15px; line-height:1.2; color:var(--color-amarillo); text-transform:uppercase; letter-spacing:0.09em; margin-bottom:4px;}
+.destino-hero-topico p{font-size:14px; line-height:1.5; color:var(--text-secondary); max-width:44ch;}
 
 .destino-exp-destacada{position:relative; display:block; max-width:440px; aspect-ratio:1.3; border-radius:28px 8px 28px 8px; overflow:hidden; text-decoration:none;}
 .destino-exp-destacada img, .destino-exp-destacada .gal-placeholder{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; transition:transform .6s ease;}
 .destino-exp-destacada:hover img{transform:scale(1.04);}
-.destino-exp-destacada::after{content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(20,18,12,0) 48%, rgba(20,18,12,0.72) 100%);}
+.destino-exp-destacada::after{content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(20,18,12,0) 38%, rgba(20,18,12,0.82) 100%);}
 .destino-exp-destacada .cat-badge{position:absolute; top:14px; left:14px; z-index:2; background:rgba(20,18,12,0.55); font-family:var(--font-body); font-weight:600; color:#fff; font-size:10.5px; text-transform:uppercase; letter-spacing:0.1em; padding:6px 12px; border-radius:999px;}
-.destino-exp-destacada h3{position:absolute; left:20px; right:20px; bottom:18px; z-index:2; margin:0; color:#fff; font-family:var(--font-heading); font-weight:700; font-size:clamp(22px,2.6vw,30px); line-height:1.1; text-shadow:0 2px 10px rgba(0,0,0,0.45);}
+.destino-exp-destacada h3{position:absolute; left:22px; right:22px; bottom:22px; z-index:2; margin:0; color:#fff; font-family:var(--font-heading); font-weight:700; font-size:clamp(24px,2.8vw,32px); line-height:1.15; text-shadow:0 2px 12px rgba(0,0,0,0.55);}
+
+.destino-exp-cta{margin-top:var(--space-5);}
 
 /* Patagonia — foto grande con ficha superpuesta en el borde */
 .destino-a{position:relative; max-width:900px; margin:0 0 170px;}

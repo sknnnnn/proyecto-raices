@@ -973,9 +973,10 @@ async function renderDestinoEditorial(){
   // Destino ya no duplica el catálogo: en vez de una card comercial (con
   // botones y descripción), muestra una sola experiencia destacada (la
   // marcada como tal, o la primera por orden) como pieza editorial mínima
-  // — foto + nombre superpuesto, sin card ni CTA propio — seguida del CTA
-  // grande hacia experiencias.html?destino= — el catálogo general, que ya
-  // sabe filtrar por destino (PRO-62).
+  // — foto + nombre superpuesto, sin card ni CTA propio — seguida del mismo
+  // botón (.btn) que ya usan las cards del sitio, hacia
+  // experiencias.html?destino= — el catálogo general, que ya sabe filtrar
+  // por destino (PRO-62).
   const destacada = experiencias.find(p => p.destacada) || experiencias[0] || null;
   const tipoDestacada = destacada ? TIPOS_PROPUESTA[destacada.tipoProducto] : null;
   const teaserHtml = destacada
@@ -986,7 +987,7 @@ async function renderDestinoEditorial(){
          ${tipoDestacada ? `<span class="cat-badge">${tipoDestacada.label}</span>` : ""}
          <h3>${destacada.nombre}</h3>
        </a>
-       <a class="destino-feature-cta" href="experiencias.html?destino=${d.slug}">Ver todas las experiencias de ${nombre} →</a>`
+       <a class="btn destino-exp-cta" href="experiencias.html?destino=${d.slug}">Ver todas las experiencias de ${nombre} →</a>`
     : `<div class="empty-state">Todavía no hay experiencias cargadas para este destino.<br>Muy pronto vamos a sumar más salidas.</div>`;
 
   cont.innerHTML = `
@@ -997,7 +998,7 @@ async function renderDestinoEditorial(){
           <div class="page-intro-text compact">
             <div class="kicker">${d.pais}</div>
             <h1>${nombre}${prepFlag}</h1>
-            <p>${presentaTexto}</p>
+            <p class="destino-hero-intro">${presentaTexto}</p>
           </div>
           <div class="page-intro-media">${coverImg}</div>
         </div>
