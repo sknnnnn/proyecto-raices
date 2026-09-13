@@ -953,29 +953,34 @@ async function renderDestinoEditorial(){
   // inventado).
   const presentaTexto = d.resumen || `Estamos redactando la presentación editorial de ${nombre} — muy pronto vas a poder leerla acá.`;
 
-  // Información contextual del destino (Cuándo ir / Cómo llegar /
-  // Naturaleza y cultura), integrada al hero como una lista editorial
-  // de renglones con separador — no cards, no grilla de columnas. Los
+  // Los tres tópicos editoriales del destino (Cuándo ir / Cómo llegar /
+  // Naturaleza y cultura), ahora con jerarquía tipográfica real (título
+  // grande + contenido secundario) en vez de metadata chica — integrados
+  // al hero como fila editorial con divisores, no cards ni grilla. Los
   // tres campos todavía no existen en la base para ningún destino: se
   // muestran igual, cada uno con su propio "Próximamente".
-  const heroInfoHtml = `
-    <div class="destino-hero-info">
-      <div class="destino-hero-info-item"><span>Cuándo ir</span><p>${d.cuandoIr || "Próximamente"}</p></div>
-      <div class="destino-hero-info-item"><span>Cómo llegar</span><p>${d.comoLlegar || "Próximamente"}</p></div>
-      <div class="destino-hero-info-item"><span>Naturaleza y cultura</span><p>${d.naturalezaCultura || "Próximamente"}</p></div>
+  const heroTopicosHtml = `
+    <div class="destino-hero-topicos">
+      <div class="destino-hero-topico"><h3>Cuándo ir</h3><p>${d.cuandoIr || "Próximamente"}</p></div>
+      <div class="destino-hero-topico"><h3>Cómo llegar</h3><p>${d.comoLlegar || "Próximamente"}</p></div>
+      <div class="destino-hero-topico"><h3>Naturaleza y cultura</h3><p>${d.naturalezaCultura || "Próximamente"}</p></div>
     </div>`;
-
-  // Cantidad de experiencias, asociada al encabezado de "Experiencias"
-  // (ya no como estadística flotante independiente). El tipo de cada
-  // experiencia y sus actividades ya se ven en su propia card (cat-badge).
-  const expCountHtml = experiencias.length
-    ? `<p class="destino-exp-count">${experiencias.length} experiencia${experiencias.length === 1 ? "" : "s"} disponible${experiencias.length === 1 ? "" : "s"} hoy</p>`
-    : "";
 
   // Volver a esta ficha de destino desde propuesta.html (PRO-48): mismo
   // mecanismo de "origen"/"destino" por query param que ya usan
   // catalogo.html y las páginas de tipo fijo.
   const volverCtx = `&origen=destino&destino=${encodeURIComponent(d.slug)}`;
+
+  // Destino ya no duplica el catálogo: en vez del grid completo, muestra
+  // una sola experiencia destacada (la marcada como tal, o la primera por
+  // orden) a modo de teaser, con un CTA hacia experiencias.html?destino=
+  // — el catálogo general, que ya sabe filtrar por destino (PRO-62).
+  const destacada = experiencias.find(p => p.destacada) || experiencias[0] || null;
+  const leadHtml = destacada ? `<p>Elegimos una para arrancar — el resto te espera en el catálogo.</p>` : "";
+  const teaserHtml = destacada
+    ? `<div class="destino-exp-teaser">${propuestaCardHtml(destacada, volverCtx)}</div>
+       <a class="destino-feature-cta" href="experiencias.html?destino=${d.slug}">Ver todas las experiencias de ${nombre} →</a>`
+    : `<div class="empty-state">Todavía no hay experiencias cargadas para este destino.<br>Muy pronto vamos a sumar más salidas.</div>`;
 
   cont.innerHTML = `
     <section class="page-intro">
@@ -986,10 +991,10 @@ async function renderDestinoEditorial(){
             <div class="kicker">${d.pais}</div>
             <h1>${nombre}${prepFlag}</h1>
             <p>${presentaTexto}</p>
-            ${heroInfoHtml}
           </div>
           <div class="page-intro-media">${coverImg}</div>
         </div>
+        ${heroTopicosHtml}
       </div>
     </section>
 
@@ -1005,19 +1010,12 @@ async function renderDestinoEditorial(){
 
     <section>
       <div class="wrap">
-        <div class="section-head destino-exp-head">
-          <div>
-            <div class="kicker">Experiencias</div>
-            <h2>Experiencias en ${nombre}</h2>
-            ${expCountHtml}
-          </div>
-          <a class="destino-feature-cta" href="catalogo.html?destino=${d.slug}&origen=destino">Ver todo en el catálogo →</a>
+        <div class="section-head">
+          <div class="kicker">Experiencias</div>
+          <h2>Experiencias en ${nombre}</h2>
+          ${leadHtml}
         </div>
-        <div class="exp-grid">
-          ${experiencias.length
-            ? experiencias.map(p => propuestaCardHtml(p, volverCtx)).join("")
-            : `<div class="empty-state" style="grid-column:1/-1;">Todavía no hay experiencias cargadas para este destino.<br>Muy pronto vamos a sumar más salidas.</div>`}
-        </div>
+        ${teaserHtml}
       </div>
     </section>
 
