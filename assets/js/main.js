@@ -978,7 +978,9 @@ async function renderDestinoEditorial(){
   // — foto + nombre superpuesto, sin card ni CTA propio — seguida del mismo
   // botón (.btn) que ya usan las cards del sitio, hacia
   // experiencias.html?destino= — el catálogo general, que ya sabe filtrar
-  // por destino (PRO-62).
+  // por destino (PRO-62). El texto pequeño sobre la foto ("Tipo en
+  // Destino") ata la experiencia al relato del propio destino en vez de
+  // sentirse un elemento aislado.
   const destacada = experiencias.find(p => p.destacada) || experiencias[0] || null;
   const tipoDestacada = destacada ? TIPOS_PROPUESTA[destacada.tipoProducto] : null;
   const teaserHtml = destacada
@@ -987,7 +989,7 @@ async function renderDestinoEditorial(){
            ? `<img src="${destacada.imagen}" alt="${destacada.nombre}"${destacada.imagenPos ? ` style="object-position:${destacada.imagenPos};"` : ""} loading="lazy">`
            : `<div class="gal-placeholder" style="height:100%;">Imagen pendiente</div>`}
          <div class="destino-exp-destacada-info">
-           ${tipoDestacada ? `<span class="cat-badge">${tipoDestacada.label}</span>` : ""}
+           ${tipoDestacada ? `<span class="destino-exp-destacada-tipo">${tipoDestacada.label} en ${nombre}</span>` : ""}
            <h3>${destacada.nombre}</h3>
          </div>
        </a>
