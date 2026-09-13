@@ -947,52 +947,38 @@ async function renderDestinoEditorial(){
         <div class="g-foto g-${i + 1}"><img src="${f.src}" alt="${f.alt}" style="object-position:${f.pos};" data-lightbox="${f.src}" loading="lazy"></div>`).join("")}</div>`
     : `<div class="destino-fotos" data-fotos="1"><div class="g-foto g-1"><div class="gal-placeholder" style="aspect-ratio:1.9;">Imagen pendiente</div></div></div>`;
 
-  const tiposDisponibles = [...new Set(experiencias.map(p => TIPOS_PROPUESTA[p.tipoProducto] ? TIPOS_PROPUESTA[p.tipoProducto].label : p.tipoProducto))];
-
-  // Datos clave: país/región y tipo de experiencia son los datos
-  // principales (cualitativos); la cantidad de experiencias es el único
-  // dato cuantitativo, por eso pesa más visualmente (dato-numero).
-  const datosClaveHtml = `
-    <div class="stat-row destino-datos">
-      <div class="stat">
-        <span class="dato-kicker">${d.region ? "Región · " + d.pais : "País"}</span>
-        <b class="dato-valor">${d.region || d.pais}</b>
+  // Información del destino: composición editorial (Cuándo ir / Cómo
+  // llegar en una fila de dos, Naturaleza y cultura ocupando el ancho
+  // completo debajo) en vez de tres mini tarjetas iguales. Los tres
+  // campos todavía no existen en la base para ningún destino — se
+  // muestran igual, cada uno con su propio "Próximamente", en vez de
+  // ocultar los tres detrás de una única nota genérica.
+  const infoHtml = `
+    <section class="destino-info-editorial">
+      <div class="wrap">
+        <div class="kicker">Información del destino</div>
+        <div class="destino-info-fila">
+          <div class="destino-info-item">
+            <h3>Cuándo ir</h3>
+            <p>${d.cuandoIr || "Próximamente"}</p>
+          </div>
+          <div class="destino-info-item">
+            <h3>Cómo llegar</h3>
+            <p>${d.comoLlegar || "Próximamente"}</p>
+          </div>
+        </div>
+        <div class="destino-info-item destino-info-full">
+          <h3>Naturaleza y cultura</h3>
+          <p>${d.naturalezaCultura || "Próximamente"}</p>
+        </div>
       </div>
-      <div class="stat stat-cantidad">
-        <span class="dato-numero">${experiencias.length}<em>experiencia${experiencias.length === 1 ? "" : "s"}</em></span>
-        <span class="dato-caption">Disponible${experiencias.length === 1 ? "" : "s"} hoy</span>
-      </div>
-      <div class="stat">
-        <span class="dato-kicker">Tipo de experiencia</span>
-        <b class="dato-valor">${tiposDisponibles.length ? tiposDisponibles.join(" · ") : "—"}</b>
-      </div>
-    </div>`;
+    </section>`;
 
-  // Información del destino: campos editoriales cortos (cuándo ir, cómo
-  // llegar, naturaleza y cultura). Todavía no existe ese contenido cargado
-  // para ningún destino (no hay campo en la base para eso) — en vez de
-  // "próximamente" repetido tres veces, una única nota discreta. El día
-  // que existan, este mismo bloque los va a mostrar como texto editorial
-  // corto sin tocar el resto de la función.
-  const infoCampos = [
-    { key: "cuandoIr", titulo: "Cuándo ir" },
-    { key: "comoLlegar", titulo: "Cómo llegar" },
-    { key: "naturalezaCultura", titulo: "Naturaleza y cultura" }
-  ].filter(c => d[c.key]);
-  const infoHtml = infoCampos.length
-    ? `<div class="destino-info-grid">${infoCampos.map(c => `<div class="destino-info-bloque"><h3>${c.titulo}</h3><p>${d[c.key]}</p></div>`).join("")}</div>`
-    : `<p class="destino-info-pendiente">Todavía estamos completando la información de temporada, acceso, naturaleza y cultura de ${nombre} — apenas esté lista, la vas a ver acá.</p>`;
-
-  // "Qué podés vivir" — actividades reales ya etiquetadas en las
-  // experiencias publicadas de este destino (misma relación que usa el
-  // filtro de actividades del catálogo). Sin experiencias reales, no hay
-  // nada que mostrar acá: no se inventa ninguna actividad.
-  const actividades = [...new Set(experiencias.flatMap(p => (p.actividades || []).map(a => a.nombre)))];
-  const vivirHtml = actividades.length
-    ? `<div class="destino-vivir" style="margin-top:var(--space-7);">
-        <h3>Qué podés vivir</h3>
-        <div class="destino-vivir-tags">${actividades.map(a => `<span class="destino-vivir-tag">${a}</span>`).join("")}</div>
-      </div>`
+  // Cantidad de experiencias, asociada al encabezado de "Experiencias"
+  // (ya no como estadística flotante independiente). El tipo de cada
+  // experiencia y sus actividades ya se ven en su propia card (cat-badge).
+  const expCountHtml = experiencias.length
+    ? `<p class="destino-exp-count">${experiencias.length} experiencia${experiencias.length === 1 ? "" : "s"} disponible${experiencias.length === 1 ? "" : "s"} hoy</p>`
     : "";
 
   // Volver a esta ficha de destino desde propuesta.html (PRO-48): mismo
@@ -1027,18 +1013,12 @@ async function renderDestinoEditorial(){
 
     <section>
       <div class="wrap">
-        ${datosClaveHtml}
-        <div class="kicker" style="margin-top:var(--space-7);">Información del destino</div>
-        ${infoHtml}
-        ${vivirHtml}
-      </div>
-    </section>
-
-    <section>
-      <div class="wrap">
-        <div class="section-head">
-          <div class="kicker">Experiencias</div>
-          <h2>Experiencias en ${nombre}</h2>
+        <div class="section-head destino-exp-head">
+          <div>
+            <div class="kicker">Experiencias</div>
+            <h2>Experiencias en ${nombre}</h2>
+            ${expCountHtml}
+          </div>
           <a class="destino-feature-cta" href="catalogo.html?destino=${d.slug}&origen=destino">Ver todo en el catálogo →</a>
         </div>
         <div class="exp-grid">
@@ -1048,6 +1028,8 @@ async function renderDestinoEditorial(){
         </div>
       </div>
     </section>
+
+    ${infoHtml}
 
     <section class="cta-band">
       <div class="wrap">

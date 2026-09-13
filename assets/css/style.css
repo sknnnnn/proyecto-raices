@@ -713,27 +713,29 @@ img.placeholder{filter:grayscale(1);}
   .destino-fotos[data-fotos="4"] .g-foto{grid-row:auto; grid-column:auto; height:auto; aspect-ratio:1.35;}
 }
 
-/* Datos clave del destino — misma fila con divisores (.stat-row) que ya
-   usa Inicio, sin convertirla en cards: sólo cambia la tipografía interna
-   para que el conteo de experiencias (el único dato cuantitativo) pese
-   más que país/tipo (los datos principales, pero cualitativos). */
-.destino-datos .dato-kicker{display:block; font-family:var(--font-body); font-size:12px; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-secondary); margin-bottom:6px;}
-.destino-datos .dato-valor{display:block; font-family:var(--font-heading); font-weight:700; font-size:24px; line-height:1.15; color:var(--text-primary);}
-.destino-datos .stat-cantidad .dato-numero{display:block; font-family:var(--font-heading); font-weight:700; font-size:42px; line-height:1; color:var(--color-naranja);}
-.destino-datos .stat-cantidad .dato-numero em{font-style:normal; font-weight:400; font-size:15px; color:var(--text-primary); margin-left:8px;}
-.destino-datos .stat-cantidad .dato-caption{display:block; margin-top:5px; font-size:13px; color:var(--text-secondary);}
-@media (max-width:640px){
-  .destino-datos .stat-cantidad .dato-numero{font-size:34px;}
-}
+/* ---------- Página editorial de destino — información intermedia (PRO-34) ----------
+   Después de la galería viene directamente Experiencias (con la cantidad
+   asociada al propio encabezado, no como estadística flotante); la
+   Información del destino (Cuándo ir / Cómo llegar / Naturaleza y
+   cultura) pasa a ser contenido editorial secundario después de las
+   experiencias, en un bloque de 2 columnas + fila completa, no tres
+   mini tarjetas iguales. */
 
-/* Información del destino + Qué podés vivir */
-.destino-info-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:var(--space-6) var(--space-5); margin-top:8px;}
-.destino-info-bloque h3{font-family:var(--font-heading); font-size:16px; color:var(--color-amarillo); margin-bottom:8px;}
-.destino-info-bloque p{font-size:14.5px; line-height:1.6; color:var(--text-secondary); max-width:34ch;}
-.destino-info-pendiente{font-size:14px; font-style:italic; color:var(--text-secondary); max-width:520px; margin-top:8px;}
-.destino-vivir h3{font-family:var(--font-heading); font-size:16px; color:var(--color-amarillo); margin-bottom:12px;}
-.destino-vivir-tags{display:flex; flex-wrap:wrap; gap:10px;}
-.destino-vivir-tag{display:inline-block; font-family:var(--font-body); font-size:13px; color:var(--text-primary); border:1px solid rgba(236,231,216,0.3); border-radius:999px; padding:6px 16px;}
+.destino-exp-head{display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:var(--space-4);}
+.destino-exp-count{margin-top:6px; font-size:15px; color:var(--text-secondary);}
+
+.destino-info-editorial{padding:var(--space-7) 0 var(--space-8);}
+.destino-info-fila{display:grid; grid-template-columns:1fr 1fr; gap:var(--space-7); margin-top:var(--space-6); padding-bottom:var(--space-6); border-bottom:1px solid rgba(236,231,216,0.14);}
+.destino-info-fila .destino-info-item + .destino-info-item{padding-left:var(--space-7); border-left:1px solid rgba(236,231,216,0.14);}
+.destino-info-item h3{font-family:var(--font-heading); font-weight:700; font-size:clamp(22px,2.2vw,28px); color:var(--text-primary); margin-bottom:14px;}
+.destino-info-item p{font-size:15.5px; line-height:1.7; color:var(--text-secondary); max-width:48ch;}
+.destino-info-full{margin-top:var(--space-6);}
+.destino-info-full p{max-width:74ch;}
+
+@media (max-width:860px){
+  .destino-info-fila{grid-template-columns:1fr; gap:var(--space-5);}
+  .destino-info-fila .destino-info-item + .destino-info-item{padding-left:0; border-left:none; padding-top:var(--space-5); border-top:1px solid rgba(236,231,216,0.14);}
+}
 
 /* Patagonia — foto grande con ficha superpuesta en el borde */
 .destino-a{position:relative; max-width:900px; margin:0 0 170px;}
