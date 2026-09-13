@@ -725,9 +725,13 @@ img.placeholder{filter:grayscale(1);}
 
 /* Los tres tópicos viven en la MISMA columna de texto del hero (kicker +
    h1 + presentación), inmediatamente después de la presentación: sin
-   divisor ni salto grande, para que se lean como continuación del mismo
-   bloque editorial y no como una sección aparte pegada debajo. */
-.destino-hero-topicos{margin-top:var(--space-5); display:flex; flex-direction:column; gap:var(--space-3);}
+   sección aparte ni salto grande, para que se lean como continuación del
+   mismo bloque editorial. Un divisor sutil (misma línea que ya separa
+   "En este lugar"/galería del resto) marca el paso de la presentación a
+   los temas, y otro igual de discreto separa cada tema del siguiente —
+   ritmo compacto, sin cards ni columnas. */
+.destino-hero-topicos{margin-top:var(--space-5); padding-top:var(--space-4); border-top:1px solid rgba(236,231,216,0.16); display:flex; flex-direction:column;}
+.destino-hero-topico + .destino-hero-topico{margin-top:var(--space-3); padding-top:var(--space-3); border-top:1px solid rgba(236,231,216,0.12);}
 .destino-hero-topico h3{font-family:var(--font-heading); font-weight:700; font-size:15px; line-height:1.2; color:var(--color-amarillo); text-transform:uppercase; letter-spacing:0.09em; margin-bottom:3px;}
 .destino-hero-topico p{font-size:14px; line-height:1.5; color:var(--text-secondary); max-width:44ch;}
 
