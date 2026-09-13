@@ -954,11 +954,10 @@ async function renderDestinoEditorial(){
   const presentaTexto = d.resumen || `Estamos redactando la presentación editorial de ${nombre} — muy pronto vas a poder leerla acá.`;
 
   // Los tres tópicos editoriales del destino (Cuándo ir / Cómo llegar /
-  // Naturaleza y cultura), ahora con jerarquía tipográfica real (título
-  // grande + contenido secundario) en vez de metadata chica — integrados
-  // al hero como fila editorial con divisores, no cards ni grilla. Los
-  // tres campos todavía no existen en la base para ningún destino: se
-  // muestran igual, cada uno con su propio "Próximamente".
+  // Naturaleza y cultura), compuestos como una secuencia editorial vertical
+  // (título grande + contenido secundario, sin cards ni columnas iguales)
+  // integrada al hero. Los tres campos todavía no existen en la base para
+  // ningún destino: se muestran igual, cada uno con su propio "Próximamente".
   const heroTopicosHtml = `
     <div class="destino-hero-topicos">
       <div class="destino-hero-topico"><h3>Cuándo ir</h3><p>${d.cuandoIr || "Próximamente"}</p></div>
@@ -971,14 +970,22 @@ async function renderDestinoEditorial(){
   // catalogo.html y las páginas de tipo fijo.
   const volverCtx = `&origen=destino&destino=${encodeURIComponent(d.slug)}`;
 
-  // Destino ya no duplica el catálogo: en vez del grid completo, muestra
-  // una sola experiencia destacada (la marcada como tal, o la primera por
-  // orden) a modo de teaser, con un CTA hacia experiencias.html?destino=
-  // — el catálogo general, que ya sabe filtrar por destino (PRO-62).
+  // Destino ya no duplica el catálogo: en vez de una card comercial (con
+  // botones y descripción), muestra una sola experiencia destacada (la
+  // marcada como tal, o la primera por orden) como pieza editorial mínima
+  // — foto + nombre superpuesto, sin card ni CTA propio — seguida del CTA
+  // grande hacia experiencias.html?destino= — el catálogo general, que ya
+  // sabe filtrar por destino (PRO-62).
   const destacada = experiencias.find(p => p.destacada) || experiencias[0] || null;
-  const leadHtml = destacada ? `<p>Elegimos una para arrancar — el resto te espera en el catálogo.</p>` : "";
+  const tipoDestacada = destacada ? TIPOS_PROPUESTA[destacada.tipoProducto] : null;
   const teaserHtml = destacada
-    ? `<div class="destino-exp-teaser">${propuestaCardHtml(destacada, volverCtx)}</div>
+    ? `<a class="destino-exp-destacada" href="propuesta.html?id=${destacada.slug}${volverCtx}" aria-label="Ver ${destacada.nombre}">
+         ${destacada.imagen
+           ? `<img src="${destacada.imagen}" alt="${destacada.nombre}"${destacada.imagenPos ? ` style="object-position:${destacada.imagenPos};"` : ""} loading="lazy">`
+           : `<div class="gal-placeholder" style="height:100%;">Imagen pendiente</div>`}
+         ${tipoDestacada ? `<span class="cat-badge">${tipoDestacada.label}</span>` : ""}
+         <h3>${destacada.nombre}</h3>
+       </a>
        <a class="destino-feature-cta" href="experiencias.html?destino=${d.slug}">Ver todas las experiencias de ${nombre} →</a>`
     : `<div class="empty-state">Todavía no hay experiencias cargadas para este destino.<br>Muy pronto vamos a sumar más salidas.</div>`;
 
@@ -1013,7 +1020,6 @@ async function renderDestinoEditorial(){
         <div class="section-head">
           <div class="kicker">Experiencias</div>
           <h2>Experiencias en ${nombre}</h2>
-          ${leadHtml}
         </div>
         ${teaserHtml}
       </div>
