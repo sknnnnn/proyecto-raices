@@ -947,32 +947,23 @@ async function renderDestinoEditorial(){
         <div class="g-foto g-${i + 1}"><img src="${f.src}" alt="${f.alt}" style="object-position:${f.pos};" data-lightbox="${f.src}" loading="lazy"></div>`).join("")}</div>`
     : `<div class="destino-fotos" data-fotos="1"><div class="g-foto g-1"><div class="gal-placeholder" style="aspect-ratio:1.9;">Imagen pendiente</div></div></div>`;
 
-  // Información del destino: composición editorial (Cuándo ir / Cómo
-  // llegar en una fila de dos, Naturaleza y cultura ocupando el ancho
-  // completo debajo) en vez de tres mini tarjetas iguales. Los tres
-  // campos todavía no existen en la base para ningún destino — se
-  // muestran igual, cada uno con su propio "Próximamente", en vez de
-  // ocultar los tres detrás de una única nota genérica.
-  const infoHtml = `
-    <section class="destino-info-editorial">
-      <div class="wrap">
-        <div class="kicker">Información del destino</div>
-        <div class="destino-info-fila">
-          <div class="destino-info-item">
-            <h3>Cuándo ir</h3>
-            <p>${d.cuandoIr || "Próximamente"}</p>
-          </div>
-          <div class="destino-info-item">
-            <h3>Cómo llegar</h3>
-            <p>${d.comoLlegar || "Próximamente"}</p>
-          </div>
-        </div>
-        <div class="destino-info-item destino-info-full">
-          <h3>Naturaleza y cultura</h3>
-          <p>${d.naturalezaCultura || "Próximamente"}</p>
-        </div>
-      </div>
-    </section>`;
+  // Presentación editorial del destino, ahora parte del propio hero (ya
+  // no una sección aparte): mismo resumen que ya usa el intro, con un
+  // placeholder honesto si todavía no está cargado (nunca contenido
+  // inventado).
+  const presentaTexto = d.resumen || `Estamos redactando la presentación editorial de ${nombre} — muy pronto vas a poder leerla acá.`;
+
+  // Información contextual del destino (Cuándo ir / Cómo llegar /
+  // Naturaleza y cultura), integrada al hero como una lista editorial
+  // de renglones con separador — no cards, no grilla de columnas. Los
+  // tres campos todavía no existen en la base para ningún destino: se
+  // muestran igual, cada uno con su propio "Próximamente".
+  const heroInfoHtml = `
+    <div class="destino-hero-info">
+      <div class="destino-hero-info-item"><span>Cuándo ir</span><p>${d.cuandoIr || "Próximamente"}</p></div>
+      <div class="destino-hero-info-item"><span>Cómo llegar</span><p>${d.comoLlegar || "Próximamente"}</p></div>
+      <div class="destino-hero-info-item"><span>Naturaleza y cultura</span><p>${d.naturalezaCultura || "Próximamente"}</p></div>
+    </div>`;
 
   // Cantidad de experiencias, asociada al encabezado de "Experiencias"
   // (ya no como estadística flotante independiente). El tipo de cada
@@ -994,7 +985,8 @@ async function renderDestinoEditorial(){
           <div class="page-intro-text compact">
             <div class="kicker">${d.pais}</div>
             <h1>${nombre}${prepFlag}</h1>
-            <p>${d.resumen || ""}</p>
+            <p>${presentaTexto}</p>
+            ${heroInfoHtml}
           </div>
           <div class="page-intro-media">${coverImg}</div>
         </div>
@@ -1028,8 +1020,6 @@ async function renderDestinoEditorial(){
         </div>
       </div>
     </section>
-
-    ${infoHtml}
 
     <section class="cta-band">
       <div class="wrap">
