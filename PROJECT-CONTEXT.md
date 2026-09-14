@@ -244,9 +244,9 @@ La galería debe sentirse integrada con la identidad de la marca y no como un si
 
 ## 10. CTAs y consultas
 
-CTA principal: **Consultar**
+CTA principal: **Reserva ahora**
 
-Raíces funciona como catálogo + contacto/consulta, no como e-commerce: no usar CTAs de reserva/compra (p. ej. "Reserva ahora") como CTA principal. Se pueden mantener otros textos de CTA sólo cuando cumplan una función claramente distinta y justificada por el contexto (por ejemplo "Ver detalles" o "Solicitar información" como acciones secundarias).
+Raíces funciona como catálogo + contacto/consulta, no como e-commerce: "Reserva ahora" no implica compra/checkout online, deriva a WhatsApp/contacto para coordinar la consulta o reserva. Se mantienen otros textos de CTA sólo cuando cumplan una función claramente distinta y justificada por el contexto (por ejemplo "Ver detalles" o "Solicitar información" como acciones secundarias).
 
 Las consultas/reservas pueden derivar a:
 

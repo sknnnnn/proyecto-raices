@@ -524,7 +524,7 @@ function propuestaCardHtml(p, volverCtx){
         <p class="resumen">${p.resumen}</p>
         <div class="actions">
           <a class="btn btn-sm" href="${href}">Ver detalles</a>
-          <a class="btn btn-outline on-light btn-sm" href="contacto.html?propuesta=${encodeURIComponent(p.nombre)}">Consultar</a>
+          <a class="btn btn-outline on-light btn-sm" href="contacto.html?propuesta=${encodeURIComponent(p.nombre)}">Reserva ahora</a>
         </div>
       </div>
     </article>`;
@@ -707,10 +707,10 @@ async function renderPropuestaDetalle(){
         ${p.precio ? `<div class="info-row"><span>Precio</span><b>${p.precio}</b></div>` : ""}
         ${notaReservaHtml}
         ${p.tipoProducto === "tour"
-          ? `<a class="btn" href="${tourWaHref || consultaHref}"${tourWaHref ? ` target="_blank" rel="noopener"` : ""}>Consultar</a>`
+          ? `<a class="btn" href="${tourWaHref || consultaHref}"${tourWaHref ? ` target="_blank" rel="noopener"` : ""}>Reserva ahora</a>`
           : p.tipoProducto === "travesia"
-          ? `<a class="btn" href="${travesiaWaHref || consultaHref}"${travesiaWaHref ? ` target="_blank" rel="noopener"` : ""}>Consultar</a>`
-          : `<a class="btn" href="${consultaHref}">Consultar</a>
+          ? `<a class="btn" href="${travesiaWaHref || consultaHref}"${travesiaWaHref ? ` target="_blank" rel="noopener"` : ""}>Reserva ahora</a>`
+          : `<a class="btn" href="${consultaHref}">Reserva ahora</a>
         <a class="btn btn-outline on-light btn-block" style="margin-top:10px;" href="${consultaHref}">Solicitar información</a>`}
       </aside>
     </div>
@@ -1036,7 +1036,7 @@ async function renderDestinoEditorial(){
       <div class="wrap">
         <h2>¿Querés armar tu viaje a ${nombre}?</h2>
         <p>Contanos qué tenés en mente y te ayudamos a resolverlo.</p>
-        <div class="hero-ctas"><a href="contacto.html" class="btn">Consultar</a></div>
+        <div class="hero-ctas"><a href="contacto.html" class="btn">Reserva ahora</a></div>
       </div>
     </section>`;
 
