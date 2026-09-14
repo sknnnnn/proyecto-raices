@@ -85,6 +85,12 @@ Estas categorías deben mantenerse diferenciadas tanto en contenido como en inte
 
 Esta arquitectura es funcional y reutilizable. No crear un sistema de navegación nuevo si esto ya resuelve el caso.
 
+`guias.html` (sección "Guías/colaboradores") fue retirada del proyecto por ser legacy: no formaba parte de la navegación, quedó fuera de la arquitectura actual y sus perfiles eran placeholders. No existe actualmente una sección pública de Guías; no reintroducirla ni reemplazarla por otra arquitectura salvo pedido explícito.
+
+### destino.html (plantilla editorial dinámica)
+
+`destino.html` funciona como una única plantilla dinámica reutilizada por todos los destinos (país + destino + presentación, según datos de `destinos-data.js`). Integra en una sola pieza editorial dentro del hero: presentación, Cuándo ir, Cómo llegar y Naturaleza y cultura — no existe una sección independiente separada para esa información. Incluye además galería editorial propia y muestra las experiencias asociadas a ese destino, sin duplicar el catálogo completo de Experiencias.
+
 ## 3. Experiencias
 
 La dirección actual es evitar que Tours, Travesías y Paquetes se sientan como tres sitios separados.
@@ -240,7 +246,7 @@ La galería debe sentirse integrada con la identidad de la marca y no como un si
 
 CTA principal: **Consultar**
 
-Según el contexto también puede utilizarse: **Reservar ahora**
+Raíces funciona como catálogo + contacto/consulta, no como e-commerce: no usar CTAs de reserva/compra (p. ej. "Reserva ahora") como CTA principal. Se pueden mantener otros textos de CTA sólo cuando cumplan una función claramente distinta y justificada por el contexto (por ejemplo "Ver detalles" o "Solicitar información" como acciones secundarias).
 
 Las consultas/reservas pueden derivar a:
 
@@ -306,7 +312,11 @@ El objetivo no es agregar complejidad, sino conseguir una web visualmente sólid
 
 Se exploraron 2 rondas de direcciones visuales comparativas (3 propuestas cada una); ninguna fue aprobada (detalle y criterios en `CLAUDE.md` §19-20). No hay todavía una dirección visual nueva aprobada más allá de la jerarquía de color de §5.
 
-## 14. Regla de oro
+## 14. Flujo operativo
+
+Flujo real de trabajo: `GitHub main → Cloudflare Dev`. No existe (ni debe asumirse) un pipeline de CI/CD adicional más allá de este flujo.
+
+## 15. Regla de oro
 
 Proyecto Raíces debe sentirse como una marca de experiencias de viaje, no como un catálogo genérico de paquetes turísticos.
 

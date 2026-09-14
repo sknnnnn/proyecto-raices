@@ -156,7 +156,7 @@ nav{display:flex; align-items:center; justify-content:space-between; padding:14p
    de fondo de cada página, ver más abajo) y pasa a sólido recién al
    scrollear (clase .is-solid, ver main.js) — se ve continuo con la
    cabecera de cada página en vez de una franja separada encima.
-   En Inicio/Guías/Comentarios (foto de portada a pantalla completa)
+   En Inicio/Comentarios (foto de portada a pantalla completa)
    además queda fijo sobre la foto, con sombra de texto para legibilidad
    sobre una imagen variable. En el resto de las páginas sigue "sticky"
    (ocupa su lugar en el flujo): no hay foto que tapar, así que sólo
@@ -165,10 +165,8 @@ header:not(.is-solid){background:transparent; box-shadow:none; backdrop-filter:n
 header:not(.is-solid) .nav-toggle span{background:#fff;}
 
 body[data-page="inicio"] header,
-body[data-page="guias"] header,
 body[data-page="comentarios"] header{position:fixed; top:0; left:0; width:100%;}
 body[data-page="inicio"] header:not(.is-solid) .navlinks a,
-body[data-page="guias"] header:not(.is-solid) .navlinks a,
 body[data-page="comentarios"] header:not(.is-solid) .navlinks a{text-shadow:0 2px 8px rgba(0,0,0,0.55);}
 
 .nav-toggle{display:none; background:none; border:none; cursor:pointer; padding:8px; flex-shrink:0;}
@@ -245,7 +243,7 @@ body[data-page="comentarios"] header:not(.is-solid) .navlinks a{text-shadow:0 2p
    No depende de ninguna animación de entrada.
 
    .page-hero (arriba) NO se tocó: sigue siendo el componente que
-   usan catalogo.html, guias.html, comentarios.html y propuesta.html,
+   usan catalogo.html, comentarios.html y propuesta.html,
    páginas fuera del alcance de este pedido.
 
    Reutiliza .wrap, .breadcrumb y .kicker ya existentes en vez de
@@ -1099,16 +1097,6 @@ body[data-page="propuesta"] .exp-detail-grid{
 .cross-list li::marker{color:var(--color-naranja);}
 .notice-box{background:var(--color-amarillo); color:var(--color-tinta); border-radius:8px; padding:18px 22px; font-size:14px; margin-top:16px;}
 
-/* ---------- Guías ---------- */
-.guias-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:28px;}
-.guia-card{background:#fff; border-radius:10px; overflow:hidden; border:1px solid var(--border-color); text-align:center;}
-.guia-card .foto{height:220px; background:linear-gradient(135deg,var(--color-celeste),var(--color-verde-oliva)); display:flex; align-items:center; justify-content:center; color:#fff; font-family:var(--font-heading); font-size:15px; position:relative;}
-.guia-card .foto img{width:100%; height:100%; object-fit:cover; position:absolute; inset:0;}
-.guia-card .body{padding:22px;}
-.guia-card h3{font-size:18px; color:var(--color-tinta);}
-.guia-card .rol{font-size:12px; text-transform:uppercase; letter-spacing:0.08em; color:var(--color-marron); margin:6px 0 12px;}
-.guia-card p{font-size:14px; color:var(--text-secondary);}
-
 /* ---------- Galería — collage editorial ----------
    Reemplaza la grilla uniforme anterior (mismas proporciones, mismo
    tamaño) por un collage real: grid de 6 columnas angostas + filas
@@ -1276,7 +1264,7 @@ footer li a:hover{opacity:1; color:var(--color-amarillo);}
   .hero-inicio .eyebrow{margin-bottom:var(--space-6); font-size:13px;}
   .hero-inicio-tagline{margin:var(--space-6) 0 var(--space-7);}
   .gal-row img{height:220px;}
-  .testi-grid, .guias-grid, .valores-grid{grid-template-columns:1fr;}
+  .testi-grid, .valores-grid{grid-template-columns:1fr;}
   body[data-page="inicio"] .catalogo-home .valores-grid{grid-template-columns:1fr;}
   body[data-page="inicio"] .catalogo-home .dest-card:nth-child(2),
   body[data-page="inicio"] .catalogo-home .dest-card:nth-child(2):hover,
