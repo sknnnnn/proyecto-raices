@@ -145,8 +145,8 @@ a{color:inherit;}
    --text-primary (Papel), invisible sobre el fondo Papel del propio
    header. Con header oscuro (Asfalto/Tinta) el link queda legible;
    el panel mobile (fondo verde) restaura Papel más abajo. */
-header{position:sticky; top:0; z-index:50; background:rgba(1,48,32,0.97); backdrop-filter:blur(14px); box-shadow:0 16px 40px -18px rgba(0,0,0,0.8); border-bottom:1px solid rgba(255,255,255,0.14); color:#fff; transition:background-color .25s ease, box-shadow .25s ease, color .25s ease, border-color .25s ease;}
-nav{display:flex; align-items:center; justify-content:space-between; padding:26px var(--gutter); max-width:var(--content-max); margin:0 auto; gap:16px;}
+header{position:sticky; top:0; z-index:50; background:rgba(1,48,32,0.92); backdrop-filter:blur(6px); box-shadow:0 8px 22px -18px rgba(1,48,32,0.6); border-bottom:1px solid transparent; color:#fff; transition:background-color .25s ease, box-shadow .25s ease, color .25s ease;}
+nav{display:flex; align-items:center; justify-content:space-between; padding:14px var(--gutter); max-width:var(--content-max); margin:0 auto; gap:16px;}
 /* Desktop: logo / navegación centrada / CTA como tres bloques reales
    (grid), no sólo el espacio "sobrante" entre logo y CTA — con flex +
    space-between la navegación quedaba corrida hacia la izquierda
@@ -158,7 +158,7 @@ nav{display:flex; align-items:center; justify-content:space-between; padding:26p
   .navlinks{justify-content:center; gap:30px;}
 }
 .brand{display:flex; align-items:center; gap:10px; text-decoration:none; flex-shrink:0;}
-.brand img{height:46px; width:auto;}
+.brand img{height:34px; width:auto;}
 .navlinks{display:flex; gap:26px; font-size:14px; letter-spacing:0.02em; align-items:center;}
 .navlinks a{color:inherit; text-decoration:none; opacity:0.75; transition:opacity .2s; white-space:nowrap;}
 .navlinks a:hover, .navlinks a.active{opacity:1;}
@@ -174,11 +174,8 @@ nav{display:flex; align-items:center; justify-content:space-between; padding:26p
    además queda fijo sobre la foto, con sombra de texto para legibilidad
    sobre una imagen variable. En el resto de las páginas sigue "sticky"
    (ocupa su lugar en el flujo): no hay foto que tapar, así que sólo
-   cambia color/fondo — nada de overlay ni filtro sobre ninguna imagen.
-   Sigue sin fondo propio (transparente, para no repetir el corte de la
-   Sesión 1), pero mantiene una sombra difusa propia: le da peso/presencia
-   incluso antes de scrollear, en vez de quedar sin ningún soporte visual. */
-header:not(.is-solid){background:transparent; box-shadow:0 18px 44px -22px rgba(0,0,0,0.65); backdrop-filter:none;}
+   cambia color/fondo — nada de overlay ni filtro sobre ninguna imagen. */
+header:not(.is-solid){background:transparent; box-shadow:none; backdrop-filter:none;}
 
 body[data-page="inicio"] header,
 body[data-page="comentarios"] header{position:fixed; top:0; left:0; width:100%;}
@@ -529,14 +526,6 @@ body[data-page="inicio"] .catalogo-home .dest-card:hover .count{opacity:1; trans
    sobre el lago/bosque, más oscuro. Sólo esta card: el resto de las
    fotos de #destinos-home no tienen ese problema. */
 #destinos-home .dest-card[href*="destino=bariloche"] img{object-position:center 70%;}
-/* Ushuaia (galeria-ushuaia.jpg): la foto es casi la misma proporción
-   que la card, así que object-position no mueve nada (cover no tiene
-   margen para recortar). El párrafo de la bajada queda sobre el mar
-   con espuma clara. Como el crop no alcanza, se agrega un degradé muy
-   acotado sólo detrás del texto (no sobre toda la foto) — el título y
-   el resto de la composición quedan intactos. Único caso de #destinos-home
-   que lo necesita. */
-#destinos-home .dest-card[href*="destino=ushuaia"]::before{content:""; position:absolute; inset:auto 0 0 0; height:65%; z-index:1; pointer-events:none; background:linear-gradient(180deg, rgba(1,48,32,0) 0%, rgba(1,48,32,0.55) 45%, rgba(1,48,32,0.8) 100%);}
 #destinos-home .dest-card:nth-child(3){transform:translate(14px,14px);}
 #destinos-home .dest-card:nth-child(3):hover{transform:translate(14px,10px);}
 #destinos-home .dest-card .info{padding:28px 26px;}
