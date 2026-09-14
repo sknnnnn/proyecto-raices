@@ -145,8 +145,8 @@ a{color:inherit;}
    --text-primary (Papel), invisible sobre el fondo Papel del propio
    header. Con header oscuro (Asfalto/Tinta) el link queda legible;
    el panel mobile (fondo verde) restaura Papel más abajo. */
-header{position:sticky; top:0; z-index:50; background:rgba(1,48,32,0.92); backdrop-filter:blur(6px); box-shadow:0 8px 22px -18px rgba(1,48,32,0.6); border-bottom:1px solid transparent; color:#fff; transition:background-color .25s ease, box-shadow .25s ease, color .25s ease;}
-nav{display:flex; align-items:center; justify-content:space-between; padding:14px var(--gutter); max-width:var(--content-max); margin:0 auto; gap:16px;}
+header{position:sticky; top:0; z-index:50; background:rgba(1,48,32,0.96); backdrop-filter:blur(10px); box-shadow:0 10px 26px -16px rgba(1,48,32,0.7); border-bottom:1px solid rgba(255,255,255,0.08); color:#fff; transition:background-color .25s ease, box-shadow .25s ease, color .25s ease, border-color .25s ease;}
+nav{display:flex; align-items:center; justify-content:space-between; padding:18px var(--gutter); max-width:var(--content-max); margin:0 auto; gap:16px;}
 /* Desktop: logo / navegación centrada / CTA como tres bloques reales
    (grid), no sólo el espacio "sobrante" entre logo y CTA — con flex +
    space-between la navegación quedaba corrida hacia la izquierda
@@ -158,7 +158,7 @@ nav{display:flex; align-items:center; justify-content:space-between; padding:14p
   .navlinks{justify-content:center; gap:30px;}
 }
 .brand{display:flex; align-items:center; gap:10px; text-decoration:none; flex-shrink:0;}
-.brand img{height:34px; width:auto;}
+.brand img{height:39px; width:auto;}
 .navlinks{display:flex; gap:26px; font-size:14px; letter-spacing:0.02em; align-items:center;}
 .navlinks a{color:inherit; text-decoration:none; opacity:0.75; transition:opacity .2s; white-space:nowrap;}
 .navlinks a:hover, .navlinks a.active{opacity:1;}
@@ -342,8 +342,8 @@ body[data-page="comentarios"] header:not(.is-solid) .navlinks a{text-shadow:0 2p
    centro visual (la tinta) cae unos px a la derecha del centro real
    de la caja. Se compensa acá, en el texto, para que ambos queden
    alineados sobre el mismo eje visual — el logo no se toca. */
-.hero-inicio-tagline{display:block; font-family:var(--font-heading); font-weight:500; font-style:italic; letter-spacing:0.02em; font-size:clamp(16px,1.8vw,21px); line-height:1.35; color:rgba(236,231,216,0.92); white-space:normal; width:100%; margin:0; text-shadow:0 2px 10px rgba(0,0,0,0.45); transform:translateX(0.7%);}
-.hero-inicio-tagline::before, .hero-inicio-tagline::after{content:""; display:inline-block; vertical-align:middle; width:34px; height:1px; background:rgba(236,231,216,0.5); margin:0 16px;}
+.hero-inicio-tagline{display:block; font-family:var(--font-heading); font-weight:600; font-style:italic; letter-spacing:0.07em; font-size:clamp(17px,2.1vw,23px); line-height:1.35; color:rgba(236,231,216,0.92); white-space:normal; width:100%; margin:0; text-shadow:0 2px 14px rgba(0,0,0,0.55); transform:translateX(0.7%);}
+.hero-inicio-tagline::before, .hero-inicio-tagline::after{content:""; display:inline-block; vertical-align:middle; width:52px; height:1.5px; background:rgba(236,231,216,0.55); margin:0 20px;}
 /* CTAs claramente separados del bloque logo+tagline, aprovechando el
    espacio de la foto hacia abajo — misma pareja editorial de antes
    (píldora sólida + link subrayado), sólo cambia la separación. */
@@ -526,6 +526,14 @@ body[data-page="inicio"] .catalogo-home .dest-card:hover .count{opacity:1; trans
    sobre el lago/bosque, más oscuro. Sólo esta card: el resto de las
    fotos de #destinos-home no tienen ese problema. */
 #destinos-home .dest-card[href*="destino=bariloche"] img{object-position:center 70%;}
+/* Ushuaia (galeria-ushuaia.jpg): la foto es casi la misma proporción
+   que la card, así que object-position no mueve nada (cover no tiene
+   margen para recortar). El párrafo de la bajada queda sobre el mar
+   con espuma clara. Como el crop no alcanza, se agrega un degradé muy
+   acotado sólo detrás del texto (no sobre toda la foto) — el título y
+   el resto de la composición quedan intactos. Único caso de #destinos-home
+   que lo necesita. */
+#destinos-home .dest-card[href*="destino=ushuaia"]::before{content:""; position:absolute; inset:auto 0 0 0; height:58%; z-index:1; pointer-events:none; background:linear-gradient(180deg, rgba(1,48,32,0) 0%, rgba(1,48,32,0.6) 100%);}
 #destinos-home .dest-card:nth-child(3){transform:translate(14px,14px);}
 #destinos-home .dest-card:nth-child(3):hover{transform:translate(14px,10px);}
 #destinos-home .dest-card .info{padding:28px 26px;}
@@ -1334,8 +1342,8 @@ footer li a:hover{opacity:1; color:var(--color-amarillo);}
   .hero-inicio-content{padding:0 20px;}
   .hero-inicio .eyebrow{margin-bottom:var(--space-5); font-size:10.5px; letter-spacing:0.1em;}
   .hero-inicio-logo{height:clamp(92px,32vw,160px);}
-  .hero-inicio-tagline{white-space:normal; font-size:16px; margin:var(--space-5) 0 var(--space-6);}
-  .hero-inicio-tagline::before, .hero-inicio-tagline::after{width:18px; margin:0 8px;}
+  .hero-inicio-tagline{white-space:normal; font-size:17px; letter-spacing:0.04em; margin:var(--space-5) 0 var(--space-6);}
+  .hero-inicio-tagline::before, .hero-inicio-tagline::after{width:24px; margin:0 10px;}
   .hero-inicio .hero-ctas{gap:18px; flex-direction:column; width:100%; max-width:300px;}
   .hero-inicio .hero-ctas .btn:not(.btn-outline){width:100%; justify-content:center; padding:15px 28px;}
   .hero-inicio .hero-ctas .btn-outline{padding-bottom:4px;}
