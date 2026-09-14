@@ -62,6 +62,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   renderPropuestasGrid();   // async — consulta Supabase vía DataAPI
   renderPropuestaDetalle(); // async — consulta Supabase vía DataAPI
+  renderDestinoEditorial(); // async — sólo actúa si la página tiene #destino-editorial (destino.html, PRO-34)
   renderDestinosGrid();
   renderEquipoGrid(); // async — sólo actúa si la página tiene #equipo-grid o #equipo-mini-grid
   initTestimoniosCarousel(); // sólo actúa si la página tiene #testi-track (Inicio)
@@ -616,7 +617,14 @@ async function renderPropuestaDetalle(){
     const origen = params.get("origen"); // "experiencias" | "destinos" | "tours" | "travesias" | "paquetes" | null
     const destinoCtxSlug = params.get("destino");
     try {
-      if (origen === "destinos" && destinoCtxSlug) {
+      if (origen === "destino" && destinoCtxSlug) {
+        // Venís de la ficha editorial del destino (PRO-34), no del
+        // catálogo: "Volver" te lleva de nuevo ahí, no a catalogo.html.
+        const refDestinoEditorial = await DataAPI.getDestinoPorSlug(destinoCtxSlug);
+        volverHref = `destino.html?destino=${encodeURIComponent(destinoCtxSlug)}`;
+        volverLabel = refDestinoEditorial ? refDestinoEditorial.nombre : "Destino";
+        tieneContexto = true;
+      } else if (origen === "destinos" && destinoCtxSlug) {
         const refDestino = await DataAPI.getDestinoPorSlug(destinoCtxSlug);
         volverHref = `catalogo.html?destino=${encodeURIComponent(destinoCtxSlug)}&origen=${origen}`;
         volverLabel = refDestino ? refDestino.nombre : "Catálogo";
@@ -863,6 +871,179 @@ function renderDestinosGrid(){
   if (intCont) {
     intCont.innerHTML = DESTINOS.filter(d => d.grupo === "internacional").map(cardHtml).join("");
   }
+}
+
+/* =========================================================
+   PÁGINA EDITORIAL DE DESTINO (destino.html?destino=slug) — PRO-34
+   Plantilla única para los 12 destinos: contenido editorial e
+   informativo del lugar primero (identidad, fotos reales, datos
+   reales del destino), acceso secundario a "ver todo en el catálogo"
+   (catalogo.html?destino=slug) después — no duplica esa grilla acá,
+   sólo muestra las experiencias reales de este destino con el mismo
+   componente (propuestaCardHtml) que ya usa el resto del sitio.
+   Nunca inventa contenido: lo que no existe todavía en la ficha del
+   destino se muestra con placeholder-badge, el mismo componente que
+   ya usan las propuestas de ejemplo y los perfiles de equipo pendientes.
+   ========================================================= */
+async function renderDestinoEditorial(){
+  const cont = document.getElementById("destino-editorial");
+  if (!cont) return;
+
+  const params = new URLSearchParams(window.location.search);
+  const slug = params.get("destino");
+
+  const notFoundHtml = `
+    <div class="empty-state" style="padding-top:150px;">
+      No encontramos ese destino.<br>
+      <a class="btn btn-sm" style="margin-top:16px;" href="destinos.html">Volver a Destinos</a>
+    </div>`;
+
+  let d, experiencias;
+  try {
+    [d, experiencias] = await Promise.all([
+      slug ? DataAPI.getDestinoPorSlug(slug) : Promise.resolve(null),
+      slug ? DataAPI.getExperienciasPorDestino(slug) : Promise.resolve([])
+    ]);
+  } catch (err) {
+    console.error("Error cargando el destino:", err);
+    cont.innerHTML = `<div class="empty-state" style="padding-top:150px;">No pudimos cargar este destino en este momento. Probá recargar la página.</div>`;
+    return;
+  }
+
+  if (!d) {
+    cont.innerHTML = notFoundHtml;
+    document.title = "Destino no encontrado — Proyecto Raíces";
+    return;
+  }
+
+  const nombre = d.nombre;
+  document.title = `${nombre} — Proyecto Raíces`;
+  const metaDesc = document.querySelector('meta[name="description"]');
+  if (metaDesc && d.resumen) metaDesc.setAttribute("content", d.resumen);
+
+  // Mismo criterio que ya usan destinos.html/catalogo.html: d.disponible
+  // (no d.esPlaceholder) decide si el destino se trata como "Próximamente"
+  // — ya contempla el caso Choquequirao (ficha con esPlaceholder:true pero
+  // con una experiencia publicada, que por eso no debe verse como pendiente).
+  const disponible = d.disponible;
+  const coverImg = d.imagen
+    ? `<img class="${!disponible ? "placeholder" : ""}" src="${d.imagen}" alt="${nombre}, ${d.pais}" style="object-position:${d.imagenPos || "center"};">`
+    : `<div class="gal-placeholder">${!disponible ? "Próximamente" : "Imagen pendiente"}</div>`;
+  const prepFlag = !disponible ? `<span class="destino-card-flag" style="position:static; display:inline-block; vertical-align:middle; margin-left:10px;">Próximamente</span>` : "";
+
+  // "En este lugar" — composición editorial con foto protagonista +
+  // secundarias, armada con las fotos reales de las experiencias ya
+  // publicadas de este destino (sin repetir la misma imagen dos veces,
+  // sin inventar ni pedir fotos externas). Como mucho 4 fotos: son las
+  // que encabezan la composición, no un listado completo — la galería
+  // completa de cada experiencia se ve en su propia ficha.
+  const fotos = [];
+  experiencias.forEach(p => {
+    if (p.imagen && !fotos.some(f => f.src === p.imagen)) fotos.push({ src: p.imagen, alt: p.nombre, pos: p.imagenPos || "center" });
+  });
+  const fotosUsadas = fotos.slice(0, 4);
+  const galeriaHtml = fotosUsadas.length
+    ? `<div class="destino-fotos" data-fotos="${fotosUsadas.length}">${fotosUsadas.map((f, i) => `
+        <div class="g-foto g-${i + 1}"><img src="${f.src}" alt="${f.alt}" style="object-position:${f.pos};" data-lightbox="${f.src}" loading="lazy"></div>`).join("")}</div>`
+    : `<div class="destino-fotos" data-fotos="1"><div class="g-foto g-1"><div class="gal-placeholder" style="aspect-ratio:1.9;">Imagen pendiente</div></div></div>`;
+
+  // Presentación editorial del destino, ahora parte del propio hero (ya
+  // no una sección aparte): mismo resumen que ya usa el intro, con un
+  // placeholder honesto si todavía no está cargado (nunca contenido
+  // inventado).
+  const presentaTexto = d.resumen || `Estamos redactando la presentación editorial de ${nombre} — muy pronto vas a poder leerla acá.`;
+
+  // Los tres tópicos editoriales del destino (Cuándo ir / Cómo llegar /
+  // Naturaleza y cultura), dentro de la MISMA columna de texto que
+  // nombre/país/presentación (no un bloque aparte debajo de la grilla):
+  // subtítulos chicos en amarillo, contenido secundario, continuidad
+  // vertical con el resto del hero, sin cards ni columnas iguales. Los
+  // tres campos todavía no existen en la base para ningún destino: se
+  // muestran igual, cada uno con su propio "Próximamente".
+  const heroTopicosHtml = `
+    <div class="destino-hero-topicos">
+      <div class="destino-hero-topico"><h3>Cuándo ir</h3><p>${d.cuandoIr || "Próximamente"}</p></div>
+      <div class="destino-hero-topico"><h3>Cómo llegar</h3><p>${d.comoLlegar || "Próximamente"}</p></div>
+      <div class="destino-hero-topico"><h3>Naturaleza y cultura</h3><p>${d.naturalezaCultura || "Próximamente"}</p></div>
+    </div>`;
+
+  // Volver a esta ficha de destino desde propuesta.html (PRO-48): mismo
+  // mecanismo de "origen"/"destino" por query param que ya usan
+  // catalogo.html y las páginas de tipo fijo.
+  const volverCtx = `&origen=destino&destino=${encodeURIComponent(d.slug)}`;
+
+  // Destino ya no duplica el catálogo: en vez de una card comercial (con
+  // botones y descripción), muestra una sola experiencia destacada (la
+  // marcada como tal, o la primera por orden) como pieza editorial mínima
+  // — foto + nombre superpuesto, sin card ni CTA propio — seguida del mismo
+  // botón (.btn) que ya usan las cards del sitio, hacia
+  // experiencias.html?destino= — el catálogo general, que ya sabe filtrar
+  // por destino (PRO-62). El texto pequeño sobre la foto ("Tipo en
+  // Destino") ata la experiencia al relato del propio destino en vez de
+  // sentirse un elemento aislado.
+  const destacada = experiencias.find(p => p.destacada) || experiencias[0] || null;
+  const tipoDestacada = destacada ? TIPOS_PROPUESTA[destacada.tipoProducto] : null;
+  const teaserHtml = destacada
+    ? `<a class="destino-exp-destacada" href="propuesta.html?id=${destacada.slug}${volverCtx}" aria-label="Ver ${destacada.nombre}">
+         ${destacada.imagen
+           ? `<img src="${destacada.imagen}" alt="${destacada.nombre}"${destacada.imagenPos ? ` style="object-position:${destacada.imagenPos};"` : ""} loading="lazy">`
+           : `<div class="gal-placeholder" style="height:100%;">Imagen pendiente</div>`}
+         <div class="destino-exp-destacada-info">
+           ${tipoDestacada ? `<span class="destino-exp-destacada-tipo">${tipoDestacada.label} en ${nombre}</span>` : ""}
+           <h3>${destacada.nombre}</h3>
+         </div>
+       </a>
+       <a class="btn destino-exp-cta" href="experiencias.html?destino=${d.slug}">Ver todas las experiencias de ${nombre} →</a>`
+    : `<div class="empty-state">Todavía no hay experiencias cargadas para este destino.<br>Muy pronto vamos a sumar más salidas.</div>`;
+
+  cont.innerHTML = `
+    <section class="page-intro">
+      <div class="wrap">
+        <div class="breadcrumb"><a href="index.html">Inicio</a> / <a href="destinos.html">Destinos</a> / ${nombre}</div>
+        <div class="page-intro-grid">
+          <div class="page-intro-text compact">
+            <div class="kicker">${d.pais}</div>
+            <h1>${nombre}${prepFlag}</h1>
+            <p class="destino-hero-intro">${presentaTexto}</p>
+            ${heroTopicosHtml}
+          </div>
+          <div class="page-intro-media">${coverImg}</div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <div class="section-head">
+          <div class="kicker">En este lugar</div>
+          <h2>Así se ve, en las experiencias que ya recorrimos</h2>
+        </div>
+        ${galeriaHtml}
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <div class="section-head">
+          <div class="kicker">Experiencias</div>
+          <h2>Experiencias en ${nombre}</h2>
+        </div>
+        ${teaserHtml}
+      </div>
+    </section>
+
+    <section class="cta-band">
+      <div class="wrap">
+        <h2>¿Querés armar tu viaje a ${nombre}?</h2>
+        <p>Contanos qué tenés en mente y te ayudamos a resolverlo.</p>
+        <div class="hero-ctas"><a href="contacto.html" class="btn">Reserva ahora</a></div>
+      </div>
+    </section>`;
+
+  // initLightbox() ya corrió en el DOMContentLoaded inicial, antes de que
+  // esta función arme "En este lugar" — se vuelve a llamar acá, ahora que
+  // las fotos con [data-lightbox] ya existen en el DOM.
+  initLightbox();
 }
 
 /* =========================================================

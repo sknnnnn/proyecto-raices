@@ -136,17 +136,6 @@
     const params = new URLSearchParams(window.location.search);
     const slug = params.get("destino");
 
-    // "← Volver a…" (PRO-48): sólo con origen interno válido. El
-    // parámetro "origen" ya lo agregan destinos.html y experiencias.html
-    // a sus links hacia acá — no es un mecanismo nuevo, es el mismo que
-    // ya usa el breadcrumb de propuesta.html para el nivel "Experiencias".
-    const origen = params.get("origen");
-    if (origen === "experiencias") {
-      setVolverLink("cat-volver", "experiencias.html", "Experiencias");
-    } else if (origen === "destinos") {
-      setVolverLink("cat-volver", "destinos.html", "Destinos");
-    }
-
     let d = null;
     try {
       d = slug ? await DataAPI.getDestinoPorSlug(slug) : null;
@@ -154,6 +143,22 @@
       console.error("Error cargando el destino:", err);
       return;
     }
+
+    // "← Volver a…" (PRO-48): sólo con origen interno válido. El
+    // parámetro "origen" ya lo agregan destinos.html y experiencias.html
+    // a sus links hacia acá — no es un mecanismo nuevo, es el mismo que
+    // ya usa el breadcrumb de propuesta.html para el nivel "Experiencias".
+    const origen = params.get("origen");
+    if (origen === "experiencias") {
+      setVolverLink("cat-volver", "experiencias.html", "Experiencias");
+    } else if (origen === "destino" && slug) {
+      // Venís de la ficha editorial del destino (PRO-34): "Volver" te
+      // lleva de nuevo ahí, no al listado general de Destinos.
+      setVolverLink("cat-volver", `destino.html?destino=${encodeURIComponent(slug)}`, d ? d.nombre : "el destino");
+    } else if (origen === "destinos") {
+      setVolverLink("cat-volver", "destinos.html", "Destinos");
+    }
+
     if (d) {
       const nombre = d.nombre;
       document.title = `${nombre} — Proyecto Raíces`;
