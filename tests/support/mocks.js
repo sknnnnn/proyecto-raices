@@ -83,8 +83,8 @@ const MOCK_EQUIPO = [
 
 const MOCK_SITE_CONFIG = {
   nombre: "Proyecto Raíces", dominio: "https://proyectoraices.com.ar", email: "proyectoraicestravel@gmail.com",
-  whatsapp: "5492804971939", instagram: "@proyectotravesia", instagramUrl: "https://instagram.com/proyectotravesia",
-  tiktok: "@proyectotravesia", tiktokUrl: "https://www.tiktok.com/@proyectotravesia",
+  whatsapp: "5492804971939", instagram: "@somosproyectoraices", instagramUrl: "https://www.instagram.com/somosproyectoraices/",
+  tiktok: "@proyectoraices.travel", tiktokUrl: "https://www.tiktok.com/@proyectoraices.travel",
   horarios: [{ dias: "Lunes a Viernes", horas: "8:00 – 20:00" }], ubicacionBase: "Buenos Aires, Argentina",
   nosotrosTexto: "Somos un equipo que arma experiencias de aventura.", fraseHero: "Creamos y seleccionamos experiencias."
 };
