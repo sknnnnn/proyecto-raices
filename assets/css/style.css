@@ -1221,15 +1221,12 @@ body[data-page="inicio"] .testi{background:transparent; color:var(--text-primary
 .contact-wrap{display:grid; grid-template-columns:0.8fr 1.2fr; gap:var(--space-9); align-items:start;}
 #whatsapp-cta-holder{margin-top:var(--space-5);}
 /* "Canales de contacto" vive sobre el verde base de la página (no
-   sobre .bg-surface): los tres canales comparten la misma escala y
-   peso — la separación es por espacio (gap), no por líneas — y sólo
-   difieren en el acento de color (naranja/amarillo), ya parte de la
-   dirección visual de la marca. */
+   sobre .bg-surface): los tres canales comparten la misma escala,
+   peso y acento (amarillo) — la separación es por espacio (gap), no
+   por líneas. */
 .contact-channels{margin-top:var(--space-2); display:flex; flex-direction:column; gap:24px;}
 .contact-label{display:block; font-size:11px; text-transform:uppercase; letter-spacing:0.14em; color:var(--text-secondary); margin-bottom:7px;}
 .contact-value{display:inline-block; font-family:var(--font-heading); font-weight:700; font-size:clamp(17px,2.1vw,21px); line-height:1.3; text-decoration:none; border-bottom:1.5px solid transparent; padding-bottom:3px; word-break:break-word; overflow-wrap:anywhere; transition:border-color .25s ease, opacity .25s ease;}
-.contact-value-naranja{color:var(--color-naranja); border-bottom-color:rgba(255,91,40,0.4);}
-.contact-value-naranja:hover, .contact-value-naranja:focus-visible{border-bottom-color:var(--color-naranja); opacity:0.82;}
 .contact-value-amarillo{color:var(--color-amarillo); border-bottom-color:rgba(233,224,115,0.4);}
 .contact-value-amarillo:hover, .contact-value-amarillo:focus-visible{border-bottom-color:var(--color-amarillo); opacity:0.82;}
 
