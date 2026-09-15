@@ -630,19 +630,35 @@ function aplicarFiltroSuave(params){
   }, 180);
 }
 
+// Metadata breve de Travesías para card/carrusel: "Recorrido · Duración".
+// El recorrido usa detalle.recorridoMetadata (lugares reales del
+// trayecto, curados a mano por experiencia — nunca inventados ni
+// derivados de destino_id, que sigue siendo sólo el ancla de
+// navegación/filtros) si existe; si no, cae al destino ancla solo. La
+// duración se acorta a "N días" (sin el detalle de noches, que sigue
+// completo en la ficha) para que la línea entre en una sola línea aun
+// con varios lugares. Usada tanto acá como en el carrusel de Inicio.
+function travesiaMetaHtml(p){
+  const dias = p.duracion ? p.duracion.split(" / ")[0] : p.duracion;
+  const lugares = (p.detalle && Array.isArray(p.detalle.recorridoMetadata) && p.detalle.recorridoMetadata.length)
+    ? p.detalle.recorridoMetadata.join(" · ")
+    : (p.destino ? p.destino.nombre : "");
+  return `${lugares} · ${dias}`;
+}
+
 function propuestaCardHtml(p, volverCtx){
   const tipoInfo = TIPOS_PROPUESTA[p.tipoProducto];
   const href = `propuesta.html?id=${p.slug}${volverCtx || ""}`;
-  // Travesías muestran "Destino · Duración" en la card (la modalidad no
-  // aporta ahí); Tours/Paquetes mantienen "Duración · Modalidad" como
-  // antes. Sólo cambia esta línea resumida — el detalle sigue mostrando
-  // Modalidad igual que siempre.
+  // Travesías muestran travesiaMetaHtml (recorrido/destino · duración);
+  // Tours/Paquetes mantienen "Duración · Modalidad" como antes. Sólo
+  // cambia esta línea resumida — el detalle sigue mostrando Modalidad
+  // igual que siempre.
   return `
     <article class="exp-card" data-tipo="${p.tipoProducto}">
       <a class="img-wrap" href="${href}" aria-label="Ver detalles de ${p.nombre}">
         ${p.imagen ? `<img src="${p.imagen}" alt="${p.nombre}" loading="lazy"${p.imagenPos ? ` style="object-position:${p.imagenPos};"` : ""}>` : `<div class="exp-img-fallback"><span>${p.nombre}</span></div>`}
         <span class="cat-badge">${tipoInfo ? tipoInfo.label : p.tipoProducto}</span>
-        <div class="img-meta">${p.tipoProducto === "travesia" ? `${p.destino ? p.destino.nombre : ""} · ${p.duracion}` : `${p.duracion} · ${p.modalidad}`}</div>
+        <div class="img-meta">${p.tipoProducto === "travesia" ? travesiaMetaHtml(p) : `${p.duracion} · ${p.modalidad}`}</div>
       </a>
       <div class="body">
         ${p.esPlaceholder ? `<span class="placeholder-badge">Contenido de ejemplo</span>` : ""}
