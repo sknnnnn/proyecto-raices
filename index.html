@@ -66,11 +66,14 @@
       <button type="button" class="filtro-btn" data-tipo="paquete">Paquetes</button>
     </div>
     <div class="exp-carousel" id="exp-home-carousel">
-      <button type="button" class="testi-arrow prev" id="exp-home-prev" aria-label="Ver experiencia anterior">‹</button>
       <div class="exp-carousel-viewport" id="exp-home-viewport">
         <div class="exp-carousel-track" id="exp-home-track"></div>
       </div>
-      <button type="button" class="testi-arrow next" id="exp-home-next" aria-label="Ver experiencia siguiente">›</button>
+      <div class="exp-carousel-nav">
+        <button type="button" class="exp-nav-arrow prev" id="exp-home-prev" aria-label="Ver experiencia anterior">←</button>
+        <span class="exp-nav-counter" id="exp-home-counter"></span>
+        <button type="button" class="exp-nav-arrow next" id="exp-home-next" aria-label="Ver experiencia siguiente">→</button>
+      </div>
     </div>
     <div class="section-foot"><a href="catalogo.html" class="btn btn-outline on-light">Ver todas las experiencias</a></div>
   </div>
@@ -285,9 +288,11 @@
       </a>`).join("");
   });
 </script><script>
-  // Home: carrusel de Experiencias — usa Supabase vía DataAPI, mismo
-  // componente .exp-card que el resto del sitio. No crea datos nuevos:
-  // sólo arma el riel y lo duplica para el loop continuo.
+  // Home: carrusel de Experiencias — pieza editorial de una fotografía
+  // grande por slide (no la grilla .exp-card que usa el resto del
+  // sitio). Usa Supabase vía DataAPI; no crea datos nuevos, sólo arma
+  // el riel (filtrado a experiencias con foto real) y lo duplica para
+  // el loop continuo.
   document.addEventListener("DOMContentLoaded", async () => {
     const track = document.getElementById("exp-home-track");
     const viewport = document.getElementById("exp-home-viewport");
@@ -297,30 +302,30 @@
     const filtrosWrap = document.getElementById("exp-home-filtros");
     const prevBtn = document.getElementById("exp-home-prev");
     const nextBtn = document.getElementById("exp-home-next");
+    const counterEl = document.getElementById("exp-home-counter");
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    function cardHTML(p) {
+    function featureHTML(p) {
       const tipoInfo = typeof TIPOS_PROPUESTA !== "undefined" ? TIPOS_PROPUESTA[p.tipoProducto] : null;
+      const meta = p.tipoProducto === "travesia" ? travesiaMetaHtml(p) : `${p.duracion} · ${p.modalidad}`;
       return `
-        <article class="exp-card" data-tipo="${p.tipoProducto}">
-          <div class="img-wrap">
-            ${p.imagen ? `<img src="${p.imagen}" alt="${p.nombre}" loading="lazy">` : `<div class="exp-img-fallback"><span>${p.nombre}</span></div>`}
-            <span class="cat-badge">${tipoInfo ? tipoInfo.label : p.tipoProducto}</span>
-            <div class="img-meta">${p.tipoProducto === "travesia" ? travesiaMetaHtml(p) : `${p.duracion} · ${p.modalidad}`}</div>
-          </div>
-          <div class="body">
-            ${p.esPlaceholder ? `<span class="placeholder-badge">Contenido de ejemplo</span>` : ""}
-            <span class="dest-tag">${p.destino ? p.destino.nombre : ""}</span>
-            <h3>${p.nombre}</h3>
-            <p class="resumen">${p.resumen}</p>
-            <div class="actions">
-              <a class="btn btn-sm" href="propuesta.html?id=${p.slug}">Ver detalles</a>
+        <article class="exp-feature" data-tipo="${p.tipoProducto}">
+          <a class="exp-feature-frame" href="propuesta.html?id=${p.slug}" aria-label="Ver detalles de ${p.nombre}">
+            <img src="${p.imagen}" alt="${p.nombre}" loading="lazy">
+            <div class="exp-feature-info">
+              <span class="exp-feature-tag">${tipoInfo ? tipoInfo.label : p.tipoProducto}</span>
+              <h3>${p.nombre}</h3>
+              <p>${meta}</p>
             </div>
-          </div>
+          </a>
         </article>`;
     }
 
+    function pad2(n) { return String(n).padStart(2, "0"); }
+
     let setWidth = 0;
+    let totalSlides = 0;
+    let lastIdx = -1;
     let tipoActivo = "";
     // rAF en curso de un desplazamiento manual (flechas) — ver scrollManual
     // más abajo. Se cancela acá también si un cambio de filtro llega a
@@ -341,11 +346,21 @@
     }
 
     function render() {
-      // "Todos": Tours/Travesías/Paquetes mezclados entre sí, no
-      // agrupados en bloques por tipo (con un filtro activo ya es un
-      // único tipo, así que interleaveByTipo no cambia nada).
-      const lista = tipoActivo ? reales.filter(p => p.tipoProducto === tipoActivo) : interleaveByTipo(reales);
+      // La pieza editorial necesita una fotografía real: experiencias
+      // sin imagen todavía quedan afuera de este riel (siguen viéndose
+      // normalmente en el catálogo general, con su fallback de siempre).
+      const conFoto = reales.filter(p => p.imagen);
+      // "Todos": Tours/Travesías/Paquetes mezclados entre sí (no
+      // agrupados en bloques por tipo) para variedad; con un filtro
+      // activo ya es un único tipo, interleaveByTipo no cambia nada.
+      // Muestra editorial acotada, no el catálogo completo (eso ya
+      // vive en experiencias.html vía "Ver todas las experiencias").
+      const MAX_SLIDES = 10;
+      const lista = (tipoActivo ? conFoto.filter(p => p.tipoProducto === tipoActivo) : interleaveByTipo(conFoto)).slice(0, MAX_SLIDES);
       if (manualRAF) { cancelAnimationFrame(manualRAF); manualRAF = null; }
+      totalSlides = lista.length;
+      lastIdx = 0;
+      if (counterEl) counterEl.textContent = totalSlides ? `${pad2(1)} / ${pad2(totalSlides)}` : "";
       if (!lista.length) {
         track.innerHTML = `<p class="empty-state">Todavía no hay experiencias cargadas en esta categoría.</p>`;
         setWidth = 0;
@@ -353,7 +368,7 @@
       }
       // Se duplica la lista filtrada para permitir un auto-scroll continuo
       // sin corte visible (mismos datos reales, renderizados dos veces).
-      track.innerHTML = lista.map(cardHTML).join("") + lista.map(cardHTML).join("");
+      track.innerHTML = lista.map(featureHTML).join("") + lista.map(featureHTML).join("");
       requestAnimationFrame(() => { setWidth = track.scrollWidth / 2; });
       viewport.scrollLeft = 0;
     }
@@ -371,6 +386,14 @@
 
     render();
 
+    function updateCounter(idx) {
+      if (!counterEl || !totalSlides) return;
+      const shown = ((idx % totalSlides) + totalSlides) % totalSlides;
+      if (shown === lastIdx) return;
+      lastIdx = shown;
+      counterEl.textContent = `${pad2(shown + 1)} / ${pad2(totalSlides)}`;
+    }
+
     // ---- Auto-scroll continuo y pausado, con loop sin cortes ----
     let paused = false, resumeTimer = null;
     function tick() {
@@ -378,6 +401,7 @@
         viewport.scrollLeft += 0.3;
         if (viewport.scrollLeft >= setWidth) viewport.scrollLeft -= setWidth;
       }
+      if (setWidth > 0) updateCounter(Math.round(viewport.scrollLeft / cardStep()));
       requestAnimationFrame(tick);
     }
     requestAnimationFrame(tick);
@@ -391,10 +415,10 @@
     if (carousel) { carousel.addEventListener("mouseenter", () => { paused = true; }); carousel.addEventListener("mouseleave", pauseTemporal); }
 
     function cardStep() {
-      const card = track.querySelector(".exp-card");
+      const card = track.querySelector(".exp-feature");
       if (!card) return 326;
       const style = getComputedStyle(track);
-      return card.offsetWidth + parseFloat(style.columnGap || style.gap || 26);
+      return card.offsetWidth + parseFloat(style.columnGap || style.gap || 22);
     }
 
     // ---- Navegación manual (flechas) ----
