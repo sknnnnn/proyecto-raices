@@ -1220,14 +1220,24 @@ body[data-page="inicio"] .testi{background:transparent; color:var(--text-primary
 /* ---------- Contacto ---------- */
 .contact-wrap{display:grid; grid-template-columns:0.8fr 1.2fr; gap:var(--space-9); align-items:start;}
 #whatsapp-cta-holder{margin-top:var(--space-5);}
-.contact-channels{margin:0;}
-.contact-channel{display:flex; align-items:baseline; gap:var(--space-4); padding:var(--space-4) 0; border-top:1px solid var(--border-color);}
-.contact-channel:first-child{border-top:none; padding-top:0;}
-.contact-channel dt{flex:0 0 92px; font-size:11px; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted);}
-.contact-channel dd{margin:0; font-family:var(--font-heading); font-size:16px; color:var(--color-tinta);}
-.contact-channel dd a, .contact-channel dd span{color:inherit; text-decoration:none;}
-.contact-channel dd a{border-bottom:1px solid transparent; transition:color .2s ease, border-color .2s ease;}
-.contact-channel dd a:hover{color:var(--color-naranja); border-color:var(--color-naranja);}
+/* "Canales de contacto" vive sobre el verde base de la página (no
+   sobre .bg-surface): el email es el canal principal y se trata como
+   pieza editorial grande en naranja (acento CTA); Instagram/TikTok/Base
+   forman un grupo secundario más liviano en amarillo (acento
+   secundario), evitando cuatro filas idénticas tipo ficha técnica. */
+.contact-channels{margin-top:var(--space-2);}
+.contact-label{display:block; font-size:11px; text-transform:uppercase; letter-spacing:0.14em; color:var(--text-secondary); margin-bottom:7px;}
+.contact-value{text-decoration:none; word-break:break-word; overflow-wrap:anywhere;}
+
+.contact-channel-lead{padding-bottom:26px; margin-bottom:26px; border-bottom:1px solid rgba(236,231,216,0.16);}
+.contact-channel-lead .contact-value{display:inline-block; font-family:var(--font-heading); font-weight:700; font-size:clamp(17px,2.1vw,21px); line-height:1.3; color:var(--color-naranja); border-bottom:1.5px solid rgba(255,91,40,0.4); padding-bottom:3px; transition:border-color .25s ease, opacity .25s ease;}
+.contact-channel-lead .contact-value:hover, .contact-channel-lead .contact-value:focus-visible{border-color:var(--color-naranja); opacity:0.82;}
+
+.contact-channel-row{display:flex; flex-wrap:wrap; column-gap:40px; row-gap:22px;}
+.contact-channel-item{min-width:0; max-width:100%;}
+.contact-channel-item .contact-value{display:inline-block; font-size:15px; color:var(--color-amarillo); border-bottom:1px solid rgba(233,224,115,0.4); padding-bottom:2px; transition:border-color .2s ease, opacity .2s ease;}
+.contact-channel-item .contact-value:hover, .contact-channel-item .contact-value:focus-visible{border-color:var(--color-amarillo); opacity:0.82;}
+.contact-channel-item .contact-value-muted{color:var(--text-primary); opacity:0.85; border-bottom:none;}
 
 .contact-form-panel{background:var(--bg-surface); border-radius:var(--radius-lg); box-shadow:var(--shadow-md); padding:var(--space-7);}
 form{display:grid; gap:var(--space-5);}
