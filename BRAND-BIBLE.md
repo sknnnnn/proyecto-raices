@@ -170,11 +170,11 @@ Proyecto Raíces debe sentirse como **una marca de experiencias que tiene un cat
 
 ## 37. Arquitectura actual de destinos
 
-**Argentina** (6 destinos concretos): Bariloche, Ushuaia, San Martín de los Andes, Villa Pehuenia, Norte Neuquino, Norte Argentino.
+**Argentina** (6 destinos concretos): Bariloche, Ushuaia, San Martín de los Andes, Villa Pehuenia, Norte Neuquino, Iruya.
 
 **Perú**: permanece como está actualmente (ver `PROJECT-CONTEXT.md` §4 para el detalle completo).
 
-"Patagonia" no es un destino navegable. Puede usarse como referencia geográfica o textual, nunca como destino.
+"Patagonia" y "Norte Argentino" no son destinos navegables. Pueden usarse como referencia geográfica o textual, nunca como destino.
 
 ## 38. Criterios para futuras experiencias
 
@@ -197,6 +197,6 @@ Público: 21-45 años, activos, valoran naturaleza y experiencias por sobre prec
 
 Territorio conceptual: **Raíces** (origen, pertenencia), **Conexión** (personas, lugares, guías), **Movimiento** (aventura, libertad), **Experiencia** (lo vivido por sobre lo transaccional).
 
-Identidad visual vigente: verde `#013020` como base, naranja `#FF5B28` como acento principal/CTA, amarillo `#E9E073` como acento secundario, tipografías Alte Haas Grotesk + Cascadia Mono Semi + Arial Rounded, logo amarillo. La dirección visual completa sigue en definición. Destinos actuales: 6 en Argentina (Bariloche, Ushuaia, San Martín de los Andes, Villa Pehuenia, Norte Neuquino, Norte Argentino) y Perú sin cambios; Patagonia ya no es un destino navegable.
+Identidad visual vigente: verde `#013020` como base, naranja `#FF5B28` como acento principal/CTA, amarillo `#E9E073` como acento secundario, tipografías Alte Haas Grotesk + Cascadia Mono Semi + Arial Rounded, logo amarillo. La dirección visual completa sigue en definición. Destinos actuales: 6 en Argentina (Bariloche, Ushuaia, San Martín de los Andes, Villa Pehuenia, Norte Neuquino, Iruya) y Perú sin cambios; Patagonia y Norte Argentino ya no son destinos navegables.
 
 Visión futura (no vigente hoy): red nacional e internacional de guías y operadores, comunidad "Mi Guía".
