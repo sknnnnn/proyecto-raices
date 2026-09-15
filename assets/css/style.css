@@ -1434,18 +1434,13 @@ footer li a:hover{opacity:1; color:var(--color-amarillo);}
 }
 
 /* ---------- Experiencias — catálogo principal (PRO-62) ----------
-   Experiencias es exclusivamente el catálogo completo: chips de tipo +
-   selector de destino (.exp-catalogo-filtros, ver arriba) y la grilla
-   de resultados en la misma página, sin secciones secundarias. El
+   Experiencias es exclusivamente el catálogo completo: encabezado
+   editorial compacto (.page-intro.tight, sin foto) seguido de chips
+   de tipo + selector de destino (.exp-catalogo-filtros, ver arriba) y
+   la grilla de resultados, sin secciones secundarias intermedias. El
    lienzo de fondo ya está resuelto arriba (body[data-page="experiencias"]
    main + section transparent). */
-body[data-page="experiencias"] .page-intro-media{max-width:560px; margin-left:auto;}
 body[data-page="experiencias"] .exp-explorer{padding:var(--space-7) 0 var(--space-8);}
-body[data-page="experiencias"] .exp-explorer-head{margin-bottom:var(--space-6);}
-
-@media (max-width:860px){
-  body[data-page="experiencias"] .page-intro-media{max-width:none;}
-}
 
 /* ---------- Nosotros — página editorial ----------
    La página tenía estilos sueltos inline (fondo blanco fijo en .about,
