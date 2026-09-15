@@ -306,7 +306,7 @@
           <div class="img-wrap">
             ${p.imagen ? `<img src="${p.imagen}" alt="${p.nombre}" loading="lazy">` : `<div class="exp-img-fallback"><span>${p.nombre}</span></div>`}
             <span class="cat-badge">${tipoInfo ? tipoInfo.label : p.tipoProducto}</span>
-            <div class="img-meta">${p.duracion} · ${p.modalidad}</div>
+            <div class="img-meta">${p.tipoProducto === "travesia" ? `${p.destino ? p.destino.nombre : ""} · ${p.duracion}` : `${p.duracion} · ${p.modalidad}`}</div>
           </div>
           <div class="body">
             ${p.esPlaceholder ? `<span class="placeholder-badge">Contenido de ejemplo</span>` : ""}

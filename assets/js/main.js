@@ -633,12 +633,16 @@ function aplicarFiltroSuave(params){
 function propuestaCardHtml(p, volverCtx){
   const tipoInfo = TIPOS_PROPUESTA[p.tipoProducto];
   const href = `propuesta.html?id=${p.slug}${volverCtx || ""}`;
+  // Travesías muestran "Destino · Duración" en la card (la modalidad no
+  // aporta ahí); Tours/Paquetes mantienen "Duración · Modalidad" como
+  // antes. Sólo cambia esta línea resumida — el detalle sigue mostrando
+  // Modalidad igual que siempre.
   return `
     <article class="exp-card" data-tipo="${p.tipoProducto}">
       <a class="img-wrap" href="${href}" aria-label="Ver detalles de ${p.nombre}">
         ${p.imagen ? `<img src="${p.imagen}" alt="${p.nombre}" loading="lazy"${p.imagenPos ? ` style="object-position:${p.imagenPos};"` : ""}>` : `<div class="exp-img-fallback"><span>${p.nombre}</span></div>`}
         <span class="cat-badge">${tipoInfo ? tipoInfo.label : p.tipoProducto}</span>
-        <div class="img-meta">${p.duracion} · ${p.modalidad}</div>
+        <div class="img-meta">${p.tipoProducto === "travesia" ? `${p.destino ? p.destino.nombre : ""} · ${p.duracion}` : `${p.duracion} · ${p.modalidad}`}</div>
       </a>
       <div class="body">
         ${p.esPlaceholder ? `<span class="placeholder-badge">Contenido de ejemplo</span>` : ""}
