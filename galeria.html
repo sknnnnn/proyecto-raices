@@ -79,14 +79,33 @@
       <div class="kicker">Comunidad Raíces</div>
       <h2>¿Viviste una experiencia con Proyecto Raíces?</h2>
       <p>Queremos que tu viaje también sea parte de nuestra historia. Compartí tus mejores fotos y momentos con nosotros y, con tu autorización, podremos sumarlos a nuestra galería y compartirlos en nuestros canales.</p>
-      <a href="mailto:proyectoraicestravel@gmail.com?subject=Quiero%20compartir%20mis%20fotos%20con%20Proyecto%20Ra%C3%ADces" class="comunidad-mail">
+      <button type="button" id="fotos-toggle" class="comunidad-mail" aria-expanded="false" aria-controls="fotos-form">
         <span class="comunidad-mail-ico" aria-hidden="true">📩</span>
         <span class="comunidad-mail-text">
           <b>Enviá tus fotos a</b>
           <em>proyectoraicestravel@gmail.com</em>
         </span>
         <span class="comunidad-mail-arrow" aria-hidden="true">→</span>
-      </a>
+      </button>
+
+      <form id="fotos-form" class="fotos-form" hidden>
+        <div class="form-row">
+          <div><label for="fotos-nombre">Nombre</label><input id="fotos-nombre" name="nombre" type="text" placeholder="Tu nombre" required></div>
+          <div><label for="fotos-email">Email</label><input id="fotos-email" name="email" type="email" placeholder="tu@email.com" required></div>
+        </div>
+        <div>
+          <label for="fotos-mensaje">Mensaje (opcional)</label>
+          <textarea id="fotos-mensaje" name="mensaje" placeholder="Contanos en qué experiencia sacaste estas fotos..."></textarea>
+        </div>
+        <div>
+          <label for="fotos-input">Fotos</label>
+          <input id="fotos-input" name="fotos" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" multiple required>
+          <p id="fotos-seleccionadas" class="form-note"></p>
+        </div>
+        <p class="form-note">Hasta 8 fotos por envío, JPG/PNG/WEBP/HEIC, máximo 8MB cada una.</p>
+        <button type="submit" class="btn">Enviar fotos</button>
+        <div id="fotos-status" class="form-status"></div>
+      </form>
     </div>
     <div class="comunidad-stack" aria-hidden="true">
       <img src="assets/img/experiencias/_MG_0087_Original.jpg" alt="">

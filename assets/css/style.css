@@ -1163,7 +1163,7 @@ body[data-page="propuesta"] .exp-detail-grid{
 .comunidad-text p{font-size:16px; line-height:1.7; color:var(--text-secondary); max-width:480px;}
 .comunidad-text p + p{margin-top:14px;}
 .comunidad-text .comunidad-tagline{font-family:var(--font-heading); font-weight:700; color:var(--color-tinta);}
-.comunidad-mail{display:inline-flex; align-items:center; gap:16px; margin-top:30px; background:#fff; border-radius:999px; padding:10px 24px 10px 10px; text-decoration:none; color:var(--color-tinta); box-shadow:0 10px 24px rgba(21,19,16,0.16); transition:transform .25s ease, box-shadow .25s ease;}
+.comunidad-mail{display:inline-flex; align-items:center; gap:16px; margin-top:30px; background:#fff; border:none; border-radius:999px; padding:10px 24px 10px 10px; text-decoration:none; color:var(--color-tinta); font:inherit; text-align:left; cursor:pointer; box-shadow:0 10px 24px rgba(21,19,16,0.16); transition:transform .25s ease, box-shadow .25s ease;}
 .comunidad-mail:hover{transform:translateY(-3px); box-shadow:0 16px 32px rgba(33,29,22,0.24);}
 .comunidad-mail-ico{width:42px; height:42px; border-radius:50%; background:var(--color-verde); display:flex; align-items:center; justify-content:center; font-size:17px; flex-shrink:0;}
 .comunidad-mail-text{display:flex; flex-direction:column; line-height:1.35;}
@@ -1232,6 +1232,12 @@ form .btn{justify-self:start; margin-top:var(--space-2); padding:14px 34px;}
 .form-status{font-size:14px; padding:12px 14px; border-radius:var(--radius-sm); display:none;}
 .form-status.show{display:block;}
 .form-status.ok{background:#e3ecdb; color:var(--color-verde);}
+.form-status.err{background:#fbe1d4; color:var(--color-naranja);}
+.btn:disabled{opacity:0.6; cursor:not-allowed; transform:none;}
+.btn:disabled:hover{background:var(--color-naranja); transform:none;}
+
+.fotos-form{margin-top:var(--space-5); background:#fff; border-radius:var(--radius-lg); box-shadow:var(--shadow-md); padding:var(--space-6); max-width:520px;}
+.fotos-form[hidden]{display:none;}
 
 @media (max-width:640px){
   .contact-form-panel{padding:var(--space-5);}
