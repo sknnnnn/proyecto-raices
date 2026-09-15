@@ -287,6 +287,38 @@ const DataAPI = (() => {
     });
   }
 
+  /* ================= FORMULARIOS (Edge Functions + Storage) =================
+     Único punto de acceso a las dos Edge Functions de envío (contact-form,
+     submit-photos) y al bucket privado de fotos "envios-fotos". Las
+     funciones lanzan si Supabase responde error; quien llama decide cómo
+     mostrarlo (ver initContactForm/initFotosForm en main.js). */
+
+  async function enviarContacto({ nombre, email, destino, mensaje }) {
+    const sb = client();
+    const { data, error } = await sb.functions.invoke("contact-form", {
+      body: { nombre, email, destino, mensaje }
+    });
+    if (error || !data?.ok) throw new Error(data?.error || error?.message || "Error desconocido");
+    return data;
+  }
+
+  async function subirFotoEnvio(path, file) {
+    const sb = client();
+    const { error } = await sb.storage
+      .from("envios-fotos")
+      .upload(path, file, { contentType: file.type, upsert: false });
+    if (error) throw error;
+  }
+
+  async function enviarFotos({ submissionId, nombre, email, mensaje }) {
+    const sb = client();
+    const { data, error } = await sb.functions.invoke("submit-photos", {
+      body: { submissionId, nombre, email, mensaje }
+    });
+    if (error || !data?.ok) throw new Error(data?.error || error?.message || "Error desconocido");
+    return data;
+  }
+
   return {
     getDestinosActivos,
     getDestinoPorSlug,
@@ -297,6 +329,9 @@ const DataAPI = (() => {
     getGaleria,
     getExperienciasDeUnPaquete,
     getEquipoActivo,
-    getSiteConfig
+    getSiteConfig,
+    enviarContacto,
+    subirFotoEnvio,
+    enviarFotos
   };
 })();

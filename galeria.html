@@ -61,6 +61,14 @@
       <img src="assets/img/galeria-cusco-calle.jpg" alt="Calle empedrada en Cusco al atardecer" data-lightbox="assets/img/galeria-cusco-calle.jpg" loading="lazy">
       <img src="assets/img/experiencias/Hacia Laguna Negra.jpeg" alt="Cascada en el sendero hacia Laguna Negra, Bariloche" data-lightbox="assets/img/experiencias/Hacia Laguna Negra.jpeg" loading="lazy">
       <img src="assets/img/fauna-montana.jpg" alt="Ave posada en una roca de altura, fauna de montaña" data-lightbox="assets/img/fauna-montana.jpg" loading="lazy">
+      <img src="assets/img/experiencias/Brazo tristeza.jpg" alt="Brazo del lago Nahuel Huapi entre montañas, Bariloche" data-lightbox="assets/img/experiencias/Brazo tristeza.jpg" loading="lazy">
+      <img src="assets/img/experiencias/Desde Mirador Cerro Campanario.JPG" alt="Vista panorámica de lagos y bosques desde el Cerro Campanario, Bariloche" data-lightbox="assets/img/experiencias/Desde Mirador Cerro Campanario.JPG" loading="lazy">
+      <img src="assets/img/experiencias/pexels-angel-valladares-242487480-17060856.jpg" alt="Vías del tren rumbo a Machu Picchu entre la selva" data-lightbox="assets/img/experiencias/pexels-angel-valladares-242487480-17060856.jpg" loading="lazy">
+      <img src="assets/img/experiencias/pexels-suca-19852367.jpg" alt="Vista de los techos de tejas de Cusco desde una calle en pendiente" data-lightbox="assets/img/experiencias/pexels-suca-19852367.jpg" loading="lazy">
+      <img src="assets/img/experiencias/pexels-kaushik21-26074194.jpg" alt="Mujeres con vestimenta tradicional cusqueña y alpacas en un portal de piedra" data-lightbox="assets/img/experiencias/pexels-kaushik21-26074194.jpg" loading="lazy">
+      <img src="assets/img/experiencias/pexels-viviane-couto-450464801-33463618.jpg" alt="Callejón empedrado entre casas coloniales de Cusco" data-lightbox="assets/img/experiencias/pexels-viviane-couto-450464801-33463618.jpg" loading="lazy">
+      <img src="assets/img/experiencias/pexels-aldys-cattania-164969680-20872356.JPG" alt="Cerros multicolor de una quebrada del norte argentino" data-lightbox="assets/img/experiencias/pexels-aldys-cattania-164969680-20872356.JPG" loading="lazy">
+      <img src="assets/img/experiencias/pexels-dali-turcatti-305645658-13446450.JPG" alt="Formaciones montañosas multicolor del norte argentino" data-lightbox="assets/img/experiencias/pexels-dali-turcatti-305645658-13446450.JPG" loading="lazy">
     </div>
   </div>
 </section>
@@ -71,14 +79,33 @@
       <div class="kicker">Comunidad Raíces</div>
       <h2>¿Viviste una experiencia con Proyecto Raíces?</h2>
       <p>Queremos que tu viaje también sea parte de nuestra historia. Compartí tus mejores fotos y momentos con nosotros y, con tu autorización, podremos sumarlos a nuestra galería y compartirlos en nuestros canales.</p>
-      <a href="mailto:proyectoraicestravel@gmail.com?subject=Quiero%20compartir%20mis%20fotos%20con%20Proyecto%20Ra%C3%ADces" class="comunidad-mail">
+      <button type="button" id="fotos-toggle" class="comunidad-mail" aria-expanded="false" aria-controls="fotos-form">
         <span class="comunidad-mail-ico" aria-hidden="true">📩</span>
         <span class="comunidad-mail-text">
           <b>Enviá tus fotos a</b>
           <em>proyectoraicestravel@gmail.com</em>
         </span>
         <span class="comunidad-mail-arrow" aria-hidden="true">→</span>
-      </a>
+      </button>
+
+      <form id="fotos-form" class="fotos-form" hidden>
+        <div class="form-row">
+          <div><label for="fotos-nombre">Nombre</label><input id="fotos-nombre" name="nombre" type="text" placeholder="Tu nombre" required></div>
+          <div><label for="fotos-email">Email</label><input id="fotos-email" name="email" type="email" placeholder="tu@email.com" required></div>
+        </div>
+        <div>
+          <label for="fotos-mensaje">Mensaje (opcional)</label>
+          <textarea id="fotos-mensaje" name="mensaje" placeholder="Contanos en qué experiencia sacaste estas fotos..."></textarea>
+        </div>
+        <div>
+          <label for="fotos-input">Fotos</label>
+          <input id="fotos-input" name="fotos" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" multiple required>
+          <ul id="fotos-seleccionadas" class="fotos-seleccionadas"></ul>
+        </div>
+        <p class="form-note">Hasta 8 fotos por envío, JPG/PNG/WEBP/HEIC, máximo 8MB cada una.</p>
+        <button type="submit" class="btn">Enviar fotos</button>
+        <div id="fotos-status" class="form-status"></div>
+      </form>
     </div>
     <div class="comunidad-stack" aria-hidden="true">
       <img src="assets/img/experiencias/_MG_0087_Original.jpg" alt="">
@@ -110,12 +137,12 @@
       <div>
         <h4>Navegación</h4>
         <ul>
-          <li><a href="index.html">Inicio</a></li>
-          <li><a href="experiencias.html">Experiencias</a></li>
-          <li><a href="destinos.html">Destinos</a></li>
-          <li><a href="nosotros.html">Nosotros</a></li>
-          <li><a href="galeria.html">Galería</a></li>
-          <li><a href="contacto.html">Contacto</a></li>
+          <li><a href="https://www.proyectoraices.com.ar/index.html">Inicio</a></li>
+          <li><a href="https://www.proyectoraices.com.ar/experiencias.html">Experiencias</a></li>
+          <li><a href="https://www.proyectoraices.com.ar/destinos.html">Destinos</a></li>
+          <li><a href="https://www.proyectoraices.com.ar/nosotros.html">Nosotros</a></li>
+          <li><a href="https://www.proyectoraices.com.ar/galeria.html">Galería</a></li>
+          <li><a href="https://www.proyectoraices.com.ar/contacto.html">Contacto</a></li>
         </ul>
       </div>
       <div>

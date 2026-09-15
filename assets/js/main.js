@@ -58,6 +58,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   await siteConfigReady;
   initWhatsappFloat();
   initContactForm();
+  initFotosForm();
   initFooterContacto();
 
   renderPropuestasGrid();   // async — consulta Supabase vía DataAPI
@@ -227,31 +228,153 @@ function initWhatsappFloat(){
 }
 
 /* ---------- Formulario de contacto ----------
-   No hay backend ni servicio de envío (Google Forms/Formspree/EmailJS):
-   el submit arma un mailto: con los datos ya cargados y redirige el
-   navegador ahí, así que lo único que "envía" la consulta es que la
-   persona confirme el envío desde su propio cliente de correo. El
-   mensaje de status refleja eso — no promete una respuesta que todavía
-   no depende de nosotros, sino de ese paso final del usuario. */
+   Envío real vía Supabase Edge Function ("contact-form"), que reenvía
+   el mensaje por Resend a SITE_CONFIG.email con el email del visitante
+   como reply-to. Ver supabase/functions/contact-form/index.ts. */
+function setFormStatus(status, text, kind){
+  if (!status) return;
+  status.textContent = text;
+  status.classList.remove("ok", "err");
+  status.classList.add("show", kind);
+}
+
 function initContactForm(){
   const form = document.getElementById("contact-form");
   if (!form) return;
-  form.addEventListener("submit", (e) => {
+  const status = document.getElementById("form-status");
+  const submitBtn = form.querySelector("button[type=submit]");
+  let sending = false;
+
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const status = document.getElementById("form-status");
-    const nombre = form.nombre.value;
-    const email = form.email.value;
+    if (sending) return;
+
+    const nombre = form.nombre.value.trim();
+    const email = form.email.value.trim();
     const destino = form.destino.value;
-    const mensaje = form.mensaje.value;
-    const cuerpo = encodeURIComponent(
-      `Nombre: ${nombre}\nEmail: ${email}\nDestino de interés: ${destino}\n\nMensaje:\n${mensaje}`
-    );
-    if (status) {
-      status.textContent = "Se abrió tu correo con la consulta ya redactada — confirmá el envío desde ahí para que nos llegue.";
-      status.classList.add("show", "ok");
+    const mensaje = form.mensaje.value.trim();
+
+    if (!nombre || !email || !mensaje) {
+      setFormStatus(status, "Completá nombre, email y mensaje para enviar tu consulta.", "err");
+      return;
     }
-    window.location.href = `mailto:${SITE_CONFIG.email}?subject=${encodeURIComponent("Consulta desde la web — " + nombre)}&body=${cuerpo}`;
-    form.reset();
+
+    sending = true;
+    if (submitBtn) submitBtn.disabled = true;
+    setFormStatus(status, "Enviando tu consulta…", "ok");
+
+    try {
+      await DataAPI.enviarContacto({ nombre, email, destino, mensaje });
+      setFormStatus(status, "¡Gracias! Recibimos tu consulta y te vamos a responder a la brevedad.", "ok");
+      form.reset();
+    } catch (err) {
+      console.error("Error enviando el formulario de contacto:", err);
+      setFormStatus(status, "No pudimos enviar tu consulta. Probá de nuevo en unos minutos, o escribinos por WhatsApp.", "err");
+    } finally {
+      sending = false;
+      if (submitBtn) submitBtn.disabled = false;
+    }
+  });
+}
+
+/* ---------- "Enviá tus fotos" (galería) ----------
+   Flujo real: el navegador sube las fotos directo al bucket privado de
+   Storage "envios-fotos" (sólo permite insert, ver policy en Supabase),
+   agrupadas bajo una carpeta con un UUID por envío. Recién después se
+   llama a la Edge Function "submit-photos", que verifica qué archivos
+   existen de verdad para ese UUID, genera links firmados temporales y
+   dispara el email por Resend. Ver supabase/functions/submit-photos/. */
+const FOTOS_TIPOS_VALIDOS = ["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"];
+const FOTOS_MAX_SIZE = 8 * 1024 * 1024; // 8MB por foto (mismo límite que el bucket)
+const FOTOS_MAX_CANTIDAD = 8;
+
+function initFotosForm(){
+  const toggle = document.getElementById("fotos-toggle");
+  const panel = document.getElementById("fotos-form");
+  if (!toggle || !panel) return;
+
+  toggle.addEventListener("click", () => {
+    const abierto = !panel.hidden;
+    panel.hidden = abierto;
+    toggle.setAttribute("aria-expanded", String(!abierto));
+  });
+
+  const fileInput = document.getElementById("fotos-input");
+  const fileList = document.getElementById("fotos-seleccionadas");
+  fileInput?.addEventListener("change", () => {
+    const files = Array.from(fileInput.files || []);
+    if (!fileList) return;
+    fileList.innerHTML = "";
+    files.forEach(f => {
+      const li = document.createElement("li");
+      li.textContent = f.name;
+      li.title = f.name;
+      fileList.appendChild(li);
+    });
+  });
+
+  const form = document.getElementById("fotos-form");
+  const status = document.getElementById("fotos-status");
+  const submitBtn = form.querySelector("button[type=submit]");
+  let sending = false;
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (sending) return;
+
+    const nombre = form.nombre.value.trim();
+    const email = form.email.value.trim();
+    const mensaje = form.mensaje.value.trim();
+    const files = Array.from(fileInput?.files || []);
+
+    if (!nombre || !email) {
+      setFormStatus(status, "Completá nombre y email para enviar tus fotos.", "err");
+      return;
+    }
+    if (!files.length) {
+      setFormStatus(status, "Elegí al menos una foto para enviar.", "err");
+      return;
+    }
+    if (files.length > FOTOS_MAX_CANTIDAD) {
+      setFormStatus(status, `Podés enviar hasta ${FOTOS_MAX_CANTIDAD} fotos por envío.`, "err");
+      return;
+    }
+    const invalido = files.find(f => !FOTOS_TIPOS_VALIDOS.includes(f.type));
+    if (invalido) {
+      setFormStatus(status, `"${invalido.name}" no es un formato de imagen admitido (JPG, PNG, WEBP o HEIC).`, "err");
+      return;
+    }
+    const pesado = files.find(f => f.size > FOTOS_MAX_SIZE);
+    if (pesado) {
+      setFormStatus(status, `"${pesado.name}" pesa más de 8MB. Elegí una foto más liviana.`, "err");
+      return;
+    }
+
+    sending = true;
+    if (submitBtn) submitBtn.disabled = true;
+    setFormStatus(status, "Subiendo tus fotos…", "ok");
+
+    try {
+      const submissionId = crypto.randomUUID();
+      for (const file of files) {
+        const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
+        const path = `${submissionId}/${crypto.randomUUID()}.${ext}`;
+        await DataAPI.subirFotoEnvio(path, file);
+      }
+
+      setFormStatus(status, "Enviando la notificación…", "ok");
+      await DataAPI.enviarFotos({ submissionId, nombre, email, mensaje });
+
+      setFormStatus(status, "¡Gracias! Recibimos tus fotos. Pronto las publicaremos en nuestra galería.", "ok");
+      form.reset();
+      if (fileList) fileList.innerHTML = "";
+    } catch (err) {
+      console.error("Error enviando fotos:", err);
+      setFormStatus(status, "No pudimos enviar tus fotos. Probá de nuevo en unos minutos.", "err");
+    } finally {
+      sending = false;
+      if (submitBtn) submitBtn.disabled = false;
+    }
   });
 }
 

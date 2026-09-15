@@ -15,11 +15,11 @@ const SITE_CONFIG = {
   // Número de WhatsApp oficial: +54 9 280 497-1939.
   whatsapp: "5492804971939",
 
-  instagram: "@proyectotravesia",
-  instagramUrl: "https://instagram.com/proyectotravesia",
+  instagram: "@somosproyectoraices",
+  instagramUrl: "https://www.instagram.com/somosproyectoraices/",
 
-  tiktok: "@proyectotravesia",
-  tiktokUrl: "https://www.tiktok.com/@proyectotravesia",
+  tiktok: "@proyectoraices.travel",
+  tiktokUrl: "https://www.tiktok.com/@proyectoraices.travel",
 
   horarios: [
     { dias: "Lunes a Viernes", horas: "8:00 – 20:00" },
