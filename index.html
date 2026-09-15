@@ -304,7 +304,7 @@
       return `
         <article class="exp-card" data-tipo="${p.tipoProducto}">
           <div class="img-wrap">
-            ${p.imagen ? `<img src="${p.imagen}" alt="${p.nombre}" loading="lazy">` : `<div class="gal-placeholder" style="height:100%;">Imagen pendiente</div>`}
+            ${p.imagen ? `<img src="${p.imagen}" alt="${p.nombre}" loading="lazy">` : `<div class="exp-img-fallback"><span>${p.nombre}</span></div>`}
             <span class="cat-badge">${tipoInfo ? tipoInfo.label : p.tipoProducto}</span>
             <div class="img-meta">${p.duracion} · ${p.modalidad}</div>
           </div>

@@ -636,7 +636,7 @@ function propuestaCardHtml(p, volverCtx){
   return `
     <article class="exp-card" data-tipo="${p.tipoProducto}">
       <a class="img-wrap" href="${href}" aria-label="Ver detalles de ${p.nombre}">
-        ${p.imagen ? `<img src="${p.imagen}" alt="${p.nombre}" loading="lazy"${p.imagenPos ? ` style="object-position:${p.imagenPos};"` : ""}>` : `<div class="gal-placeholder" style="height:100%;">Imagen pendiente</div>`}
+        ${p.imagen ? `<img src="${p.imagen}" alt="${p.nombre}" loading="lazy"${p.imagenPos ? ` style="object-position:${p.imagenPos};"` : ""}>` : `<div class="exp-img-fallback"><span>${p.nombre}</span></div>`}
         <span class="cat-badge">${tipoInfo ? tipoInfo.label : p.tipoProducto}</span>
         <div class="img-meta">${p.duracion} · ${p.modalidad}</div>
       </a>
@@ -801,7 +801,7 @@ async function renderPropuestaDetalle(){
     <div class="exp-detail-grid" style="margin-top:28px;">
       <div>
         <div class="exp-gallery-main">
-          ${principal ? `<img src="${principal}" alt="${p.nombre}" id="exp-main-img"${p.imagenPos ? ` style="object-position:${p.imagenPos};"` : ""}>` : `<div class="gal-placeholder" style="height:100%;">Imagen pendiente</div>`}
+          ${principal ? `<img src="${principal}" alt="${p.nombre}" id="exp-main-img"${p.imagenPos ? ` style="object-position:${p.imagenPos};"` : ""}>` : `<div class="exp-img-fallback"><span>${p.nombre}</span></div>`}
         </div>
         ${galeria.length > 1 ? `
         <div class="exp-gallery-thumbs">
@@ -1051,7 +1051,7 @@ async function renderDestinoEditorial(){
   const disponible = d.disponible;
   const coverImg = d.imagen
     ? `<img class="${!disponible ? "placeholder" : ""}" src="${d.imagen}" alt="${nombre}, ${d.pais}" style="object-position:${d.imagenPos || "center"};">`
-    : `<div class="gal-placeholder">${!disponible ? "Próximamente" : "Imagen pendiente"}</div>`;
+    : (disponible ? `<div class="exp-img-fallback"><span>${nombre}</span></div>` : `<div class="gal-placeholder">Próximamente</div>`);
   const prepFlag = !disponible ? `<span class="destino-card-flag" style="position:static; display:inline-block; vertical-align:middle; margin-left:10px;">Próximamente</span>` : "";
 
   // "En este lugar" — composición editorial con foto protagonista +
@@ -1068,7 +1068,7 @@ async function renderDestinoEditorial(){
   const galeriaHtml = fotosUsadas.length
     ? `<div class="destino-fotos" data-fotos="${fotosUsadas.length}">${fotosUsadas.map((f, i) => `
         <div class="g-foto g-${i + 1}"><img src="${f.src}" alt="${f.alt}" style="object-position:${f.pos};" data-lightbox="${f.src}" loading="lazy"></div>`).join("")}</div>`
-    : `<div class="destino-fotos" data-fotos="1"><div class="g-foto g-1"><div class="gal-placeholder" style="aspect-ratio:1.9;">Imagen pendiente</div></div></div>`;
+    : `<div class="destino-fotos" data-fotos="1"><div class="g-foto g-1" style="aspect-ratio:1.9;"><div class="exp-img-fallback"><span>${nombre}</span></div></div></div>`;
 
   // Presentación editorial del destino, ahora parte del propio hero (ya
   // no una sección aparte): mismo resumen que ya usa el intro, con un
@@ -1110,7 +1110,7 @@ async function renderDestinoEditorial(){
     ? `<a class="destino-exp-destacada" href="propuesta.html?id=${destacada.slug}${volverCtx}" aria-label="Ver ${destacada.nombre}">
          ${destacada.imagen
            ? `<img src="${destacada.imagen}" alt="${destacada.nombre}"${destacada.imagenPos ? ` style="object-position:${destacada.imagenPos};"` : ""} loading="lazy">`
-           : `<div class="gal-placeholder" style="height:100%;">Imagen pendiente</div>`}
+           : `<div class="exp-img-fallback"><span>${destacada.nombre}</span></div>`}
          <div class="destino-exp-destacada-info">
            ${tipoDestacada ? `<span class="destino-exp-destacada-tipo">${tipoDestacada.label} en ${nombre}</span>` : ""}
            <h3>${destacada.nombre}</h3>

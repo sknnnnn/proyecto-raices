@@ -1097,7 +1097,7 @@ body[data-page="propuesta"] .exp-detail-grid{
   box-shadow:var(--shadow-lg);
   padding:40px;
 }
-.exp-gallery-main{border-radius:10px; overflow:hidden; margin-bottom:16px; height:420px;}
+.exp-gallery-main{position:relative; border-radius:10px; overflow:hidden; margin-bottom:16px; height:420px;}
 .exp-gallery-main img{width:100%; height:100%; object-fit:cover;}
 .exp-gallery-thumbs{display:grid; grid-template-columns:repeat(4,1fr); gap:10px;}
 .exp-gallery-thumbs img{border-radius:6px; height:80px; width:100%; object-fit:cover;}
@@ -1141,6 +1141,19 @@ body[data-page="propuesta"] .exp-detail-grid{
    en el flujo, una segunda (.gc-span) que corta las columnas para dar
    otro momento de protagonismo sin romper el masonry. */
 .gal-placeholder{display:flex; align-items:center; justify-content:center; background:#e7e3d3; border-radius:6px; color:var(--text-muted); font-size:13px; text-align:center; padding:10px;}
+
+/* Fallback editorial global para experiencias sin imagen todavía (ver
+   propuestaCardHtml/renderPropuestaDetalle/destino-exp-destacada en
+   main.js): mismo lienzo con textura de marca que ya usa <main> en
+   Experiencias/Catálogo (--exp-canvas-base + radiales de la paleta),
+   con el nombre de la experiencia en vez de un cartel de "sin imagen".
+   Apenas la experiencia tenga imagen real, deja de usarse solo. */
+.exp-img-fallback{position:absolute; inset:0; width:100%; height:100%; display:flex; align-items:center; justify-content:center; text-align:center; padding:24px; background-color:var(--exp-canvas-base); background-image:
+    radial-gradient(70% 55% at 18% 18%, rgba(233,224,115,0.22) 0%, transparent 100%),
+    radial-gradient(65% 55% at 88% 25%, rgba(141,75,18,0.22) 0%, transparent 100%),
+    radial-gradient(70% 60% at 20% 88%, rgba(67,97,47,0.55) 0%, transparent 100%),
+    radial-gradient(55% 48% at 82% 82%, rgba(255,91,40,0.16) 0%, transparent 100%);}
+.exp-img-fallback span{font-family:var(--font-heading); font-weight:700; font-size:16px; line-height:1.3; color:var(--color-crema);}
 .lightbox{position:fixed; inset:0; background:rgba(20,18,12,0.92); display:none; align-items:center; justify-content:center; z-index:200; padding:32px;}
 .lightbox.open{display:flex;}
 .lightbox img{max-width:90vw; max-height:85vh; border-radius:6px;}
