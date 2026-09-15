@@ -178,13 +178,12 @@
         if (d.imagen) {
           media.innerHTML = `<img id="cat-img" class="${!disponible ? "placeholder" : ""}" src="${d.imagen}" alt="${nombre}" style="object-position:center;">`;
         } else {
-          // Sin foto propia todavía: "Próximamente" si el destino todavía
-          // no está disponible, o el fallback editorial de marca (mismo
-          // que usan las experiencias sin imagen) si sólo falta la foto
-          // — nunca la imagen genérica por defecto ni un cartel técnico.
-          media.innerHTML = disponible ? `<div class="exp-img-fallback"><span>${nombre}</span></div>` : `<div class="gal-placeholder">Próximamente</div>`;
+          // Sin foto propia todavía (disponible o no): fallback editorial
+          // de marca, el mismo que usan las experiencias sin imagen —
+          // nunca la imagen genérica por defecto ni un cartel técnico.
+          media.innerHTML = `<div class="exp-img-fallback"><span>${nombre}</span></div>`;
         }
-        if (!disponible && d.imagen) media.innerHTML += `<span class="destino-card-flag">Próximamente</span>`;
+        if (!disponible) media.innerHTML += `<span class="destino-card-flag">Próximamente</span>`;
       }
       const bc = document.getElementById("cat-breadcrumb");
       if (bc) bc.innerHTML = `<a href="index.html">Inicio</a> / <a href="destinos.html">Destinos</a> / ${nombre}`;

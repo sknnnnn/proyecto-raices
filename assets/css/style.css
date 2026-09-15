@@ -630,16 +630,13 @@ body[data-page="catalogo"] .page-intro-media{aspect-ratio:2.2;}
 .destinos-carousel-track .destino-card{flex:0 0 240px; width:240px;}
 .destino-card img, .destino-card .gal-placeholder{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; transition:transform .5s ease;}
 .destino-card .gal-placeholder{display:flex; align-items:center; justify-content:center;}
-.destino-card:hover img{transform:scale(1.06);}
+.destino-card:hover img, .destino-card:hover .exp-img-fallback{transform:scale(1.06);}
+.destino-card:hover .exp-img-fallback::before{width:44px;}
+.destino-card:active .exp-img-fallback{transform:scale(0.985);}
 .destino-card .info{position:absolute; left:0; right:0; bottom:0; z-index:2; padding:18px;}
 .destino-card h3{color:#fff; font-size:20px; line-height:1.15; text-shadow:0 2px 8px rgba(0,0,0,0.5);}
 .destino-card .explorar{display:block; margin-top:6px; font-family:var(--font-heading); font-weight:700; font-size:12px; color:var(--color-amarillo); text-shadow:0 2px 8px rgba(0,0,0,0.5); opacity:0; transform:translateY(4px); transition:opacity .25s ease, transform .25s ease;}
 .destino-card:hover .explorar{opacity:1; transform:translateY(0);}
-/* Sin foto de fondo (placeholder claro en vez de fotografía oscura): el
-   blanco + text-shadow pensados para foto quedan ilegibles sobre el
-   placeholder claro (Paracas/Huacachina/Arequipa/Lima). */
-.destino-card.sin-foto h3{color:var(--color-tinta); text-shadow:none;}
-.destino-card.sin-foto .explorar{color:var(--color-marron); text-shadow:none;}
 .destino-card-flag{position:absolute; top:12px; left:12px; z-index:2; font-size:10px; text-transform:uppercase; letter-spacing:0.08em; color:var(--color-tinta); background:var(--color-amarillo); padding:5px 10px; border-radius:999px; font-weight:700;}
 /* Próximamente: única excepción permitida al tratamiento de color de
    fotos (blanco y negro en vez de ocultar la imagen real). */
@@ -763,7 +760,9 @@ img.placeholder{filter:grayscale(1);}
    nombre), no una card con etiqueta suelta. */
 .destino-exp-destacada{position:relative; display:block; max-width:560px; aspect-ratio:1.55; border-radius:28px 8px 28px 8px; overflow:hidden; text-decoration:none;}
 .destino-exp-destacada img, .destino-exp-destacada .gal-placeholder{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; transition:transform .6s ease;}
-.destino-exp-destacada:hover img{transform:scale(1.04);}
+.destino-exp-destacada:hover img, .destino-exp-destacada:hover .exp-img-fallback{transform:scale(1.04);}
+.destino-exp-destacada:hover .exp-img-fallback::before{width:44px;}
+.destino-exp-destacada:active .exp-img-fallback{transform:scale(0.985);}
 .destino-exp-destacada::after{content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(20,18,12,0) 28%, rgba(20,18,12,0.85) 100%);}
 .destino-exp-destacada-info{position:absolute; left:26px; right:26px; bottom:24px; z-index:2; display:flex; flex-direction:column; gap:6px;}
 .destino-exp-destacada-tipo{font-family:var(--font-body); font-weight:600; font-size:11.5px; text-transform:uppercase; letter-spacing:0.12em; color:var(--color-amarillo); text-shadow:0 2px 8px rgba(0,0,0,0.5);}
@@ -898,7 +897,9 @@ img.placeholder{filter:grayscale(1);}
    distinta según dónde apareciera. */
 .exp-card .img-wrap{display:block; position:relative; height:auto; aspect-ratio:1.1; overflow:hidden; border-radius:36px 10px 36px 10px; box-shadow:0 14px 30px rgba(33,29,22,.14);}
 .exp-card .img-wrap img{width:100%; height:100%; object-fit:cover; transition:transform .6s ease;}
-.exp-card:hover .img-wrap img{transform:scale(1.055);}
+.exp-card:hover .img-wrap img, .exp-card:hover .img-wrap .exp-img-fallback{transform:scale(1.055);}
+.exp-card:hover .img-wrap .exp-img-fallback::before{width:44px;}
+.exp-card:active .img-wrap .exp-img-fallback{transform:scale(0.985);}
 .exp-card .cat-badge{position:absolute; top:12px; left:12px; background:rgba(20,18,12,0.55); font-family:var(--font-body); font-weight:600; color:#fff; font-size:10.5px; text-transform:uppercase; letter-spacing:0.1em; padding:6px 12px; border-radius:999px;}
 /* Duración · Modalidad como franja sobre el pie de la foto (no en
    .body): mismo componente para Catálogo, Tours, Travesías y
@@ -1142,18 +1143,22 @@ body[data-page="propuesta"] .exp-detail-grid{
    otro momento de protagonismo sin romper el masonry. */
 .gal-placeholder{display:flex; align-items:center; justify-content:center; background:#e7e3d3; border-radius:6px; color:var(--text-muted); font-size:13px; text-align:center; padding:10px;}
 
-/* Fallback editorial global para experiencias sin imagen todavía (ver
-   propuestaCardHtml/renderPropuestaDetalle/destino-exp-destacada en
-   main.js): mismo lienzo con textura de marca que ya usa <main> en
-   Experiencias/Catálogo (--exp-canvas-base + radiales de la paleta),
-   con el nombre de la experiencia en vez de un cartel de "sin imagen".
-   Apenas la experiencia tenga imagen real, deja de usarse solo. */
-.exp-img-fallback{position:absolute; inset:0; width:100%; height:100%; display:flex; align-items:center; justify-content:center; text-align:center; padding:24px; background-color:var(--exp-canvas-base); background-image:
-    radial-gradient(70% 55% at 18% 18%, rgba(233,224,115,0.22) 0%, transparent 100%),
-    radial-gradient(65% 55% at 88% 25%, rgba(141,75,18,0.22) 0%, transparent 100%),
-    radial-gradient(70% 60% at 20% 88%, rgba(67,97,47,0.55) 0%, transparent 100%),
-    radial-gradient(55% 48% at 82% 82%, rgba(255,91,40,0.16) 0%, transparent 100%);}
-.exp-img-fallback span{font-family:var(--font-heading); font-weight:700; font-size:16px; line-height:1.3; color:var(--color-crema);}
+/* Fallback editorial global para experiencias y destinos sin imagen
+   todavía (ver propuestaCardHtml/renderPropuestaDetalle/
+   destino-exp-destacada/renderDestinoEditorial en main.js, y
+   destinos.html/catalogo.html): una superficie propia con degradé e
+   identidad de marca (naranja/amarillo/marrón sobre un verde más claro
+   que el verde base de la página, para que se lea como pieza aparte y
+   no como un agujero hacia el fondo), con el nombre como protagonista
+   tipográfico en vez de un cartel de "sin imagen". Apenas la
+   experiencia/destino tenga imagen real, deja de usarse solo. */
+.exp-img-fallback{position:absolute; inset:0; width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:28px; overflow:hidden; box-shadow:inset 0 0 0 1px rgba(236,231,216,0.14); transition:transform .5s ease; background:
+    radial-gradient(60% 50% at 12% 10%, rgba(255,91,40,0.22) 0%, transparent 100%),
+    radial-gradient(55% 45% at 90% 14%, rgba(233,224,115,0.2) 0%, transparent 100%),
+    radial-gradient(75% 65% at 50% 105%, rgba(141,75,18,0.4) 0%, transparent 100%),
+    linear-gradient(155deg, #0e4a33 0%, #06251a 100%);}
+.exp-img-fallback::before{content:""; width:30px; height:2px; background:var(--color-naranja); margin-bottom:16px; transition:width .35s ease;}
+.exp-img-fallback span{font-family:var(--font-heading); font-weight:700; font-size:19px; line-height:1.3; letter-spacing:0.01em; color:var(--color-crema); max-width:88%;}
 .lightbox{position:fixed; inset:0; background:rgba(20,18,12,0.92); display:none; align-items:center; justify-content:center; z-index:200; padding:32px;}
 .lightbox.open{display:flex;}
 .lightbox img{max-width:90vw; max-height:85vh; border-radius:6px;}

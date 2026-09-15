@@ -1051,7 +1051,7 @@ async function renderDestinoEditorial(){
   const disponible = d.disponible;
   const coverImg = d.imagen
     ? `<img class="${!disponible ? "placeholder" : ""}" src="${d.imagen}" alt="${nombre}, ${d.pais}" style="object-position:${d.imagenPos || "center"};">`
-    : (disponible ? `<div class="exp-img-fallback"><span>${nombre}</span></div>` : `<div class="gal-placeholder">Próximamente</div>`);
+    : `<div class="exp-img-fallback"><span>${nombre}</span></div>`;
   const prepFlag = !disponible ? `<span class="destino-card-flag" style="position:static; display:inline-block; vertical-align:middle; margin-left:10px;">Próximamente</span>` : "";
 
   // "En este lugar" — composición editorial con foto protagonista +

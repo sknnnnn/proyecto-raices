@@ -159,22 +159,17 @@
       // selector de Tours/Travesías/Paquetes/Contacto).
       const disponible = d.disponible;
       // Próximamente CON foto real: se muestra en blanco y negro (única
-      // excepción de color permitida), nunca oculta. Próximamente SIN
-      // foto todavía: un único mensaje ("Próximamente"). Disponible SIN
-      // foto todavía (ej. Iruya, con experiencias reales pero sin foto
-      // propia): fallback editorial oscuro reutilizado de las
-      // experiencias (.exp-img-fallback), nunca un cartel de "Imagen
-      // pendiente" — el nombre ya lo muestra el propio .info de abajo.
+      // excepción de color permitida), nunca oculta. Sin foto todavía
+      // (disponible o no): mismo fallback editorial de marca que usan
+      // las experiencias (.exp-img-fallback), nunca "Imagen pendiente".
+      // El flag "Próximamente" se muestra siempre que !disponible, haya
+      // o no foto real de fondo.
       const img = d.imagen
         ? `<img class="${!disponible ? "placeholder" : ""}" src="${d.imagen}" alt="${nombre}, ${d.pais}" style="object-position:${d.imagenPos || "center"};" loading="lazy">`
-        : (disponible ? `<div class="exp-img-fallback"></div>` : `<div class="gal-placeholder">Próximamente</div>`);
-      const prep = (!disponible && d.imagen) ? `<span class="destino-card-flag">Próximamente</span>` : "";
-      // "sin-foto" (fondo claro, título oscuro) sólo aplica al caso
-      // realmente sin tratamiento oscuro (Próximamente sin foto); tanto
-      // una foto real como el fallback editorial dan buen contraste con
-      // texto blanco.
+        : `<div class="exp-img-fallback"></div>`;
+      const prep = !disponible ? `<span class="destino-card-flag">Próximamente</span>` : "";
       return `
-        <a class="destino-card${(d.imagen || disponible) ? "" : " sin-foto"}" href="destino.html?destino=${d.slug}" aria-label="Conocer ${nombre}">
+        <a class="destino-card" href="destino.html?destino=${d.slug}" aria-label="Conocer ${nombre}">
           ${img}
           ${prep}
           <div class="info">
