@@ -51,22 +51,24 @@
       <div class="kicker">Hablemos</div>
       <h2>Canales de contacto</h2>
 
-      <div class="item">
-        <div class="ico">✉</div>
-        <div><b>Email</b><a id="cont-email" href="#">Cargando…</a></div>
-      </div>
-      <div class="item">
-        <div class="ico">📱</div>
-        <div><b>Instagram</b><a id="cont-instagram" href="#" target="_blank" rel="noopener">Cargando…</a></div>
-      </div>
-      <div class="item">
-        <div class="ico">🎵</div>
-        <div><b>TikTok</b><a id="cont-tiktok" href="#" target="_blank" rel="noopener">Cargando…</a></div>
-      </div>
-      <div class="item">
-        <div class="ico">📍</div>
-        <div><b>Base</b><span id="cont-ubicacion">Cargando…</span></div>
-      </div>
+      <dl class="contact-channels">
+        <div class="contact-channel">
+          <dt>Email</dt>
+          <dd><a id="cont-email" href="#">Cargando…</a></dd>
+        </div>
+        <div class="contact-channel">
+          <dt>Instagram</dt>
+          <dd><a id="cont-instagram" href="#" target="_blank" rel="noopener">Cargando…</a></dd>
+        </div>
+        <div class="contact-channel">
+          <dt>TikTok</dt>
+          <dd><a id="cont-tiktok" href="#" target="_blank" rel="noopener">Cargando…</a></dd>
+        </div>
+        <div class="contact-channel">
+          <dt>Base</dt>
+          <dd><span id="cont-ubicacion">Cargando…</span></dd>
+        </div>
+      </dl>
 
       <div id="whatsapp-cta-holder"></div>
     </div>
@@ -85,7 +87,7 @@
           <label for="mensaje">Mensaje</label>
           <textarea id="mensaje" name="mensaje" placeholder="Contanos qué estás buscando..." required></textarea>
         </div>
-        <p class="form-note">Te vamos a responder al email que nos dejes.</p>
+        <p class="form-note">Te responderemos lo antes posible.</p>
         <button type="submit" class="btn">Enviar consulta</button>
         <div id="form-status" class="form-status"></div>
       </form>

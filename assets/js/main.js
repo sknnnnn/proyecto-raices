@@ -304,9 +304,13 @@ function initFotosForm(){
   fileInput?.addEventListener("change", () => {
     const files = Array.from(fileInput.files || []);
     if (!fileList) return;
-    fileList.textContent = files.length
-      ? `${files.length} foto(s) seleccionada(s): ${files.map(f => f.name).join(", ")}`
-      : "";
+    fileList.innerHTML = "";
+    files.forEach(f => {
+      const li = document.createElement("li");
+      li.textContent = f.name;
+      li.title = f.name;
+      fileList.appendChild(li);
+    });
   });
 
   const form = document.getElementById("fotos-form");
@@ -361,9 +365,9 @@ function initFotosForm(){
       setFormStatus(status, "Enviando la notificación…", "ok");
       await DataAPI.enviarFotos({ submissionId, nombre, email, mensaje });
 
-      setFormStatus(status, "¡Gracias! Recibimos tus fotos.", "ok");
+      setFormStatus(status, "¡Gracias! Recibimos tus fotos. Pronto las publicaremos en nuestra galería.", "ok");
       form.reset();
-      if (fileList) fileList.textContent = "";
+      if (fileList) fileList.innerHTML = "";
     } catch (err) {
       console.error("Error enviando fotos:", err);
       setFormStatus(status, "No pudimos enviar tus fotos. Probá de nuevo en unos minutos.", "err");
