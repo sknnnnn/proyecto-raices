@@ -1178,10 +1178,12 @@ body[data-page="propuesta"] .exp-detail-grid{
 .comunidad-stack img:nth-child(2){top:46px; left:29%; transform:rotate(5deg); z-index:3;}
 .comunidad-stack img:nth-child(3){top:2px; left:55%; transform:rotate(-3deg); z-index:2;}
 
-/* Inicio: entrada editorial breve hacia Comunidad Raíces (galeria.html),
-   sin repetir la composición grande de .comunidad (esa vive sólo en
-   Galería, con el formulario real de envío de fotos). */
-.comunidad-inicio{background:transparent; text-align:center;}
+/* Inicio: entrada editorial breve hacia Comunidad Raíces (galeria.html).
+   Reutiliza .comunidad-grid/.comunidad-stack tal cual (mismas fotos,
+   misma composición) — sólo cambia el fondo (transparente = verde base
+   en vez del amarillo de .comunidad) y no incluye el formulario de
+   envío de fotos, que vive únicamente en Galería. */
+.comunidad-inicio{background:transparent;}
 .comunidad-inicio .section-head{margin-bottom:32px;}
 
 /* ---------- Testimonios ---------- */
