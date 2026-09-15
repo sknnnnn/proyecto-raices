@@ -369,7 +369,11 @@
       // Se duplica la lista filtrada para permitir un auto-scroll continuo
       // sin corte visible (mismos datos reales, renderizados dos veces).
       track.innerHTML = lista.map(featureHTML).join("") + lista.map(featureHTML).join("");
-      requestAnimationFrame(() => { setWidth = track.scrollWidth / 2; });
+      // setWidth = ancho de un set completo (sin el padding-inline que
+      // centra el slide activo, ver CSS): calculado a partir de
+      // cardStep() en vez de track.scrollWidth/2, porque ese padding
+      // ahora también entra en scrollWidth y correría el cálculo.
+      requestAnimationFrame(() => { setWidth = totalSlides * cardStep(); });
       viewport.scrollLeft = 0;
     }
 
