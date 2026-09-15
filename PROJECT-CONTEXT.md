@@ -120,7 +120,7 @@ Destinos actuales (estado real en `destinos-data.js`, corregido 2026-09-05 — "
 * San Martín de los Andes
 * Villa Pehuenia
 * Norte Neuquino
-* Norte Argentino (en preparación, sin contenido real todavía)
+* Iruya (en preparación, ficha propia sin desarrollar, pero con experiencias reales publicadas)
 
 **Perú**
 
@@ -131,7 +131,7 @@ Destinos actuales (estado real en `destinos-data.js`, corregido 2026-09-05 — "
 * Arequipa (en preparación)
 * Lima (en preparación)
 
-No reintroducir "Patagonia" como destino navegable. Sigue siendo válida solo como referencia geográfica en textos.
+No reintroducir "Patagonia" ni "Norte Argentino" como destino navegable. Ambos siguen siendo válidos solo como referencia geográfica en textos.
 
 La tarjeta de Perú debe poder comunicar claramente que incluye destinos como Cusco, entre otros.
 
