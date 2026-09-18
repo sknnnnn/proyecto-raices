@@ -11,7 +11,11 @@ test("la home carga y muestra la estructura base", async ({ page }) => {
   const pageErrors = [];
   page.on("pageerror", (err) => pageErrors.push(err.message));
 
-  const response = await page.goto("/index.html");
+  // domcontentloaded en vez del "load" por defecto: no depende de que
+  // terminen de descargar/decodificar las imágenes pesadas de la home
+  // (ver mismo criterio en tests/support/fixtures.js). Este spec no usa
+  // ese fixture a propósito (sin mocks, HTML real), así que lo pide acá.
+  const response = await page.goto("/index.html", { waitUntil: "domcontentloaded" });
   expect(response.status(), "index.html deberia responder 200").toBe(200);
 
   await expect(page).toHaveTitle(/Proyecto Ra[íi]ces/i);

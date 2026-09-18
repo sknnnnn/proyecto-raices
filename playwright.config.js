@@ -19,6 +19,13 @@ module.exports = defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
+  // Playwright usa la mitad de los cores como default (6 en esta máquina
+  // de 12 cores) — ese nivel de paralelismo satura I/O/CPU en este
+  // entorno y vuelve intermitente incluso goto(..., {waitUntil:
+  // "domcontentloaded"}) (ver tests/support/fixtures.js). Con 2 workers
+  // la suite corre estable y limpia en ~13s; no es un timeout más alto,
+  // es menos contención simultánea.
+  workers: 2,
   reporter: [["html", { open: "never" }], ["list"]],
   use: {
     baseURL: "http://127.0.0.1:4173",

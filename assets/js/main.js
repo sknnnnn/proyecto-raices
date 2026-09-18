@@ -65,6 +65,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   renderPropuestaDetalle(); // async — consulta Supabase vía DataAPI
   renderDestinoEditorial(); // async — sólo actúa si la página tiene #destino-editorial (destino.html, PRO-34)
   renderDestinosGrid();
+  renderCalendarioSalidas(); // sólo actúa si la página tiene #calendario-grid (calendario.html)
   renderEquipoGrid(); // async — sólo actúa si la página tiene #equipo-grid o #equipo-mini-grid
   initTestimoniosCarousel(); // sólo actúa si la página tiene #testi-track (Inicio)
   initComentariosGrid(); // sólo actúa si la página tiene #comentarios-grid (comentarios.html)
@@ -671,6 +672,23 @@ function propuestaCardHtml(p, volverCtx){
         </div>
       </div>
     </article>`;
+}
+
+/* ---------- Calendario de próximas salidas ----------
+   Sólo actúa si la página tiene #calendario-grid (calendario.html).
+   Deliberadamente NO deriva salidas de detalle.fechas de Tours/
+   Travesías/Paquetes: ese campo describe fechas propias de cada
+   experiencia en su propia ficha, no una curaduría de qué publicar acá.
+   Hasta que se defina explícitamente una fuente de datos para
+   Calendario, la página queda en su estado vacío. */
+function renderCalendarioSalidas(){
+  const grid = document.getElementById("calendario-grid");
+  if (!grid) return;
+  const emptyState = document.getElementById("calendario-empty");
+
+  grid.innerHTML = "";
+  grid.hidden = true;
+  if (emptyState) emptyState.hidden = false;
 }
 
 /* ---------- Navegación contextual "← Volver a…" (PRO-48) ----------

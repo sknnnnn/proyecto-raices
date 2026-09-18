@@ -123,7 +123,7 @@ const DataAPI = {
 const SUPABASE_CLIENT_SCRIPT = "const supabaseClient = {};";
 const SDK_STUB_SCRIPT = "window.supabase = { createClient: () => ({}) };";
 
-/* Instala los 3 route() necesarios en la página dada. Se llama una vez
+/* Instala los route() necesarios en la página dada. Se llama una vez
    por test (ver tests/support/fixtures.js), antes de cualquier goto(). */
 async function installMocks(page) {
   await page.route("https://cdn.jsdelivr.net/**", (route) =>
@@ -146,6 +146,18 @@ async function installMocks(page) {
   );
   await page.route("https://fonts.cdnfonts.com/**", (route) =>
     route.fulfill({ status: 200, contentType: "text/css", body: "/* fonts mocked for tests */" })
+  );
+  // Mismo problema que las fuentes de arriba, pero con el bundle de
+  // Sentry (browser.sentry-cdn.com): es un <script> bloqueante al final
+  // del body, en todas las páginas, y el proxy de este entorno lo cuelga
+  // de forma intermitente — eso colgaba el evento "load" de page.goto()
+  // (y con él, sentry.spec.js: sentry-init.js nunca llegaba a ejecutarse
+  // porque el <script> anterior no resolvía). Se responde con un stub
+  // vacío: no define window.Sentry, así que sentry-init.js se comporta
+  // igual que si el SDK no hubiera cargado (mismo guard que ya tiene en
+  // producción: "typeof Sentry !== undefined").
+  await page.route("https://browser.sentry-cdn.com/**", (route) =>
+    route.fulfill({ status: 200, contentType: "application/javascript", body: "/* sentry cdn mocked for tests */" })
   );
 }
 

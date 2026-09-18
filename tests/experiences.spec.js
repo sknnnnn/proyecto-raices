@@ -119,10 +119,15 @@ test("Descripción completa (sin recorte) y CTA centrado con 2 acciones", async 
 test("CTA centrado con 1 sola acción (carrusel de Inicio)", async ({ page }) => {
   await page.goto("/index.html");
 
-  const firstCard = page.locator("#exp-home-track .exp-card").first();
+  // El carrusel editorial de Inicio (PRO-?, ver index.html) no usa la
+  // grilla .exp-card/.actions del resto del sitio: cada slide es
+  // .exp-feature con una única acción/CTA, el link .exp-feature-frame
+  // que envuelve toda la tarjeta (ver comentario en index.html: "no la
+  // grilla .exp-card que usa el resto del sitio").
+  const firstCard = page.locator("#exp-home-track .exp-feature").first();
   await expect(firstCard).toBeVisible();
-  const actions = firstCard.locator(".actions");
-  await expect(actions.locator("a")).toHaveCount(1);
+  const actions = firstCard.locator(".exp-feature-frame");
+  await expect(actions).toHaveCount(1);
 
   const cardBox = await firstCard.boundingBox();
   const actionsBox = await actions.boundingBox();

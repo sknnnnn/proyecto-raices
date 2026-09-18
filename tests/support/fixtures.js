@@ -18,6 +18,18 @@ const test = base.extend({
 
     await installMocks(page);
 
+    // waitUntil por defecto de Playwright es "load": exige que terminen de
+    // descargar/decodificar TODAS las imágenes de la página. Con las fotos
+    // pesadas del sitio (varias de 8-14MB, sin optimizar) eso vuelve la
+    // navegación intermitente bajo los workers en paralelo, sin relación
+    // con si la UI ya está lista para testear — el DOM (incluido el
+    // contenido que arma main.js desde DataAPI) ya está armado en
+    // "domcontentloaded", y de ahí en más el auto-waiting de los
+    // locators/expect de cada test cubre el resto. Un test puede seguir
+    // pidiendo otra estrategia pasándola explícita como 2do argumento.
+    const originalGoto = page.goto.bind(page);
+    page.goto = (url, options) => originalGoto(url, { waitUntil: "domcontentloaded", ...options });
+
     await use(page);
 
     expect(jsErrors, `Errores JS no capturados: ${jsErrors.join(" | ")}`).toEqual([]);
