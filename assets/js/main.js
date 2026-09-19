@@ -40,12 +40,12 @@ window.siteConfigReady = siteConfigReady;
 // Arma el link de WhatsApp con mensaje precargado (si hay número cargado).
 function whatsappLink(mensaje){
   if (!SITE_CONFIG.whatsapp) return null;
-  const texto = encodeURIComponent(mensaje || "Hola, quiero consultar por una experiencia de Proyecto Raíces.");
+  const texto = encodeURIComponent(mensaje || I18N.t("whatsapp.mensajeDefault"));
   return `https://wa.me/${SITE_CONFIG.whatsapp}?text=${texto}`;
 }
 
 function mailtoLink(asunto){
-  const subject = encodeURIComponent(asunto || "Consulta desde la web");
+  const subject = encodeURIComponent(asunto || I18N.t("mailto.asuntoDefault"));
   return `mailto:${SITE_CONFIG.email}?subject=${subject}`;
 }
 
@@ -83,9 +83,9 @@ document.addEventListener("DOMContentLoaded", async () => {
    rompería esas páginas con un error de identificador duplicado. */
 if (typeof TIPOS_PROPUESTA === "undefined") {
   window.TIPOS_PROPUESTA = {
-    tour:     { label: "Tour",     labelPlural: "Tours",      pagina: "tours.html" },
-    travesia: { label: "Travesía", labelPlural: "Travesías",  pagina: "travesias.html" },
-    paquete:  { label: "Paquete",  labelPlural: "Paquetes",   pagina: "paquetes.html" }
+    tour:     { label: I18N.t("tipo.tour.label"),     labelPlural: I18N.t("tipo.tour.labelPlural"),     pagina: "tours.html" },
+    travesia: { label: I18N.t("tipo.travesia.label"), labelPlural: I18N.t("tipo.travesia.labelPlural"), pagina: "travesias.html" },
+    paquete:  { label: I18N.t("tipo.paquete.label"),  labelPlural: I18N.t("tipo.paquete.labelPlural"),  pagina: "paquetes.html" }
   };
 }
 
@@ -225,7 +225,7 @@ function initWhatsappFloat(){
   if (!holder) return;
   const link = whatsappLink();
   if (!link) return; // sin número cargado todavía: no se muestra nada
-  holder.innerHTML = `<a class="whatsapp-float" href="${link}" target="_blank" rel="noopener" aria-label="Escribinos por WhatsApp">💬</a>`;
+  holder.innerHTML = `<a class="whatsapp-float" href="${link}" target="_blank" rel="noopener" aria-label="${I18N.t("aria.escribinosWhatsapp")}">💬</a>`;
 }
 
 /* ---------- Formulario de contacto ----------
@@ -256,21 +256,21 @@ function initContactForm(){
     const mensaje = form.mensaje.value.trim();
 
     if (!nombre || !email || !mensaje) {
-      setFormStatus(status, "Completá nombre, email y mensaje para enviar tu consulta.", "err");
+      setFormStatus(status, I18N.t("contacto.form.errorCampos"), "err");
       return;
     }
 
     sending = true;
     if (submitBtn) submitBtn.disabled = true;
-    setFormStatus(status, "Enviando tu consulta…", "ok");
+    setFormStatus(status, I18N.t("contacto.form.enviando"), "ok");
 
     try {
       await DataAPI.enviarContacto({ nombre, email, destino, mensaje });
-      setFormStatus(status, "¡Gracias! Recibimos tu consulta y te vamos a responder a la brevedad.", "ok");
+      setFormStatus(status, I18N.t("contacto.form.exito"), "ok");
       form.reset();
     } catch (err) {
       console.error("Error enviando el formulario de contacto:", err);
-      setFormStatus(status, "No pudimos enviar tu consulta. Probá de nuevo en unos minutos, o escribinos por WhatsApp.", "err");
+      setFormStatus(status, I18N.t("contacto.form.error"), "err");
     } finally {
       sending = false;
       if (submitBtn) submitBtn.disabled = false;
@@ -329,31 +329,31 @@ function initFotosForm(){
     const files = Array.from(fileInput?.files || []);
 
     if (!nombre || !email) {
-      setFormStatus(status, "Completá nombre y email para enviar tus fotos.", "err");
+      setFormStatus(status, I18N.t("galeria.fotosForm.errorCampos"), "err");
       return;
     }
     if (!files.length) {
-      setFormStatus(status, "Elegí al menos una foto para enviar.", "err");
+      setFormStatus(status, I18N.t("galeria.fotosForm.errorSinFotos"), "err");
       return;
     }
     if (files.length > FOTOS_MAX_CANTIDAD) {
-      setFormStatus(status, `Podés enviar hasta ${FOTOS_MAX_CANTIDAD} fotos por envío.`, "err");
+      setFormStatus(status, I18N.t("galeria.fotosForm.errorMaxCantidad", { max: FOTOS_MAX_CANTIDAD }), "err");
       return;
     }
     const invalido = files.find(f => !FOTOS_TIPOS_VALIDOS.includes(f.type));
     if (invalido) {
-      setFormStatus(status, `"${invalido.name}" no es un formato de imagen admitido (JPG, PNG, WEBP o HEIC).`, "err");
+      setFormStatus(status, I18N.t("galeria.fotosForm.errorFormato", { nombre: invalido.name }), "err");
       return;
     }
     const pesado = files.find(f => f.size > FOTOS_MAX_SIZE);
     if (pesado) {
-      setFormStatus(status, `"${pesado.name}" pesa más de 8MB. Elegí una foto más liviana.`, "err");
+      setFormStatus(status, I18N.t("galeria.fotosForm.errorPeso", { nombre: pesado.name }), "err");
       return;
     }
 
     sending = true;
     if (submitBtn) submitBtn.disabled = true;
-    setFormStatus(status, "Subiendo tus fotos…", "ok");
+    setFormStatus(status, I18N.t("galeria.fotosForm.subiendo"), "ok");
 
     try {
       const submissionId = crypto.randomUUID();
@@ -363,15 +363,15 @@ function initFotosForm(){
         await DataAPI.subirFotoEnvio(path, file);
       }
 
-      setFormStatus(status, "Enviando la notificación…", "ok");
+      setFormStatus(status, I18N.t("galeria.fotosForm.enviandoNotif"), "ok");
       await DataAPI.enviarFotos({ submissionId, nombre, email, mensaje });
 
-      setFormStatus(status, "¡Gracias! Recibimos tus fotos. Pronto las publicaremos en nuestra galería.", "ok");
+      setFormStatus(status, I18N.t("galeria.fotosForm.exito"), "ok");
       form.reset();
       if (fileList) fileList.innerHTML = "";
     } catch (err) {
       console.error("Error enviando fotos:", err);
-      setFormStatus(status, "No pudimos enviar tus fotos. Probá de nuevo en unos minutos.", "err");
+      setFormStatus(status, I18N.t("galeria.fotosForm.error"), "err");
     } finally {
       sending = false;
       if (submitBtn) submitBtn.disabled = false;
@@ -470,7 +470,7 @@ async function renderPropuestasGrid(){
     }
   }
 
-  grid.innerHTML = `<div class="empty-state">Cargando…</div>`;
+  grid.innerHTML = `<div class="empty-state">${I18N.t("common.loading")}</div>`;
 
   let destinos, lista;
   try {
@@ -480,7 +480,7 @@ async function renderPropuestasGrid(){
     ]);
   } catch (err) {
     console.error("Error cargando experiencias:", err);
-    grid.innerHTML = `<div class="empty-state">No pudimos cargar las experiencias en este momento. Probá recargar la página.</div>`;
+    grid.innerHTML = `<div class="empty-state">${I18N.t("common.errorExperiencias")}</div>`;
     return;
   }
 
@@ -500,7 +500,7 @@ async function renderPropuestasGrid(){
       // activa sin serlo (caso Paracas/Huacachina/Arequipa/Lima, sin
       // ninguna propuesta todavía). d.disponible ya resuelve ese criterio.
       const paises = [...new Set(destinos.map(d => d.pais))];
-      let optionsHtml = `<option value="">Todos los destinos</option>`;
+      let optionsHtml = `<option value="">${I18N.t("common.todosLosDestinos")}</option>`;
       paises.forEach(pais => {
         optionsHtml += `<optgroup label="${pais}">`;
         destinos.filter(d => d.pais === pais && d.disponible).forEach(d => {
@@ -510,7 +510,7 @@ async function renderPropuestasGrid(){
       });
       filtrosWrap.innerHTML = `
         <div class="filtro-destino-group">
-          <label class="filtro-destino-label" for="prop-destino-select">Destino</label>
+          <label class="filtro-destino-label" for="prop-destino-select">${I18N.t("common.destinoLabel")}</label>
           <select class="filtro-destino-select" id="prop-destino-select">${optionsHtml}</select>
         </div>`;
       const select = document.getElementById("prop-destino-select");
@@ -526,13 +526,13 @@ async function renderPropuestasGrid(){
       // mismos patrones que ya usan por separado tours/travesias/paquetes
       // (selector de destino) y catalogo.html (chips de tipo), ahora
       // juntos en el mismo punto de entrada.
-      let chipsHtml = `<button class="filtro-btn ${!tipoFiltro ? "active" : ""}" data-tipo="">Todos</button>`;
+      let chipsHtml = `<button class="filtro-btn ${!tipoFiltro ? "active" : ""}" data-tipo="">${I18N.t("common.todos")}</button>`;
       Object.keys(TIPOS_PROPUESTA).forEach(key => {
         chipsHtml += `<button class="filtro-btn ${tipoFiltro === key ? "active" : ""}" data-tipo="${key}">${TIPOS_PROPUESTA[key].labelPlural}</button>`;
       });
 
       const paisesFull = [...new Set(destinos.map(d => d.pais))];
-      let optionsFullHtml = `<option value="">Todos los destinos</option>`;
+      let optionsFullHtml = `<option value="">${I18N.t("common.todosLosDestinos")}</option>`;
       paisesFull.forEach(pais => {
         optionsFullHtml += `<optgroup label="${pais}">`;
         destinos.filter(d => d.pais === pais && d.disponible).forEach(d => {
@@ -545,7 +545,7 @@ async function renderPropuestasGrid(){
         <div class="exp-catalogo-filtros">
           <div class="filtros">${chipsHtml}</div>
           <div class="filtro-destino-group">
-            <label class="filtro-destino-label" for="prop-destino-select">Destino</label>
+            <label class="filtro-destino-label" for="prop-destino-select">${I18N.t("common.destinoLabel")}</label>
             <select class="filtro-destino-select" id="prop-destino-select">${optionsFullHtml}</select>
           </div>
         </div>`;
@@ -569,7 +569,7 @@ async function renderPropuestasGrid(){
       });
     } else {
       // catalogo.html (explorando por destino): los chips filtran por tipo.
-      let html = `<button class="filtro-btn ${!tipoFiltro ? "active" : ""}" data-tipo="">Todos</button>`;
+      let html = `<button class="filtro-btn ${!tipoFiltro ? "active" : ""}" data-tipo="">${I18N.t("common.todos")}</button>`;
       Object.keys(TIPOS_PROPUESTA).forEach(key => {
         html += `<button class="filtro-btn ${tipoFiltro === key ? "active" : ""}" data-tipo="${key}">${TIPOS_PROPUESTA[key].labelPlural}</button>`;
       });
@@ -597,7 +597,7 @@ async function renderPropuestasGrid(){
   if (tituloFiltro) {
     if (destinoFiltro && !tipoFijo) {
       const d = destinos.find(d => d.slug === destinoFiltro);
-      tituloFiltro.innerHTML = `Mostrando propuestas en <b>${d ? d.nombre : destinoFiltro}</b> · <a href="destinos.html">ver todos los destinos</a>`;
+      tituloFiltro.innerHTML = `${I18N.t("common.mostrandoPropuestasEn")} <b>${d ? d.nombre : destinoFiltro}</b> · <a href="destinos.html">${I18N.t("common.verTodosDestinosLink")}</a>`;
       tituloFiltro.style.display = "block";
     } else {
       tituloFiltro.style.display = "none";
@@ -605,7 +605,7 @@ async function renderPropuestasGrid(){
   }
 
   if (lista.length === 0) {
-    grid.innerHTML = `<div class="empty-state">Todavía no hay propuestas cargadas para este filtro.<br>Muy pronto vamos a sumar más salidas.</div>`;
+    grid.innerHTML = `<div class="empty-state">${I18N.t("common.sinPropuestasFiltro")}</div>`;
   } else {
     grid.innerHTML = lista.map(p => propuestaCardHtml(p, volverCtx)).join("");
   }
@@ -656,19 +656,19 @@ function propuestaCardHtml(p, volverCtx){
   // igual que siempre.
   return `
     <article class="exp-card" data-tipo="${p.tipoProducto}">
-      <a class="img-wrap" href="${href}" aria-label="Ver detalles de ${p.nombre}">
+      <a class="img-wrap" href="${href}" aria-label="${I18N.t("aria.verDetallesDe")} ${p.nombre}">
         ${p.imagen ? `<img src="${p.imagen}" alt="${p.nombre}" loading="lazy"${p.imagenPos ? ` style="object-position:${p.imagenPos};"` : ""}>` : `<div class="exp-img-fallback"><span>${p.nombre}</span></div>`}
         <span class="cat-badge">${tipoInfo ? tipoInfo.label : p.tipoProducto}</span>
         <div class="img-meta">${p.tipoProducto === "travesia" ? travesiaMetaHtml(p) : `${p.duracion} · ${p.modalidad}`}</div>
       </a>
       <div class="body">
-        ${p.esPlaceholder ? `<span class="placeholder-badge">Contenido de ejemplo</span>` : ""}
+        ${p.esPlaceholder ? `<span class="placeholder-badge">${I18N.t("common.contenidoEjemplo")}</span>` : ""}
         <span class="dest-tag">${p.destino ? p.destino.nombre : ""}</span>
         <h3>${p.nombre}</h3>
         <p class="resumen">${p.resumen}</p>
         <div class="actions">
-          <a class="btn btn-sm" href="${href}">Ver detalles</a>
-          <a class="btn btn-outline on-light btn-sm" href="contacto.html?propuesta=${encodeURIComponent(p.nombre)}">Reserva ahora</a>
+          <a class="btn btn-sm" href="${href}">${I18N.t("common.verDetalles")}</a>
+          <a class="btn btn-outline on-light btn-sm" href="contacto.html?propuesta=${encodeURIComponent(p.nombre)}">${I18N.t("nav.reserva")}</a>
         </div>
       </div>
     </article>`;
@@ -703,7 +703,7 @@ function setVolverLink(id, href, label){
   if (!el) return;
   if (!href || !label) { el.style.display = "none"; return; }
   el.href = href;
-  el.textContent = `← Volver a ${label}`;
+  el.textContent = `${I18N.t("common.volverPrefix")} ${label}`;
   el.style.display = "inline-block";
 }
 
@@ -725,8 +725,8 @@ async function renderPropuestaDetalle(){
 
   const notFoundHtml = `
     <div class="empty-state">
-      No encontramos esa propuesta.<br>
-      <a class="btn btn-sm" style="margin-top:16px;" href="destinos.html">Volver a Destinos</a>
+      ${I18N.t("common.noEncontramosPropuesta")}<br>
+      <a class="btn btn-sm" style="margin-top:16px;" href="destinos.html">${I18N.t("common.volverADestinos")}</a>
     </div>`;
 
   let p;
@@ -734,7 +734,7 @@ async function renderPropuestaDetalle(){
     p = id ? await DataAPI.getExperienciaPorSlug(id) : null;
   } catch (err) {
     console.error("Error cargando la propuesta:", err);
-    cont.innerHTML = `<div class="empty-state">No pudimos cargar esta propuesta en este momento. Probá recargar la página.</div>`;
+    cont.innerHTML = `<div class="empty-state">${I18N.t("common.errorPropuesta")}</div>`;
     return;
   }
 
@@ -742,7 +742,7 @@ async function renderPropuestaDetalle(){
   // debe poder verse por más que alguien conozca o adivine su id/URL.
   if (!p || !p.publicado) {
     cont.innerHTML = notFoundHtml;
-    document.title = "Propuesta no encontrada — Proyecto Raíces";
+    document.title = I18N.t("common.tituloNoEncontradaPropuesta");
     return;
   }
 
@@ -763,7 +763,7 @@ async function renderPropuestaDetalle(){
   const bcEl = document.getElementById("exp-breadcrumb");
   if (bcEl) {
     let volverHref = tipoInfo ? tipoInfo.pagina : "destinos.html";
-    let volverLabel = tipoInfo ? tipoInfo.labelPlural : "Propuestas";
+    let volverLabel = tipoInfo ? tipoInfo.labelPlural : I18N.t("common.propuestas");
     // Sólo true cuando el referrer coincidió con un contexto interno
     // real (catálogo por destino, o la propia página de tipo fijo con
     // filtro) — no con el fallback por defecto. El botón "← Volver a…"
@@ -783,12 +783,12 @@ async function renderPropuestaDetalle(){
         // catálogo: "Volver" te lleva de nuevo ahí, no a catalogo.html.
         const refDestinoEditorial = await DataAPI.getDestinoPorSlug(destinoCtxSlug);
         volverHref = `destino.html?destino=${encodeURIComponent(destinoCtxSlug)}`;
-        volverLabel = refDestinoEditorial ? refDestinoEditorial.nombre : "Destino";
+        volverLabel = refDestinoEditorial ? refDestinoEditorial.nombre : I18N.t("common.destinoLabel");
         tieneContexto = true;
       } else if (origen === "destinos" && destinoCtxSlug) {
         const refDestino = await DataAPI.getDestinoPorSlug(destinoCtxSlug);
         volverHref = `catalogo.html?destino=${encodeURIComponent(destinoCtxSlug)}&origen=${origen}`;
-        volverLabel = refDestino ? refDestino.nombre : "Catálogo";
+        volverLabel = refDestino ? refDestino.nombre : I18N.t("common.catalogo");
         tieneContexto = true;
       } else if (tipoInfo && origen === tipoInfo.pagina.replace(/\.html$/, "")) {
         // Contexto válido con o sin filtro de destino — si no había
@@ -801,11 +801,11 @@ async function renderPropuestaDetalle(){
         // "← Volver" apunta directo ahí (con el destino filtrado, si
         // había uno), sin nivel intermedio.
         volverHref = `experiencias.html${destinoCtxSlug ? `?destino=${encodeURIComponent(destinoCtxSlug)}` : ""}`;
-        volverLabel = "Experiencias";
+        volverLabel = I18N.t("nav.experiencias");
         tieneContexto = true;
       }
     } catch (e) { /* sin contexto válido: se usa el destino por defecto */ }
-    bcEl.innerHTML = `<a href="index.html">Inicio</a> / <a href="${volverHref}">${volverLabel}</a> / ${p.nombre}`;
+    bcEl.innerHTML = `<a href="index.html">${I18N.t("common.inicio")}</a> / <a href="${volverHref}">${volverLabel}</a> / ${p.nombre}`;
     setVolverLink("prop-volver", tieneContexto ? volverHref : null, tieneContexto ? volverLabel : null);
   }
 
@@ -814,10 +814,12 @@ async function renderPropuestaDetalle(){
   // Descripción ni duplica el badge "Personalizable" (funciones
   // distintas: el badge comunica la característica, esta nota explica
   // la condición de reserva).
-  const notaReservaHtml = p.tipoProducto === "tour" || p.tipoProducto === "travesia"
-    ? `<div class="notice-box">Esta ${p.tipoProducto === "tour" ? "salida" : "travesía"} puede reservarse de forma privada, sólo para tu grupo, sujeto a disponibilidad.</div>`
+  const notaReservaHtml = p.tipoProducto === "tour"
+    ? `<div class="notice-box">${I18N.t("propuesta.notaReserva.salida")}</div>`
+    : p.tipoProducto === "travesia"
+    ? `<div class="notice-box">${I18N.t("propuesta.notaReserva.travesia")}</div>`
     : p.tipoProducto === "paquete"
-    ? `<div class="notice-box">El itinerario puede conversarse y adaptarse según las necesidades del grupo, cuando resulte viable.</div>`
+    ? `<div class="notice-box">${I18N.t("propuesta.notaReserva.paquete")}</div>`
     : "";
 
   const consultaHref = `contacto.html?propuesta=${encodeURIComponent(p.nombre)}`;
@@ -825,17 +827,17 @@ async function renderPropuestaDetalle(){
   // nombre de la propuesta precargado (whatsappLink ya arma la URL con
   // el mensaje codificado).
   const tourWaHref = p.tipoProducto === "tour" && typeof whatsappLink === "function"
-    ? whatsappLink(`Hola, quiero consultar por el Tour "${p.nombre}".`)
+    ? whatsappLink(I18N.t("propuesta.whatsappTour", { nombre: p.nombre }))
     : null;
   const travesiaWaHref = p.tipoProducto === "travesia" && typeof whatsappLink === "function"
-    ? whatsappLink(`Hola, quiero consultar por la Travesía "${p.nombre}".`)
+    ? whatsappLink(I18N.t("propuesta.whatsappTravesia", { nombre: p.nombre }))
     : null;
 
   // Bloques específicos según el tipo (leídos de p.detalle + relaciones)
   const especifico = await renderDetalleEspecifico(p);
 
   cont.innerHTML = `
-    ${p.esPlaceholder ? `<div class="notice-box">⚠️ Esta es una propuesta de ejemplo, incluida sólo para mostrar cómo funciona la ficha de detalle. Reemplazá este contenido por el real antes de publicar.</div>` : ""}
+    ${p.esPlaceholder ? `<div class="notice-box">${I18N.t("propuesta.placeholderNotice")}</div>` : ""}
     <div class="exp-detail-grid" style="margin-top:28px;">
       <div>
         <div class="exp-gallery-main">
@@ -847,16 +849,16 @@ async function renderPropuestaDetalle(){
         </div>` : ""}
 
         <div class="exp-body">
-          <h2 class="mt-0">Descripción</h2>
+          <h2 class="mt-0">${I18N.t("propuesta.descripcion")}</h2>
           <p>${p.descripcion}</p>
 
           ${especifico.bodyHtml}
 
-          ${p.incluye && p.incluye.length ? `<h2>Qué incluye</h2><ul class="check-list">${p.incluye.map(i => `<li>${i}</li>`).join("")}</ul>` : ""}
+          ${p.incluye && p.incluye.length ? `<h2>${I18N.t("propuesta.queIncluye")}</h2><ul class="check-list">${p.incluye.map(i => `<li>${i}</li>`).join("")}</ul>` : ""}
 
-          ${p.noIncluye && p.noIncluye.length ? `<h2>Qué no incluye</h2><ul class="cross-list">${p.noIncluye.map(i => `<li>${i}</li>`).join("")}</ul>` : ""}
+          ${p.noIncluye && p.noIncluye.length ? `<h2>${I18N.t("propuesta.queNoIncluye")}</h2><ul class="cross-list">${p.noIncluye.map(i => `<li>${i}</li>`).join("")}</ul>` : ""}
 
-          ${p.infoImportante ? `<h2>Información importante</h2><p>${p.infoImportante}</p>` : ""}
+          ${p.infoImportante ? `<h2>${I18N.t("propuesta.infoImportante")}</h2><p>${p.infoImportante}</p>` : ""}
         </div>
       </div>
 
@@ -865,14 +867,14 @@ async function renderPropuestaDetalle(){
         <h1 style="margin-top:8px;">${p.nombre}</h1>
         ${especifico.badgeHtml}
         ${detalleBaseHtml(p)}
-        ${p.precio ? `<div class="info-row"><span>Precio</span><b>${p.precio}</b></div>` : ""}
+        ${p.precio ? `<div class="info-row"><span>${I18N.t("propuesta.precio")}</span><b>${p.precio}</b></div>` : ""}
         ${notaReservaHtml}
         ${p.tipoProducto === "tour"
-          ? `<a class="btn" href="${tourWaHref || consultaHref}"${tourWaHref ? ` target="_blank" rel="noopener"` : ""}>Reserva ahora</a>`
+          ? `<a class="btn" href="${tourWaHref || consultaHref}"${tourWaHref ? ` target="_blank" rel="noopener"` : ""}>${I18N.t("nav.reserva")}</a>`
           : p.tipoProducto === "travesia"
-          ? `<a class="btn" href="${travesiaWaHref || consultaHref}"${travesiaWaHref ? ` target="_blank" rel="noopener"` : ""}>Reserva ahora</a>`
-          : `<a class="btn" href="${consultaHref}">Reserva ahora</a>
-        <a class="btn btn-outline on-light btn-block" style="margin-top:10px;" href="${consultaHref}">Solicitar información</a>`}
+          ? `<a class="btn" href="${travesiaWaHref || consultaHref}"${travesiaWaHref ? ` target="_blank" rel="noopener"` : ""}>${I18N.t("nav.reserva")}</a>`
+          : `<a class="btn" href="${consultaHref}">${I18N.t("nav.reserva")}</a>
+        <a class="btn btn-outline on-light btn-block" style="margin-top:10px;" href="${consultaHref}">${I18N.t("common.solicitarInformacion")}</a>`}
       </aside>
     </div>
   `;
@@ -901,19 +903,19 @@ function listaSiHay(titulo, items, listClass){
 
 function itinerarioSiHay(itinerario){
   if (!itinerario || !itinerario.length) return "";
-  const dias = itinerario.map(d => `<li><b>Día ${d.dia}${d.titulo ? " — " + d.titulo : ""}</b>${d.descripcion ? `<br>${d.descripcion}` : ""}</li>`).join("");
-  return `<h2>Itinerario</h2><ul class="check-list">${dias}</ul>`;
+  const dias = itinerario.map(d => `<li><b>${I18N.t("detalle.dia")} ${d.dia}${d.titulo ? " — " + d.titulo : ""}</b>${d.descripcion ? `<br>${d.descripcion}` : ""}</li>`).join("");
+  return `<h2>${I18N.t("detalle.itinerario")}</h2><ul class="check-list">${dias}</ul>`;
 }
 
 function personalizableBadge(esPersonalizable){
   if (!esPersonalizable) return "";
-  return `<span class="placeholder-badge badge-personalizable">Personalizable</span>`;
+  return `<span class="placeholder-badge badge-personalizable">${I18N.t("detalle.personalizable")}</span>`;
 }
 
 function fechasSiHay(fechas, nota){
   if (!fechas || !fechas.length) return "";
   const notaHtml = nota ? `<small class="nota">${nota}</small>` : "";
-  return `<div class="info-row"><span>Fechas</span><b>${fechas.join(" · ")}${notaHtml}</b></div>`;
+  return `<div class="info-row"><span>${I18N.t("detalle.fechas")}</span><b>${fechas.join(" · ")}${notaHtml}</b></div>`;
 }
 
 /* ---- Detalle: set fijo de campos por tipo_producto ----
@@ -925,17 +927,17 @@ function fechasSiHay(fechas, nota){
 function detalleBaseHtml(p){
   const d = p.detalle || {};
   let html = "";
-  html += infoRowSiHay("Destino", p.destino ? p.destino.nombre : "");
-  html += infoRowSiHay("Duración", p.duracion);
-  html += infoRowSiHay("Modalidad", p.modalidad);
+  html += infoRowSiHay(I18N.t("common.destinoLabel"), p.destino ? p.destino.nombre : "");
+  html += infoRowSiHay(I18N.t("detalle.duracion"), p.duracion);
+  html += infoRowSiHay(I18N.t("detalle.modalidad"), p.modalidad);
 
   if (p.tipoProducto === "tour") {
-    html += infoRowSiHay("Dificultad", d.dificultad);
-    html += infoRowSiHay("Fecha", d.fecha);
-    html += infoRowSiHay("Salida", d.salida);
-    html += infoRowSiHay("Regreso", d.regreso);
+    html += infoRowSiHay(I18N.t("detalle.dificultad"), d.dificultad);
+    html += infoRowSiHay(I18N.t("detalle.fecha"), d.fecha);
+    html += infoRowSiHay(I18N.t("detalle.salida"), d.salida);
+    html += infoRowSiHay(I18N.t("detalle.regreso"), d.regreso);
   } else if (p.tipoProducto === "travesia") {
-    html += infoRowSiHay("Dificultad", d.dificultad);
+    html += infoRowSiHay(I18N.t("detalle.dificultad"), d.dificultad);
     html += fechasSiHay(d.fechas, d.fechasNota);
   } else if (p.tipoProducto === "paquete") {
     html += fechasSiHay(d.fechas, d.fechasNota);
@@ -947,9 +949,9 @@ function detalleBaseHtml(p){
 function renderDetalleTour(d){
   let bodyHtml = "";
   if (d.combinableConOtrosTours) {
-    bodyHtml += `<div class="notice-box">Este tour se puede combinar con otros tours.${d.seConvierteEnTravesiaAlCombinar ? " Al combinarlo, la salida se convierte en una travesía de varios días." : ""}</div>`;
+    bodyHtml += `<div class="notice-box">${I18N.t("detalle.combinable")}${d.seConvierteEnTravesiaAlCombinar ? I18N.t("detalle.combinableConvierte") : ""}</div>`;
   }
-  bodyHtml += listaSiHay("Recorrido", d.recorrido, "check-list");
+  bodyHtml += listaSiHay(I18N.t("detalle.recorrido"), d.recorrido, "check-list");
   bodyHtml += itinerarioSiHay(d.itinerarioCombinado);
 
   return { bodyHtml, badgeHtml: "" };
@@ -959,7 +961,7 @@ function renderDetalleTour(d){
 function renderDetalleTravesia(d){
   let bodyHtml = "";
   bodyHtml += itinerarioSiHay(d.itinerario);
-  bodyHtml += listaSiHay("Qué no cubre la logística", d.logisticaNoIncluida, "cross-list");
+  bodyHtml += listaSiHay(I18N.t("detalle.logisticaNoIncluida"), d.logisticaNoIncluida, "cross-list");
 
   return { bodyHtml, badgeHtml: personalizableBadge(d.personalizable) };
 }
@@ -988,15 +990,15 @@ async function renderDetallePaquete(d, p){
   const actividadesIncluidas = [...new Map(
     incluidas.flatMap(e => e.actividades).map(a => [a.slug, a.nombre])
   ).values()];
-  bodyHtml += listaSiHay("Actividades incluidas", actividadesIncluidas, "check-list");
+  bodyHtml += listaSiHay(I18N.t("detalle.actividadesIncluidas"), actividadesIncluidas, "check-list");
 
   const toursLinkeados = incluidas.filter(e => e.tipoProducto === "tour");
   const travesiasLinkeadas = incluidas.filter(e => e.tipoProducto === "travesia");
   if (toursLinkeados.length) {
-    bodyHtml += `<h2>Tours incluidos en este paquete</h2><ul class="check-list">${toursLinkeados.map(t => `<li><a href="propuesta.html?id=${t.slug}">${t.nombre}</a></li>`).join("")}</ul>`;
+    bodyHtml += `<h2>${I18N.t("detalle.toursIncluidos")}</h2><ul class="check-list">${toursLinkeados.map(t => `<li><a href="propuesta.html?id=${t.slug}">${t.nombre}</a></li>`).join("")}</ul>`;
   }
   if (travesiasLinkeadas.length) {
-    bodyHtml += `<h2>Travesías incluidas en este paquete</h2><ul class="check-list">${travesiasLinkeadas.map(t => `<li><a href="propuesta.html?id=${t.slug}">${t.nombre}</a></li>`).join("")}</ul>`;
+    bodyHtml += `<h2>${I18N.t("detalle.travesiasIncluidas")}</h2><ul class="check-list">${travesiasLinkeadas.map(t => `<li><a href="propuesta.html?id=${t.slug}">${t.nombre}</a></li>`).join("")}</ul>`;
   }
 
   return { bodyHtml, badgeHtml: personalizableBadge(d.personalizable) };
@@ -1055,8 +1057,8 @@ async function renderDestinoEditorial(){
 
   const notFoundHtml = `
     <div class="empty-state" style="padding-top:150px;">
-      No encontramos ese destino.<br>
-      <a class="btn btn-sm" style="margin-top:16px;" href="destinos.html">Volver a Destinos</a>
+      ${I18N.t("common.noEncontramosDestino")}<br>
+      <a class="btn btn-sm" style="margin-top:16px;" href="destinos.html">${I18N.t("common.volverADestinos")}</a>
     </div>`;
 
   let d, experiencias;
@@ -1067,13 +1069,13 @@ async function renderDestinoEditorial(){
     ]);
   } catch (err) {
     console.error("Error cargando el destino:", err);
-    cont.innerHTML = `<div class="empty-state" style="padding-top:150px;">No pudimos cargar este destino en este momento. Probá recargar la página.</div>`;
+    cont.innerHTML = `<div class="empty-state" style="padding-top:150px;">${I18N.t("common.errorDestino")}</div>`;
     return;
   }
 
   if (!d) {
     cont.innerHTML = notFoundHtml;
-    document.title = "Destino no encontrado — Proyecto Raíces";
+    document.title = I18N.t("common.tituloNoEncontradoDestino");
     return;
   }
 
@@ -1090,7 +1092,7 @@ async function renderDestinoEditorial(){
   const coverImg = d.imagen
     ? `<img class="${!disponible ? "placeholder" : ""}" src="${d.imagen}" alt="${nombre}, ${d.pais}" style="object-position:${d.imagenPos || "center"};">`
     : `<div class="exp-img-fallback"><span>${nombre}</span></div>`;
-  const prepFlag = !disponible ? `<span class="destino-card-flag" style="position:static; display:inline-block; vertical-align:middle; margin-left:10px;">Próximamente</span>` : "";
+  const prepFlag = !disponible ? `<span class="destino-card-flag" style="position:static; display:inline-block; vertical-align:middle; margin-left:10px;">${I18N.t("common.proximamente")}</span>` : "";
 
   // "En este lugar" — composición editorial con foto protagonista +
   // secundarias, armada con las fotos reales de las experiencias ya
@@ -1112,7 +1114,7 @@ async function renderDestinoEditorial(){
   // no una sección aparte): mismo resumen que ya usa el intro, con un
   // placeholder honesto si todavía no está cargado (nunca contenido
   // inventado).
-  const presentaTexto = d.resumen || `Estamos redactando la presentación editorial de ${nombre} — muy pronto vas a poder leerla acá.`;
+  const presentaTexto = d.resumen || I18N.t("destino.presentaTexto", { nombre });
 
   // Los tres tópicos editoriales del destino (Cuándo ir / Cómo llegar /
   // Naturaleza y cultura), dentro de la MISMA columna de texto que
@@ -1123,9 +1125,9 @@ async function renderDestinoEditorial(){
   // muestran igual, cada uno con su propio "Próximamente".
   const heroTopicosHtml = `
     <div class="destino-hero-topicos">
-      <div class="destino-hero-topico"><h3>Cuándo ir</h3><p>${d.cuandoIr || "Próximamente"}</p></div>
-      <div class="destino-hero-topico"><h3>Cómo llegar</h3><p>${d.comoLlegar || "Próximamente"}</p></div>
-      <div class="destino-hero-topico"><h3>Naturaleza y cultura</h3><p>${d.naturalezaCultura || "Próximamente"}</p></div>
+      <div class="destino-hero-topico"><h3>${I18N.t("destino.cuandoIr")}</h3><p>${d.cuandoIr || I18N.t("common.proximamente")}</p></div>
+      <div class="destino-hero-topico"><h3>${I18N.t("destino.comoLlegar")}</h3><p>${d.comoLlegar || I18N.t("common.proximamente")}</p></div>
+      <div class="destino-hero-topico"><h3>${I18N.t("destino.naturalezaCultura")}</h3><p>${d.naturalezaCultura || I18N.t("common.proximamente")}</p></div>
     </div>`;
 
   // Volver a esta ficha de destino desde propuesta.html (PRO-48): mismo
@@ -1145,22 +1147,22 @@ async function renderDestinoEditorial(){
   const destacada = experiencias.find(p => p.destacada) || experiencias[0] || null;
   const tipoDestacada = destacada ? TIPOS_PROPUESTA[destacada.tipoProducto] : null;
   const teaserHtml = destacada
-    ? `<a class="destino-exp-destacada" href="propuesta.html?id=${destacada.slug}${volverCtx}" aria-label="Ver ${destacada.nombre}">
+    ? `<a class="destino-exp-destacada" href="propuesta.html?id=${destacada.slug}${volverCtx}" aria-label="${I18N.t("aria.ver")} ${destacada.nombre}">
          ${destacada.imagen
            ? `<img src="${destacada.imagen}" alt="${destacada.nombre}"${destacada.imagenPos ? ` style="object-position:${destacada.imagenPos};"` : ""} loading="lazy">`
            : `<div class="exp-img-fallback"><span>${destacada.nombre}</span></div>`}
          <div class="destino-exp-destacada-info">
-           ${tipoDestacada ? `<span class="destino-exp-destacada-tipo">${tipoDestacada.label} en ${nombre}</span>` : ""}
+           ${tipoDestacada ? `<span class="destino-exp-destacada-tipo">${I18N.t("destino.tipoEnNombre", { tipo: tipoDestacada.label, nombre })}</span>` : ""}
            <h3>${destacada.nombre}</h3>
          </div>
        </a>
-       <a class="btn destino-exp-cta" href="experiencias.html?destino=${d.slug}">Ver todas las experiencias de ${nombre} →</a>`
-    : `<div class="empty-state">Todavía no hay experiencias cargadas para este destino.<br>Muy pronto vamos a sumar más salidas.</div>`;
+       <a class="btn destino-exp-cta" href="experiencias.html?destino=${d.slug}">${I18N.t("destino.verTodasExperienciasDe", { nombre })}</a>`
+    : `<div class="empty-state">${I18N.t("common.sinExperienciasDestino")}</div>`;
 
   cont.innerHTML = `
     <section class="page-intro">
       <div class="wrap">
-        <div class="breadcrumb"><a href="index.html">Inicio</a> / <a href="destinos.html">Destinos</a> / ${nombre}</div>
+        <div class="breadcrumb"><a href="index.html">${I18N.t("common.inicio")}</a> / <a href="destinos.html">${I18N.t("nav.destinos")}</a> / ${nombre}</div>
         <div class="page-intro-grid">
           <div class="page-intro-text compact">
             <div class="kicker">${d.pais}</div>
@@ -1176,8 +1178,8 @@ async function renderDestinoEditorial(){
     <section>
       <div class="wrap">
         <div class="section-head">
-          <div class="kicker">En este lugar</div>
-          <h2>Así se ve, en las experiencias que ya recorrimos</h2>
+          <div class="kicker">${I18N.t("destino.enEsteLugar.kicker")}</div>
+          <h2>${I18N.t("destino.enEsteLugar.h2")}</h2>
         </div>
         ${galeriaHtml}
       </div>
@@ -1186,8 +1188,8 @@ async function renderDestinoEditorial(){
     <section>
       <div class="wrap">
         <div class="section-head">
-          <div class="kicker">Experiencias</div>
-          <h2>Experiencias en ${nombre}</h2>
+          <div class="kicker">${I18N.t("nav.experiencias")}</div>
+          <h2>${I18N.t("destino.experiencias.h2", { nombre })}</h2>
         </div>
         ${teaserHtml}
       </div>
@@ -1195,9 +1197,9 @@ async function renderDestinoEditorial(){
 
     <section class="cta-band">
       <div class="wrap">
-        <h2>¿Querés armar tu viaje a ${nombre}?</h2>
-        <p>Contanos qué tenés en mente y te ayudamos a resolverlo.</p>
-        <div class="hero-ctas"><a href="contacto.html" class="btn">Reserva ahora</a></div>
+        <h2>${I18N.t("destino.cta.h2", { nombre })}</h2>
+        <p>${I18N.t("destino.cta.p")}</p>
+        <div class="hero-ctas"><a href="contacto.html" class="btn">${I18N.t("nav.reserva")}</a></div>
       </div>
     </section>`;
 
@@ -1231,13 +1233,13 @@ async function renderEquipoGrid(){
     equipo = await DataAPI.getEquipoActivo();
   } catch (err) {
     console.error("Error cargando el equipo:", err);
-    contenedores.forEach(c => { c.el.innerHTML = `<p class="empty-state">No pudimos cargar esta información en este momento.</p>`; });
+    contenedores.forEach(c => { c.el.innerHTML = `<p class="empty-state">${I18N.t("common.errorInfo")}</p>`; });
     return;
   }
 
   const personaHtml = (m, prefix) => `
     <figure class="${prefix}-persona">
-      <div class="${prefix}-foto"><img src="${m.imagen}" alt="${m.nombre}, parte del equipo de Proyecto Raíces"${m.imagenPos ? ` style="object-position:${m.imagenPos};"` : ""} loading="lazy"></div>
+      <div class="${prefix}-foto"><img src="${m.imagen}" alt="${m.nombre}${I18N.t("equipo.parteDelEquipo")}"${m.imagenPos ? ` style="object-position:${m.imagenPos};"` : ""} loading="lazy"></div>
       <figcaption>
         <h3>${m.nombre}</h3>
         ${m.rol ? `<p>${m.rol}</p>` : ""}
@@ -1247,7 +1249,7 @@ async function renderEquipoGrid(){
   contenedores.forEach(c => {
     c.el.innerHTML = equipo.length
       ? equipo.map(m => personaHtml(m, c.prefix)).join("")
-      : `<p class="empty-state">Todavía no hay integrantes cargados.</p>`;
+      : `<p class="empty-state">${I18N.t("common.sinIntegrantes")}</p>`;
   });
 }
 
@@ -1342,7 +1344,7 @@ function initTestimoniosCarousel(){
   if (seccion) seccion.hidden = false;
 
   track.innerHTML = comentarios.map((c, i) => `
-    <li class="testi-slide${i === 0 ? " is-active" : ""}" role="group" aria-roledescription="comentario" aria-label="${i + 1} de ${comentarios.length}"${i === 0 ? "" : " aria-hidden=\"true\""}>
+    <li class="testi-slide${i === 0 ? " is-active" : ""}" role="group" aria-roledescription="comentario" aria-label="${i + 1} ${I18N.t("aria.de")} ${comentarios.length}"${i === 0 ? "" : " aria-hidden=\"true\""}>
       <div class="testi-card">
         <div class="stars" aria-hidden="true">${"★".repeat(c.estrellas)}${"☆".repeat(5 - c.estrellas)}</div>
         <p>"${c.texto}"</p>
@@ -1352,7 +1354,7 @@ function initTestimoniosCarousel(){
     </li>`).join("");
 
   dotsWrap.innerHTML = comentarios.map((_, i) => `
-    <button type="button" class="testi-dot${i === 0 ? " is-active" : ""}" aria-label="Ir al comentario ${i + 1} de ${comentarios.length}" aria-current="${i === 0 ? "true" : "false"}"></button>`).join("");
+    <button type="button" class="testi-dot${i === 0 ? " is-active" : ""}" aria-label="${I18N.t("aria.irAComentario")} ${i + 1} ${I18N.t("aria.de")} ${comentarios.length}" aria-current="${i === 0 ? "true" : "false"}"></button>`).join("");
 
   const slides = Array.from(track.querySelectorAll(".testi-slide"));
   const dots = Array.from(dotsWrap.querySelectorAll(".testi-dot"));
@@ -1418,7 +1420,7 @@ function initComentariosGrid(){
   const grid = document.getElementById("comentarios-grid");
   if (!grid || typeof comentarios === "undefined") return;
   if (!comentarios.length) {
-    grid.innerHTML = `<p class="empty-state" style="grid-column:1/-1;">Todavía no tenemos reseñas publicadas. Muy pronto vamos a sumar acá las experiencias reales de quienes viajen con nosotros.</p>`;
+    grid.innerHTML = `<p class="empty-state" style="grid-column:1/-1;">${I18N.t("common.sinResenas")}</p>`;
     return;
   }
   grid.innerHTML = comentarios.map(c => `

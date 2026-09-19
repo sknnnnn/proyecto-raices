@@ -165,6 +165,18 @@ nav{display:flex; align-items:center; justify-content:space-between; padding:14p
 .navlinks a.active{border-bottom:2px solid var(--color-naranja); padding-bottom:2px;}
 .nav-cta{flex-shrink:0;}
 
+/* Selector de idioma (ES/EN): integrado como último item de .navlinks,
+   reutilizando su tipografía/opacidad — sin rediseño, la dirección
+   visual definitiva la resuelve una futura exploración en Figma. */
+.lang-switch{display:flex; align-items:center; gap:6px; margin-left:4px;}
+.lang-btn{background:none; border:none; padding:0; margin:0; font:inherit; color:inherit; opacity:0.65; cursor:pointer; letter-spacing:0.02em;}
+.lang-btn:hover{opacity:1;}
+.lang-btn.is-active{opacity:1; font-weight:700; border-bottom:2px solid var(--color-naranja); padding-bottom:2px;}
+.lang-sep{opacity:0.4; font-size:12px;}
+@media (max-width:860px){
+  .navlinks .lang-switch{margin-left:0; margin-top:4px;}
+}
+
 /* Navbar + hero/cabecera integradas en una misma composición, en TODAS
    las páginas: el header nace transparente (mismo verde que el lienzo
    de fondo de cada página, ver más abajo) y pasa a sólido recién al

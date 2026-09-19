@@ -13,23 +13,28 @@
 <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body data-page="galeria">
-<a class="skip-link" href="#main">Saltar al contenido</a>
+<a class="skip-link" href="#main" data-i18n="nav.saltarContenido">Saltar al contenido</a>
 
 <header>
   <nav>
     <a class="brand" href="index.html"><img src="assets/img/logo-amarillo.png" alt="Proyecto Raíces"></a>
-    <button class="nav-toggle" aria-label="Abrir menú" aria-expanded="false">
+    <button class="nav-toggle" aria-label="Abrir menú" data-i18n-aria-label="nav.abrirMenu" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
     <div class="navlinks">
-      <a href="experiencias.html" data-nav="experiencias">Experiencias</a>
-      <a href="calendario.html" data-nav="calendario">Calendario</a>
-      <a href="destinos.html" data-nav="destinos">Destinos</a>
-      <a href="nosotros.html" data-nav="nosotros">Nosotros</a>
-      <a href="galeria.html" data-nav="galeria">Galería</a>
-      <a href="contacto.html" data-nav="contacto">Contacto</a>
+      <a href="experiencias.html" data-nav="experiencias" data-i18n="nav.experiencias">Experiencias</a>
+      <a href="calendario.html" data-nav="calendario" data-i18n="nav.calendario">Calendario</a>
+      <a href="destinos.html" data-nav="destinos" data-i18n="nav.destinos">Destinos</a>
+      <a href="nosotros.html" data-nav="nosotros" data-i18n="nav.nosotros">Nosotros</a>
+      <a href="galeria.html" data-nav="galeria" data-i18n="nav.galeria">Galería</a>
+      <a href="contacto.html" data-nav="contacto" data-i18n="nav.contacto">Contacto</a>
+      <div class="lang-switch" role="group" aria-label="Idioma" data-i18n-aria-label="lang.group">
+        <button type="button" class="lang-btn" data-lang="es" aria-label="Cambiar a español" data-i18n-aria-label="lang.switchTo.es">ES</button>
+        <span class="lang-sep" aria-hidden="true">/</span>
+        <button type="button" class="lang-btn" data-lang="en" aria-label="Switch to English" data-i18n-aria-label="lang.switchTo.en">EN</button>
+      </div>
     </div>
-    <a href="contacto.html" class="btn nav-cta">Reserva ahora</a>
+    <a href="contacto.html" class="btn nav-cta" data-i18n="nav.reserva">Reserva ahora</a>
   </nav>
 </header>
 
@@ -37,38 +42,38 @@
 
 <section class="galeria">
   <div class="wrap">
-    <div class="breadcrumb"><a href="index.html">Inicio</a> / Galería</div>
+    <div class="breadcrumb"><a href="index.html" data-i18n="common.inicio">Inicio</a> / <span data-i18n="galeria.h1">Galería</span></div>
     <div class="galeria-head">
-      <h1>Galería</h1>
-      <p>De cada viaje quedan postales sueltas: rutas, gente y paisajes que fuimos guardando salida a salida.</p>
+      <h1 data-i18n="galeria.h1">Galería</h1>
+      <p data-i18n="galeria.p">De cada viaje quedan postales sueltas: rutas, gente y paisajes que fuimos guardando salida a salida.</p>
     </div>
     <div class="gal-row">
-      <img src="assets/img/_DSC0189_Original.jpg" alt="Viajera con los brazos abiertos frente a Machu Picchu" data-lightbox="assets/img/_DSC0189_Original.jpg" loading="lazy">
-      <img src="assets/img/_DSC0036 (1).jpg" alt="Artesana cusqueña con sombrero tradicional" data-lightbox="assets/img/_DSC0036 (1).jpg" loading="lazy">
-      <img src="assets/img/hero-galeria-aventura.jpg" alt="Excursionista mirando un nevado en la Cordillera" data-lightbox="assets/img/hero-galeria-aventura.jpg" loading="lazy">
-      <img src="assets/img/pexels-danitza-pena-galup-8100091-18143706.jpg" alt="Alpaca frente a las ruinas de Sacsayhuamán, Cusco" data-lightbox="assets/img/pexels-danitza-pena-galup-8100091-18143706.jpg" loading="lazy">
-      <img src="assets/img/galeria-vicunas.jpg" alt="Vicuñas en la puna peruana" data-lightbox="assets/img/galeria-vicunas.jpg" loading="lazy">
-      <img src="assets/img/galeria-maras.jpg" alt="Mirando las salineras de Maras, Perú" data-lightbox="assets/img/galeria-maras.jpg" loading="lazy">
-      <img src="assets/img/experiencias/Cerro tronador de fondo.jpg" alt="Descanso frente al lago con el Cerro Tronador de fondo, Bariloche" data-lightbox="assets/img/experiencias/Cerro tronador de fondo.jpg" loading="lazy">
-      <img src="assets/img/_DSC0144.jpg" alt="Puesto de artesanías en un pueblo andino, con banderas peruanas" data-lightbox="assets/img/_DSC0144.jpg" loading="lazy">
-      <img src="assets/img/galeria-machupicchu-terrazas.jpg" alt="Terrazas de Machu Picchu, Perú" data-lightbox="assets/img/galeria-machupicchu-terrazas.jpg" loading="lazy">
-      <img src="assets/img/_DSC0042 (1).jpg" alt="Lanas teñidas a mano, artesanía textil andina" data-lightbox="assets/img/_DSC0042 (1).jpg" loading="lazy">
-      <img src="assets/img/patagonia.jpg" alt="Patagonia" data-lightbox="assets/img/patagonia.jpg" loading="lazy">
-      <img src="assets/img/experiencias/Refugio Frey.jpeg" alt="Cordón rocoso camino al Refugio Frey, Bariloche" data-lightbox="assets/img/experiencias/Refugio Frey.jpeg" loading="lazy">
-      <img src="assets/img/galeria-ushuaia.jpg" alt="Faro histórico en el canal de Beagle, Ushuaia" data-lightbox="assets/img/galeria-ushuaia.jpg" loading="lazy">
-      <img src="assets/img/vista-lago.jpg" alt="Vista al lago" data-lightbox="assets/img/vista-lago.jpg" loading="lazy">
-      <img src="assets/img/experiencias/_MG_0003_Original.jpg" alt="Cielo estrellado sobre la montaña, Tierra del Fuego" data-lightbox="assets/img/experiencias/_MG_0003_Original.jpg" loading="lazy">
-      <img src="assets/img/galeria-cusco-calle.jpg" alt="Calle empedrada en Cusco al atardecer" data-lightbox="assets/img/galeria-cusco-calle.jpg" loading="lazy">
-      <img src="assets/img/experiencias/Hacia Laguna Negra.jpeg" alt="Cascada en el sendero hacia Laguna Negra, Bariloche" data-lightbox="assets/img/experiencias/Hacia Laguna Negra.jpeg" loading="lazy">
-      <img src="assets/img/fauna-montana.jpg" alt="Ave posada en una roca de altura, fauna de montaña" data-lightbox="assets/img/fauna-montana.jpg" loading="lazy">
-      <img src="assets/img/experiencias/Brazo tristeza.jpg" alt="Brazo del lago Nahuel Huapi entre montañas, Bariloche" data-lightbox="assets/img/experiencias/Brazo tristeza.jpg" loading="lazy">
-      <img src="assets/img/experiencias/Desde Mirador Cerro Campanario.JPG" alt="Vista panorámica de lagos y bosques desde el Cerro Campanario, Bariloche" data-lightbox="assets/img/experiencias/Desde Mirador Cerro Campanario.JPG" loading="lazy">
-      <img src="assets/img/experiencias/pexels-angel-valladares-242487480-17060856.jpg" alt="Vías del tren rumbo a Machu Picchu entre la selva" data-lightbox="assets/img/experiencias/pexels-angel-valladares-242487480-17060856.jpg" loading="lazy">
-      <img src="assets/img/experiencias/pexels-suca-19852367.jpg" alt="Vista de los techos de tejas de Cusco desde una calle en pendiente" data-lightbox="assets/img/experiencias/pexels-suca-19852367.jpg" loading="lazy">
-      <img src="assets/img/experiencias/pexels-kaushik21-26074194.jpg" alt="Mujeres con vestimenta tradicional cusqueña y alpacas en un portal de piedra" data-lightbox="assets/img/experiencias/pexels-kaushik21-26074194.jpg" loading="lazy">
-      <img src="assets/img/experiencias/pexels-viviane-couto-450464801-33463618.jpg" alt="Callejón empedrado entre casas coloniales de Cusco" data-lightbox="assets/img/experiencias/pexels-viviane-couto-450464801-33463618.jpg" loading="lazy">
-      <img src="assets/img/experiencias/pexels-aldys-cattania-164969680-20872356.JPG" alt="Cerros multicolor de una quebrada del norte argentino" data-lightbox="assets/img/experiencias/pexels-aldys-cattania-164969680-20872356.JPG" loading="lazy">
-      <img src="assets/img/experiencias/pexels-dali-turcatti-305645658-13446450.JPG" alt="Formaciones montañosas multicolor del norte argentino" data-lightbox="assets/img/experiencias/pexels-dali-turcatti-305645658-13446450.JPG" loading="lazy">
+      <img src="assets/img/_DSC0189_Original.jpg" alt="Viajera con los brazos abiertos frente a Machu Picchu" data-i18n-alt="galeria.alt.01" data-lightbox="assets/img/_DSC0189_Original.jpg" loading="lazy">
+      <img src="assets/img/_DSC0036 (1).jpg" alt="Artesana cusqueña con sombrero tradicional" data-i18n-alt="galeria.alt.02" data-lightbox="assets/img/_DSC0036 (1).jpg" loading="lazy">
+      <img src="assets/img/hero-galeria-aventura.jpg" alt="Excursionista mirando un nevado en la Cordillera" data-i18n-alt="galeria.alt.03" data-lightbox="assets/img/hero-galeria-aventura.jpg" loading="lazy">
+      <img src="assets/img/pexels-danitza-pena-galup-8100091-18143706.jpg" alt="Alpaca frente a las ruinas de Sacsayhuamán, Cusco" data-i18n-alt="galeria.alt.04" data-lightbox="assets/img/pexels-danitza-pena-galup-8100091-18143706.jpg" loading="lazy">
+      <img src="assets/img/galeria-vicunas.jpg" alt="Vicuñas en la puna peruana" data-i18n-alt="galeria.alt.05" data-lightbox="assets/img/galeria-vicunas.jpg" loading="lazy">
+      <img src="assets/img/galeria-maras.jpg" alt="Mirando las salineras de Maras, Perú" data-i18n-alt="galeria.alt.06" data-lightbox="assets/img/galeria-maras.jpg" loading="lazy">
+      <img src="assets/img/experiencias/Cerro tronador de fondo.jpg" alt="Descanso frente al lago con el Cerro Tronador de fondo, Bariloche" data-i18n-alt="galeria.alt.07" data-lightbox="assets/img/experiencias/Cerro tronador de fondo.jpg" loading="lazy">
+      <img src="assets/img/_DSC0144.jpg" alt="Puesto de artesanías en un pueblo andino, con banderas peruanas" data-i18n-alt="galeria.alt.08" data-lightbox="assets/img/_DSC0144.jpg" loading="lazy">
+      <img src="assets/img/galeria-machupicchu-terrazas.jpg" alt="Terrazas de Machu Picchu, Perú" data-i18n-alt="galeria.alt.09" data-lightbox="assets/img/galeria-machupicchu-terrazas.jpg" loading="lazy">
+      <img src="assets/img/_DSC0042 (1).jpg" alt="Lanas teñidas a mano, artesanía textil andina" data-i18n-alt="galeria.alt.10" data-lightbox="assets/img/_DSC0042 (1).jpg" loading="lazy">
+      <img src="assets/img/patagonia.jpg" alt="Patagonia" data-i18n-alt="galeria.alt.11" data-lightbox="assets/img/patagonia.jpg" loading="lazy">
+      <img src="assets/img/experiencias/Refugio Frey.jpeg" alt="Cordón rocoso camino al Refugio Frey, Bariloche" data-i18n-alt="galeria.alt.12" data-lightbox="assets/img/experiencias/Refugio Frey.jpeg" loading="lazy">
+      <img src="assets/img/galeria-ushuaia.jpg" alt="Faro histórico en el canal de Beagle, Ushuaia" data-i18n-alt="galeria.alt.13" data-lightbox="assets/img/galeria-ushuaia.jpg" loading="lazy">
+      <img src="assets/img/vista-lago.jpg" alt="Vista al lago" data-i18n-alt="galeria.alt.14" data-lightbox="assets/img/vista-lago.jpg" loading="lazy">
+      <img src="assets/img/experiencias/_MG_0003_Original.jpg" alt="Cielo estrellado sobre la montaña, Tierra del Fuego" data-i18n-alt="galeria.alt.15" data-lightbox="assets/img/experiencias/_MG_0003_Original.jpg" loading="lazy">
+      <img src="assets/img/galeria-cusco-calle.jpg" alt="Calle empedrada en Cusco al atardecer" data-i18n-alt="galeria.alt.16" data-lightbox="assets/img/galeria-cusco-calle.jpg" loading="lazy">
+      <img src="assets/img/experiencias/Hacia Laguna Negra.jpeg" alt="Cascada en el sendero hacia Laguna Negra, Bariloche" data-i18n-alt="galeria.alt.17" data-lightbox="assets/img/experiencias/Hacia Laguna Negra.jpeg" loading="lazy">
+      <img src="assets/img/fauna-montana.jpg" alt="Ave posada en una roca de altura, fauna de montaña" data-i18n-alt="galeria.alt.18" data-lightbox="assets/img/fauna-montana.jpg" loading="lazy">
+      <img src="assets/img/experiencias/Brazo tristeza.jpg" alt="Brazo del lago Nahuel Huapi entre montañas, Bariloche" data-i18n-alt="galeria.alt.19" data-lightbox="assets/img/experiencias/Brazo tristeza.jpg" loading="lazy">
+      <img src="assets/img/experiencias/Desde Mirador Cerro Campanario.JPG" alt="Vista panorámica de lagos y bosques desde el Cerro Campanario, Bariloche" data-i18n-alt="galeria.alt.20" data-lightbox="assets/img/experiencias/Desde Mirador Cerro Campanario.JPG" loading="lazy">
+      <img src="assets/img/experiencias/pexels-angel-valladares-242487480-17060856.jpg" alt="Vías del tren rumbo a Machu Picchu entre la selva" data-i18n-alt="galeria.alt.21" data-lightbox="assets/img/experiencias/pexels-angel-valladares-242487480-17060856.jpg" loading="lazy">
+      <img src="assets/img/experiencias/pexels-suca-19852367.jpg" alt="Vista de los techos de tejas de Cusco desde una calle en pendiente" data-i18n-alt="galeria.alt.22" data-lightbox="assets/img/experiencias/pexels-suca-19852367.jpg" loading="lazy">
+      <img src="assets/img/experiencias/pexels-kaushik21-26074194.jpg" alt="Mujeres con vestimenta tradicional cusqueña y alpacas en un portal de piedra" data-i18n-alt="galeria.alt.23" data-lightbox="assets/img/experiencias/pexels-kaushik21-26074194.jpg" loading="lazy">
+      <img src="assets/img/experiencias/pexels-viviane-couto-450464801-33463618.jpg" alt="Callejón empedrado entre casas coloniales de Cusco" data-i18n-alt="galeria.alt.24" data-lightbox="assets/img/experiencias/pexels-viviane-couto-450464801-33463618.jpg" loading="lazy">
+      <img src="assets/img/experiencias/pexels-aldys-cattania-164969680-20872356.JPG" alt="Cerros multicolor de una quebrada del norte argentino" data-i18n-alt="galeria.alt.25" data-lightbox="assets/img/experiencias/pexels-aldys-cattania-164969680-20872356.JPG" loading="lazy">
+      <img src="assets/img/experiencias/pexels-dali-turcatti-305645658-13446450.JPG" alt="Formaciones montañosas multicolor del norte argentino" data-i18n-alt="galeria.alt.26" data-lightbox="assets/img/experiencias/pexels-dali-turcatti-305645658-13446450.JPG" loading="lazy">
     </div>
   </div>
 </section>
@@ -76,13 +81,13 @@
 <section class="comunidad">
   <div class="wrap comunidad-grid">
     <div class="comunidad-text">
-      <div class="kicker">Comunidad Raíces</div>
-      <h2>¿Viviste una experiencia con Proyecto Raíces?</h2>
-      <p>Queremos que tu viaje también sea parte de nuestra historia. Compartí tus mejores fotos y momentos con nosotros y, con tu autorización, podremos sumarlos a nuestra galería y compartirlos en nuestros canales.</p>
+      <div class="kicker" data-i18n="home.comunidad.kicker">Comunidad Raíces</div>
+      <h2 data-i18n="home.comunidad.titulo">¿Viviste una experiencia con Proyecto Raíces?</h2>
+      <p data-i18n="galeria.comunidad.p">Queremos que tu viaje también sea parte de nuestra historia. Compartí tus mejores fotos y momentos con nosotros y, con tu autorización, podremos sumarlos a nuestra galería y compartirlos en nuestros canales.</p>
       <button type="button" id="fotos-toggle" class="comunidad-mail" aria-expanded="false" aria-controls="fotos-form">
         <span class="comunidad-mail-ico" aria-hidden="true">📩</span>
         <span class="comunidad-mail-text">
-          <b>Enviá tus fotos a</b>
+          <b data-i18n="galeria.enviaFotosA">Enviá tus fotos a</b>
           <em>proyectoraicestravel@gmail.com</em>
         </span>
         <span class="comunidad-mail-arrow" aria-hidden="true">→</span>
@@ -90,20 +95,20 @@
 
       <form id="fotos-form" class="fotos-form" hidden>
         <div class="form-row">
-          <div><label for="fotos-nombre">Nombre</label><input id="fotos-nombre" name="nombre" type="text" placeholder="Tu nombre" required></div>
+          <div><label for="fotos-nombre" data-i18n="contacto.form.nombreLabel">Nombre</label><input id="fotos-nombre" name="nombre" type="text" placeholder="Tu nombre" data-i18n-placeholder="contacto.form.nombrePlaceholder" required></div>
           <div><label for="fotos-email">Email</label><input id="fotos-email" name="email" type="email" placeholder="tu@email.com" required></div>
         </div>
         <div>
-          <label for="fotos-mensaje">Mensaje (opcional)</label>
-          <textarea id="fotos-mensaje" name="mensaje" placeholder="Contanos en qué experiencia sacaste estas fotos..."></textarea>
+          <label for="fotos-mensaje" data-i18n="galeria.fotosForm.mensajeLabel">Mensaje (opcional)</label>
+          <textarea id="fotos-mensaje" name="mensaje" placeholder="Contanos en qué experiencia sacaste estas fotos..." data-i18n-placeholder="galeria.fotosForm.mensajePlaceholder"></textarea>
         </div>
         <div>
-          <label for="fotos-input">Fotos</label>
+          <label for="fotos-input" data-i18n="galeria.fotosForm.fotosLabel">Fotos</label>
           <input id="fotos-input" name="fotos" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" multiple required>
           <ul id="fotos-seleccionadas" class="fotos-seleccionadas"></ul>
         </div>
-        <p class="form-note">Hasta 8 fotos por envío, JPG/PNG/WEBP/HEIC, máximo 8MB cada una.</p>
-        <button type="submit" class="btn">Enviar fotos</button>
+        <p class="form-note" data-i18n="galeria.fotosForm.nota">Hasta 8 fotos por envío, JPG/PNG/WEBP/HEIC, máximo 8MB cada una.</p>
+        <button type="submit" class="btn" data-i18n="galeria.fotosForm.enviar">Enviar fotos</button>
         <div id="fotos-status" class="form-status"></div>
       </form>
     </div>
@@ -117,10 +122,10 @@
 
 <section class="cta-band">
   <div class="wrap">
-    <h2>¿Querés ser parte de la próxima foto?</h2>
-    <p>Sumate a una de nuestras salidas.</p>
+    <h2 data-i18n="galeria.cta.h2">¿Querés ser parte de la próxima foto?</h2>
+    <p data-i18n="galeria.cta.p">Sumate a una de nuestras salidas.</p>
     <div class="hero-ctas">
-      <a href="destinos.html" class="btn">Ver destinos</a>
+      <a href="destinos.html" class="btn" data-i18n="nosotros.cta.verDestinos">Ver destinos</a>
     </div>
   </div>
 </section>
@@ -132,30 +137,30 @@
     <div class="footer-grid">
       <div>
         <a class="brand" href="index.html"><img src="assets/img/logo-amarillo.png" alt="Proyecto Raíces"></a>
-        <p>Turismo aventura con raíces en Argentina y Perú. Compartí tus fotos de viaje y sumate a la comunidad Raíces.</p>
+        <p data-i18n="footer.tagline.galeria">Turismo aventura con raíces en Argentina y Perú. Compartí tus fotos de viaje y sumate a la comunidad Raíces.</p>
       </div>
       <div>
-        <h4>Navegación</h4>
+        <h4 data-i18n="footer.nav.title">Navegación</h4>
         <ul>
-          <li><a href="https://www.proyectoraices.com.ar/index.html">Inicio</a></li>
-          <li><a href="https://www.proyectoraices.com.ar/experiencias.html">Experiencias</a></li>
-          <li><a href="https://www.proyectoraices.com.ar/destinos.html">Destinos</a></li>
-          <li><a href="https://www.proyectoraices.com.ar/nosotros.html">Nosotros</a></li>
-          <li><a href="https://www.proyectoraices.com.ar/galeria.html">Galería</a></li>
-          <li><a href="https://www.proyectoraices.com.ar/contacto.html">Contacto</a></li>
+          <li><a href="https://www.proyectoraices.com.ar/index.html" data-i18n="common.inicio">Inicio</a></li>
+          <li><a href="https://www.proyectoraices.com.ar/experiencias.html" data-i18n="nav.experiencias">Experiencias</a></li>
+          <li><a href="https://www.proyectoraices.com.ar/destinos.html" data-i18n="nav.destinos">Destinos</a></li>
+          <li><a href="https://www.proyectoraices.com.ar/nosotros.html" data-i18n="nav.nosotros">Nosotros</a></li>
+          <li><a href="https://www.proyectoraices.com.ar/galeria.html" data-i18n="nav.galeria">Galería</a></li>
+          <li><a href="https://www.proyectoraices.com.ar/contacto.html" data-i18n="nav.contacto">Contacto</a></li>
         </ul>
       </div>
       <div>
-        <h4>Más</h4>
+        <h4 data-i18n="footer.more.title">Más</h4>
         <ul>
-          <li><a href="tours.html">Tours</a></li>
-          <li><a href="travesias.html">Travesías</a></li>
-          <li><a href="paquetes.html">Paquetes</a></li>
-          <li><a href="comentarios.html">Comentarios</a></li>
+          <li><a href="tours.html" data-i18n="common.tours">Tours</a></li>
+          <li><a href="travesias.html" data-i18n="common.travesias">Travesías</a></li>
+          <li><a href="paquetes.html" data-i18n="common.paquetes">Paquetes</a></li>
+          <li><a href="comentarios.html" data-i18n="common.comentarios">Comentarios</a></li>
         </ul>
       </div>
       <div>
-        <h4>Redes &amp; contacto</h4>
+        <h4 data-i18n="footer.social.title">Redes &amp; contacto</h4>
         <ul>
           <li><a id="footer-instagram" href="#" target="_blank" rel="noopener">Instagram</a></li>
           <li><a id="footer-tiktok" href="#" target="_blank" rel="noopener">TikTok</a></li>
@@ -164,17 +169,17 @@
       </div>
     </div>
     <div class="footer-bottom">
-      <span>© <span id="footer-year">2026</span> Proyecto Raíces. Todos los derechos reservados.</span>
+      <span>© <span id="footer-year">2026</span> Proyecto Raíces. <span data-i18n="footer.rights">Todos los derechos reservados.</span></span>
       <span>proyectoraices.com.ar</span>
     </div>
   </div>
 </footer>
 
 <div id="lightbox" class="lightbox">
-  <button class="lightbox-close" aria-label="Cerrar">×</button>
-  <button class="lightbox-nav lightbox-prev" aria-label="Foto anterior">‹</button>
+  <button class="lightbox-close" aria-label="Cerrar" data-i18n-aria-label="aria.cerrar">×</button>
+  <button class="lightbox-nav lightbox-prev" aria-label="Foto anterior" data-i18n-aria-label="aria.fotoAnterior">‹</button>
   <img src="" alt="">
-  <button class="lightbox-nav lightbox-next" aria-label="Foto siguiente">›</button>
+  <button class="lightbox-nav lightbox-next" aria-label="Foto siguiente" data-i18n-aria-label="aria.fotoSiguiente">›</button>
 </div>
 <div id="whatsapp-float-holder"></div>
 
@@ -183,6 +188,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="assets/js/supabase-client.js"></script>
 <script src="assets/js/data-api.js"></script>
+<script src="assets/js/i18n.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>
