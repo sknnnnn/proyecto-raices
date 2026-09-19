@@ -165,16 +165,32 @@ nav{display:flex; align-items:center; justify-content:space-between; padding:14p
 .navlinks a.active{border-bottom:2px solid var(--color-naranja); padding-bottom:2px;}
 .nav-cta{flex-shrink:0;}
 
-/* Selector de idioma (ES/EN): integrado como último item de .navlinks,
-   reutilizando su tipografía/opacidad — sin rediseño, la dirección
-   visual definitiva la resuelve una futura exploración en Figma. */
+/* Selector de idioma (ES/EN): en desktop vive en .nav-end, al extremo
+   derecho de la barra junto al CTA pero separado por un divisor
+   vertical (se siente como configuración global del sitio, no como un
+   ítem de navegación). En mobile sigue dentro de .navlinks (menú
+   hamburguesa) — misma lógica JS (querySelectorAll(".lang-btn")) para
+   ambas instancias, sin rediseño. */
 .lang-switch{display:flex; align-items:center; gap:6px; margin-left:4px;}
 .lang-btn{background:none; border:none; padding:0; margin:0; font:inherit; color:inherit; opacity:0.65; cursor:pointer; letter-spacing:0.02em;}
 .lang-btn:hover{opacity:1;}
 .lang-btn.is-active{opacity:1; font-weight:700; border-bottom:2px solid var(--color-naranja); padding-bottom:2px;}
 .lang-sep{opacity:0.4; font-size:12px;}
+.nav-end{display:flex; align-items:center; gap:16px;}
+.lang-switch-desktop{margin-left:0; padding-left:14px; border-left:1px solid rgba(255,255,255,0.3);}
 @media (max-width:860px){
   .navlinks .lang-switch{margin-left:0; margin-top:4px;}
+  .lang-switch-desktop{display:none;}
+}
+@media (min-width:861px){
+  .lang-switch-mobile{display:none;}
+}
+/* Franja angosta justo arriba del breakpoint mobile: navlinks + CTA ya
+   ocupan casi todo el ancho ahí, así que el selector se ajusta al
+   espacio mínimo (sin perder el divisor) para no generar overflow. */
+@media (min-width:861px) and (max-width:1010px){
+  .nav-end{gap:0;}
+  .lang-switch-desktop{padding-left:0; gap:3px;}
 }
 
 /* Navbar + hero/cabecera integradas en una misma composición, en TODAS
