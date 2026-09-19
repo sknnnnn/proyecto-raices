@@ -33,6 +33,41 @@ const DataAPI = (() => {
     return supabaseClient;
   }
 
+  /* ---------- Contenido bilingüe (ES/EN) ----------
+     Único punto de resolución ES/EN de todo el sitio: ES siempre
+     devuelve el campo original; EN devuelve el campo "_en" sólo si
+     existe y no está vacío, y si no cae al original — nunca al revés.
+     No traduce nada por su cuenta, sólo elige cuál de los dos valores
+     ya cargados mostrar. Quien llama (main.js, los inline de cada
+     página) no necesita saber que existe un campo "_en": recibe el
+     mismo shape de siempre, ya resuelto. */
+  function esVacio(v) {
+    if (v === null || v === undefined) return true;
+    if (typeof v === "string") return v.trim() === "";
+    if (Array.isArray(v)) return v.length === 0;
+    return false;
+  }
+
+  function bilingue(valorEs, valorEn) {
+    if (typeof I18N !== "undefined" && I18N.lang === "en" && !esVacio(valorEn)) return valorEn;
+    return valorEs;
+  }
+
+  // Fusiona detalle (ES) y detalle_en (EN parcial) clave por clave: sólo
+  // reemplaza las claves que detalle_en trae completas (ej. itinerario,
+  // logisticaNoIncluida); todo lo que detalle_en no tiene —incluidos
+  // flags, números y enums como "dificultad", que se traducen aparte
+  // vía I18N.translateEnum()— sigue viniendo de detalle sin duplicarse.
+  function mergeDetalleBilingue(detalle, detalleEn) {
+    const base = detalle || {};
+    if (typeof I18N === "undefined" || I18N.lang !== "en" || !detalleEn) return base;
+    const merged = { ...base };
+    Object.keys(detalleEn).forEach(key => {
+      if (!esVacio(detalleEn[key])) merged[key] = detalleEn[key];
+    });
+    return merged;
+  }
+
   /* ---------- Mapeo de filas de Supabase a los shapes del sitio ---------- */
 
   function mapDestino(d, cantidadExperiencias) {
@@ -47,10 +82,10 @@ const DataAPI = (() => {
       grupo: d.grupo,
       imagen: d.imagen || null,
       imagenPos: d.imagen_pos || null,
-      resumen: d.resumen || "",
-      cuandoIr: d.cuando_ir || null,
-      comoLlegar: d.como_llegar || null,
-      naturalezaCultura: d.naturaleza_cultura || null,
+      resumen: bilingue(d.resumen || "", d.resumen_en),
+      cuandoIr: bilingue(d.cuando_ir || null, d.cuando_ir_en),
+      comoLlegar: bilingue(d.como_llegar || null, d.como_llegar_en),
+      naturalezaCultura: bilingue(d.naturaleza_cultura || null, d.naturaleza_cultura_en),
       esPlaceholder,
       orden: d.orden,
       cantidadExperiencias: cantidadExperiencias || 0,
@@ -76,14 +111,14 @@ const DataAPI = (() => {
     return {
       id: e.id,
       slug: e.slug,
-      nombre: e.nombre,
+      nombre: bilingue(e.nombre, e.nombre_en),
       tipoProducto: e.tipo_producto,
       destinoId: e.destino_id,
       destino: destinoRow ? mapDestino(destinoRow, destinoRow.cantidadExperiencias) : null,
       actividades,
-      resumen: e.resumen || "",
-      descripcion: e.descripcion || "",
-      duracion: e.duracion || "",
+      resumen: bilingue(e.resumen || "", e.resumen_en),
+      descripcion: bilingue(e.descripcion || "", e.descripcion_en),
+      duracion: bilingue(e.duracion || "", e.duracion_en),
       modalidad: e.modalidad || "",
       ubicacion: e.ubicacion || "",
       precio: e.precio,
@@ -93,10 +128,10 @@ const DataAPI = (() => {
       imagen: e.imagen || null,
       imagenPos: e.imagen_pos || null,
       orden: e.orden,
-      incluye: e.incluye || [],
-      noIncluye: e.no_incluye || [],
-      infoImportante: e.info_importante || null,
-      detalle: e.detalle || {}
+      incluye: bilingue(e.incluye || [], e.incluye_en),
+      noIncluye: bilingue(e.no_incluye || [], e.no_incluye_en),
+      infoImportante: bilingue(e.info_importante || null, e.info_importante_en),
+      detalle: mergeDetalleBilingue(e.detalle || {}, e.detalle_en)
     };
   }
 
@@ -248,7 +283,7 @@ const DataAPI = (() => {
       return (data || []).map(m => ({
         id: m.id,
         nombre: m.nombre,
-        rol: m.rol || null,
+        rol: bilingue(m.rol || null, m.rol_en),
         descripcion: m.descripcion || null,
         imagen: m.imagen || null,
         imagenPos: m.imagen_pos || null,

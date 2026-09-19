@@ -178,7 +178,7 @@
       // El flag "Próximamente" se muestra siempre que !disponible, haya
       // o no foto real de fondo.
       const img = d.imagen
-        ? `<img class="${!disponible ? "placeholder" : ""}" src="${d.imagen}" alt="${nombre}, ${d.pais}" style="object-position:${d.imagenPos || "center"};" loading="lazy">`
+        ? `<img class="${!disponible ? "placeholder" : ""}" src="${d.imagen}" alt="${nombre}, ${I18N.translateEnum("pais", d.pais)}" style="object-position:${d.imagenPos || "center"};" loading="lazy">`
         : `<div class="exp-img-fallback"></div>`;
       const prep = !disponible ? `<span class="destino-card-flag">${I18N.t("common.proximamente")}</span>` : "";
       return `
@@ -194,7 +194,7 @@
 
     const gruposHtml = grupos.map(g => `
       <div class="destinos-group">
-        <div class="destinos-group-title">${g.pais}</div>
+        <div class="destinos-group-title">${I18N.translateEnum("pais", g.pais)}</div>
         <div class="destinos-carousel">
           <button type="button" class="destinos-carousel-arrow testi-arrow prev" aria-label="${I18N.t("aria.destinoAnterior")}">‹</button>
           <div class="destinos-carousel-viewport">

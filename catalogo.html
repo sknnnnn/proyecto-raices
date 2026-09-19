@@ -178,7 +178,7 @@
       const h1 = document.getElementById("cat-titulo");
       if (h1) h1.textContent = nombre;
       const kicker = document.getElementById("cat-kicker");
-      if (kicker) kicker.textContent = d.pais;
+      if (kicker) kicker.textContent = I18N.translateEnum("pais", d.pais);
       const resumen = document.getElementById("cat-resumen");
       if (resumen) resumen.textContent = d.resumen;
       const media = document.getElementById("cat-media");

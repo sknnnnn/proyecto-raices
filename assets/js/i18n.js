@@ -682,6 +682,45 @@ const I18N = (() => {
     }
   };
 
+  /* ---------- Enums de Supabase con pocos valores fijos ----------
+     destinos.pais, experiencias.modalidad y detalle.dificultad no
+     tienen columna "_en" (serían decenas de filas repitiendo apenas
+     2–7 valores reales): se traducen acá, una sola vez por valor real,
+     y el resto del sitio los resuelve con I18N.translateEnum() en vez
+     de comparar/traducir el string donde se imprime. Un valor real no
+     contemplado (dato nuevo cargado en Supabase) se muestra tal cual
+     viene, en español, en vez de undefined. */
+  const enumMaps = {
+    pais: {
+      "Argentina": "Argentina",
+      "Perú": "Peru"
+    },
+    modalidad: {
+      "Salida grupal": "Group departure",
+      "Servicio compartido": "Shared service",
+      "Servicio privado": "Private service",
+      "Salida con reserva previa": "Departure by reservation",
+      "Paquete a medida": "Custom package"
+    },
+    dificultad: {
+      "Alta": "High",
+      "Media": "Medium",
+      "Media +": "Medium +",
+      "Baja": "Low",
+      "Baja +": "Low +",
+      "Moderada": "Moderate",
+      "Moderada/alta": "Moderate/high"
+    }
+  };
+
+  function translateEnum(categoria, valor){
+    if (!valor) return valor;
+    if (currentLang !== "en") return valor;
+    const mapa = enumMaps[categoria];
+    if (!mapa) return valor;
+    return mapa[valor] || valor;
+  }
+
   function getLang(){
     try {
       const saved = window.localStorage.getItem(STORAGE_KEY);
@@ -747,5 +786,5 @@ const I18N = (() => {
   applyTo(document);
   initSwitcher();
 
-  return { t, lang: currentLang, getLang, setLang, applyTo };
+  return { t, lang: currentLang, getLang, setLang, applyTo, translateEnum };
 })();

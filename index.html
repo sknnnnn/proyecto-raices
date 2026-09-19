@@ -294,7 +294,7 @@
       <a class="dest-card ${d.esPlaceholder ? "placeholder" : ""}" href="catalogo.html?destino=${d.slug}">
         ${d.imagen ? `<img src="${d.imagen}" alt="${d.nombre}">` : ""}
         <div class="info">
-          <span class="tag">${d.pais}</span>
+          <span class="tag">${I18N.translateEnum("pais", d.pais)}</span>
           <h3>${d.nombre}</h3>
           <p>${d.resumen}</p>
         </div>
@@ -320,7 +320,7 @@
 
     function featureHTML(p) {
       const tipoInfo = typeof TIPOS_PROPUESTA !== "undefined" ? TIPOS_PROPUESTA[p.tipoProducto] : null;
-      const meta = p.tipoProducto === "travesia" ? travesiaMetaHtml(p) : `${p.duracion} · ${p.modalidad}`;
+      const meta = p.tipoProducto === "travesia" ? travesiaMetaHtml(p) : `${p.duracion} · ${I18N.translateEnum("modalidad", p.modalidad)}`;
       return `
         <article class="exp-feature" data-tipo="${p.tipoProducto}">
           <a class="exp-feature-frame" href="propuesta.html?id=${p.slug}" aria-label="${I18N.t("aria.verDetallesDe")} ${p.nombre}">

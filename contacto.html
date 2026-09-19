@@ -176,7 +176,7 @@
       // ese criterio).
       const destinosDisponibles = destinos.filter(d => d.disponible);
       let opts = `<option value="" selected disabled>${I18N.t("common.seleccionaDestino")}</option>`;
-      opts += destinosDisponibles.map(d => `<option value="${d.nombre}">${d.pais} — ${d.nombre}</option>`).join("");
+      opts += destinosDisponibles.map(d => `<option value="${d.nombre}">${I18N.translateEnum("pais", d.pais)} — ${d.nombre}</option>`).join("");
       opts += `<option value="Aún no sé">${I18N.t("common.aunNoSe")}</option>`;
       sel.innerHTML = opts;
 

@@ -502,7 +502,7 @@ async function renderPropuestasGrid(){
       const paises = [...new Set(destinos.map(d => d.pais))];
       let optionsHtml = `<option value="">${I18N.t("common.todosLosDestinos")}</option>`;
       paises.forEach(pais => {
-        optionsHtml += `<optgroup label="${pais}">`;
+        optionsHtml += `<optgroup label="${I18N.translateEnum("pais", pais)}">`;
         destinos.filter(d => d.pais === pais && d.disponible).forEach(d => {
           optionsHtml += `<option value="${d.slug}"${destinoFiltro === d.slug ? " selected" : ""}>${d.nombre}</option>`;
         });
@@ -534,7 +534,7 @@ async function renderPropuestasGrid(){
       const paisesFull = [...new Set(destinos.map(d => d.pais))];
       let optionsFullHtml = `<option value="">${I18N.t("common.todosLosDestinos")}</option>`;
       paisesFull.forEach(pais => {
-        optionsFullHtml += `<optgroup label="${pais}">`;
+        optionsFullHtml += `<optgroup label="${I18N.translateEnum("pais", pais)}">`;
         destinos.filter(d => d.pais === pais && d.disponible).forEach(d => {
           optionsFullHtml += `<option value="${d.slug}"${destinoFiltro === d.slug ? " selected" : ""}>${d.nombre}</option>`;
         });
@@ -659,7 +659,7 @@ function propuestaCardHtml(p, volverCtx){
       <a class="img-wrap" href="${href}" aria-label="${I18N.t("aria.verDetallesDe")} ${p.nombre}">
         ${p.imagen ? `<img src="${p.imagen}" alt="${p.nombre}" loading="lazy"${p.imagenPos ? ` style="object-position:${p.imagenPos};"` : ""}>` : `<div class="exp-img-fallback"><span>${p.nombre}</span></div>`}
         <span class="cat-badge">${tipoInfo ? tipoInfo.label : p.tipoProducto}</span>
-        <div class="img-meta">${p.tipoProducto === "travesia" ? travesiaMetaHtml(p) : `${p.duracion} · ${p.modalidad}`}</div>
+        <div class="img-meta">${p.tipoProducto === "travesia" ? travesiaMetaHtml(p) : `${p.duracion} · ${I18N.translateEnum("modalidad", p.modalidad)}`}</div>
       </a>
       <div class="body">
         ${p.esPlaceholder ? `<span class="placeholder-badge">${I18N.t("common.contenidoEjemplo")}</span>` : ""}
@@ -929,15 +929,15 @@ function detalleBaseHtml(p){
   let html = "";
   html += infoRowSiHay(I18N.t("common.destinoLabel"), p.destino ? p.destino.nombre : "");
   html += infoRowSiHay(I18N.t("detalle.duracion"), p.duracion);
-  html += infoRowSiHay(I18N.t("detalle.modalidad"), p.modalidad);
+  html += infoRowSiHay(I18N.t("detalle.modalidad"), I18N.translateEnum("modalidad", p.modalidad));
 
   if (p.tipoProducto === "tour") {
-    html += infoRowSiHay(I18N.t("detalle.dificultad"), d.dificultad);
+    html += infoRowSiHay(I18N.t("detalle.dificultad"), I18N.translateEnum("dificultad", d.dificultad));
     html += infoRowSiHay(I18N.t("detalle.fecha"), d.fecha);
     html += infoRowSiHay(I18N.t("detalle.salida"), d.salida);
     html += infoRowSiHay(I18N.t("detalle.regreso"), d.regreso);
   } else if (p.tipoProducto === "travesia") {
-    html += infoRowSiHay(I18N.t("detalle.dificultad"), d.dificultad);
+    html += infoRowSiHay(I18N.t("detalle.dificultad"), I18N.translateEnum("dificultad", d.dificultad));
     html += fechasSiHay(d.fechas, d.fechasNota);
   } else if (p.tipoProducto === "paquete") {
     html += fechasSiHay(d.fechas, d.fechasNota);
@@ -1090,7 +1090,7 @@ async function renderDestinoEditorial(){
   // con una experiencia publicada, que por eso no debe verse como pendiente).
   const disponible = d.disponible;
   const coverImg = d.imagen
-    ? `<img class="${!disponible ? "placeholder" : ""}" src="${d.imagen}" alt="${nombre}, ${d.pais}" style="object-position:${d.imagenPos || "center"};">`
+    ? `<img class="${!disponible ? "placeholder" : ""}" src="${d.imagen}" alt="${nombre}, ${I18N.translateEnum("pais", d.pais)}" style="object-position:${d.imagenPos || "center"};">`
     : `<div class="exp-img-fallback"><span>${nombre}</span></div>`;
   const prepFlag = !disponible ? `<span class="destino-card-flag" style="position:static; display:inline-block; vertical-align:middle; margin-left:10px;">${I18N.t("common.proximamente")}</span>` : "";
 
@@ -1165,7 +1165,7 @@ async function renderDestinoEditorial(){
         <div class="breadcrumb"><a href="index.html">${I18N.t("common.inicio")}</a> / <a href="destinos.html">${I18N.t("nav.destinos")}</a> / ${nombre}</div>
         <div class="page-intro-grid">
           <div class="page-intro-text compact">
-            <div class="kicker">${d.pais}</div>
+            <div class="kicker">${I18N.translateEnum("pais", d.pais)}</div>
             <h1>${nombre}${prepFlag}</h1>
             <p class="destino-hero-intro">${presentaTexto}</p>
             ${heroTopicosHtml}
