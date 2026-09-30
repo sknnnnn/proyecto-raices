@@ -103,8 +103,8 @@ const DataAPI = (() => {
     return { id: a.id, slug: a.slug, nombre: a.nombre };
   }
 
-  function mapExperiencia(e, destinosPorId) {
-    const destinoRow = e.destino || (destinosPorId ? destinosPorId[e.destino_id] : null);
+  function mapExperiencia(e) {
+    const destinoRow = e.destino || null;
     const actividades = (e.experiencia_actividades || [])
       .map(rel => mapActividad(rel.actividades))
       .filter(Boolean);
