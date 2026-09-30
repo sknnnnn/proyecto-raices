@@ -326,7 +326,13 @@ body[data-page="comentarios"] header:not(.is-solid) .navlinks a{text-shadow:0 2p
    levísimo refuerzo hacia los bordes: existe únicamente para asegurar
    legibilidad del texto/logo sobre cualquier zona de la foto, no como
    recurso decorativo. */
-.hero-inicio{position:relative; height:100vh; height:100dvh; display:flex; align-items:center; justify-content:center; padding-bottom:3vh; overflow:hidden;}
+.hero-inicio{position:relative; min-height:100vh; min-height:100dvh; display:flex; align-items:center; justify-content:center; padding-bottom:3vh; overflow:hidden;}
+/* min-height (no height): en pantallas normales el contenido queda
+   centrado exactamente igual que antes; en pantallas bajas el hero
+   crece en vez de recortar logo/CTAs. El padding-superior de 100px
+   viene de la regla global "section" (más abajo) y deja libre el
+   header fijo (~74px); en <=860px pasa a 64px y se fija en 74px más
+   abajo, compensando el padding-inferior para no mover el centrado. */
 /* La foto no corta en seco: se desvanece (mask, no un rectángulo negro)
    sobre su ~18% inferior y deja ver, a través suyo, el mismo lienzo de
    <main> en el que "aterriza" Principales destinos — es la MISMA
@@ -356,7 +362,7 @@ body[data-page="comentarios"] header:not(.is-solid) .navlinks a{text-shadow:0 2p
 /* El logo vuelve a ser la pieza dominante y centrada del Hero; el
    tagline pasa a acompañamiento tipográfico menor debajo, con una
    distinción sutil (itálica) respecto del resto de textos del sitio. */
-.hero-inicio-logo{display:block; height:clamp(215px,27vw,400px); width:auto; margin-left:auto; margin-right:auto; filter:drop-shadow(0 10px 30px rgba(0,0,0,0.45)); margin-bottom:var(--space-6);}
+.hero-inicio-logo{display:block; height:clamp(215px,27vw,400px); height:clamp(150px, min(27vw, 100dvh - 3vh - 316px), 400px); width:auto; margin-left:auto; margin-right:auto; filter:drop-shadow(0 10px 30px rgba(0,0,0,0.45)); margin-bottom:var(--space-6);}
 /* Ancho completo (no max-width acotado) para que el texto quede
    centrado sobre el mismo eje que el logo, como un único bloque
    visual — un max-width angosto sin margin:auto desplazaba la caja
@@ -537,11 +543,11 @@ body[data-page="inicio"] .catalogo-home .dest-card:hover .count{opacity:1; trans
 #destinos-home .dest-card:first-child h3{font-size:34px;}
 #destinos-home .dest-card:not(:first-child){border-radius:12px 36px 12px 36px;}
 /* Bariloche (destino-patagonia.jpg): la foto tiene cielo despejado en
-   su mitad superior — el recorte centrado por default dejaba el texto
-   sobre esa zona clara. Se baja el encuadre para que el título quede
-   sobre el lago/bosque, más oscuro. Sólo esta card: el resto de las
-   fotos de #destinos-home no tienen ese problema. */
-#destinos-home .dest-card[href*="destino=bariloche"] img{object-position:center 70%;}
+   su mitad superior; en esta card apaisada el imagen_pos de Supabase
+   (pensado para destinos.html/destino.html) deja el texto sobre esa
+   zona clara. Sólo esta card de Inicio conserva el encuadre bajo; el
+   resto usa imagen_pos. !important porque imagen_pos va inline. */
+#destinos-home .dest-card[href*="destino=bariloche"] img{object-position:center 70% !important;}
 #destinos-home .dest-card:nth-child(3){transform:translate(14px,14px);}
 #destinos-home .dest-card:nth-child(3):hover{transform:translate(14px,10px);}
 #destinos-home .dest-card .info{padding:28px 26px;}
@@ -581,15 +587,6 @@ body[data-page="destinos"] main{
 body[data-page="destinos"] .destinos-lista{background:transparent;}
 body[data-page="destinos"] .page-intro{background:transparent; padding-bottom:0;}
 
-/* Cabecera de un destino puntual (catalogo.html) — más compacta y
-   contextual: identifica el destino rápido (kicker=país, h1=nombre,
-   resumen corto) y pasa a las experiencias, en vez de sentirse una
-   portada/landing propia. Misma estructura y componentes (.page-intro,
-   .page-intro-media) que el resto del sitio, sólo con menos escala. */
-body[data-page="catalogo"] .page-intro{padding:40px 0 8px;}
-body[data-page="catalogo"] .page-intro-grid{gap:36px; padding-bottom:32px;}
-body[data-page="catalogo"] .page-intro-text h1{font-size:clamp(32px,4.2vw,56px);}
-body[data-page="catalogo"] .page-intro-media{aspect-ratio:2.2;}
 
 /* ---------- Destinos — composición editorial (SOLO destinos.html) ----------
    Reemplaza la grilla de tarjetas (separada Argentina/Internacional) por
@@ -632,7 +629,7 @@ body[data-page="catalogo"] .page-intro-media{aspect-ratio:2.2;}
    el disabled de las flechas) y desaparece del todo si la fila no
    desborda. No es un overlay sobre la foto: es una máscara de opacidad,
    la fotografía en sí no cambia de color. */
-.destinos-carousel-viewport{flex:1; min-width:0; overflow-x:auto; scroll-behavior:auto; scrollbar-width:none; -ms-overflow-style:none; cursor:grab; padding:14px 14px 28px;
+.destinos-carousel-viewport{flex:1; min-width:0; overflow-x:auto; scroll-behavior:auto; scrollbar-width:none; -ms-overflow-style:none; padding:14px 14px 28px;
   mask-image:linear-gradient(to right, transparent, black 28px, black calc(100% - 28px), transparent);
   -webkit-mask-image:linear-gradient(to right, transparent, black 28px, black calc(100% - 28px), transparent);
 }
@@ -881,9 +878,7 @@ img.placeholder{filter:grayscale(1);}
    pareja con texto corto — pero SIN recortar el nombre con "…" (PRO-10:
    un título más largo que el piso simplemente crece la card, nunca se
    corta). min-height es sólo un mínimo, no un máximo. */
-body[data-page="catalogo"] .exp-card h3,
 body[data-page="experiencias"] .exp-card h3{min-height:46px;}
-body[data-page="catalogo"] .exp-card .resumen,
 body[data-page="experiencias"] .exp-card .resumen{min-height:63px;}
 .exp-card .meta{display:flex; gap:14px; font-size:11.5px; color:var(--text-muted); flex-wrap:wrap;}
 .exp-card .meta span{display:flex; align-items:center; gap:5px;}
@@ -931,7 +926,7 @@ body[data-page="inicio"] .exp-carousel{position:relative; margin-top:26px;}
    contenido a ambos lados, así que el fundido lateral queda fijo. En
    desktop el ancho del slide (min(820px,72vw)) deja ver un margen del
    siguiente; en mobile baja a 82vw para el mismo efecto de "hay más". */
-body[data-page="inicio"] .exp-carousel-viewport{position:relative; overflow-x:auto; scroll-behavior:auto; scrollbar-width:none; -ms-overflow-style:none; cursor:grab; padding:6px 2px;
+body[data-page="inicio"] .exp-carousel-viewport{position:relative; overflow-x:auto; scroll-behavior:auto; scrollbar-width:none; -ms-overflow-style:none; padding:6px 2px;
   mask-image:linear-gradient(to right, transparent, black 24px, black calc(100% - 24px), transparent);
   -webkit-mask-image:linear-gradient(to right, transparent, black 24px, black calc(100% - 24px), transparent);
 }
@@ -982,7 +977,6 @@ body[data-page="paquetes"] main,
 body[data-page="nosotros"] main,
 body[data-page="galeria"] main,
 body[data-page="contacto"] main,
-body[data-page="catalogo"] main,
 body[data-page="propuesta"] main,
 body[data-page="calendario"] main{
   background-color:var(--exp-canvas-base);
@@ -1003,7 +997,6 @@ body[data-page="paquetes"] main section:not(.cta-band),
 body[data-page="nosotros"] main section:not(.cta-band),
 body[data-page="galeria"] main section:not(.cta-band):not(.comunidad),
 body[data-page="contacto"] main section:not(.cta-band),
-body[data-page="catalogo"] main section:not(.cta-band),
 body[data-page="propuesta"] main section,
 body[data-page="calendario"] main section:not(.cta-band){background:transparent;}
 
@@ -1275,8 +1268,8 @@ footer li a:hover{opacity:1; color:var(--color-amarillo);}
   body[data-page="inicio"] .about-photo{aspect-ratio:1.3;}
   body[data-page="inicio"] .equipo-mini-grid{grid-template-columns:repeat(2,1fr); gap:var(--space-4);}
   .dest-grid{grid-template-columns:1fr;}
-  .hero-inicio{padding-bottom:6vh;}
-  .hero-inicio-logo{height:clamp(110px,22vw,210px);}
+  .hero-inicio{padding-top:74px; padding-bottom:calc(6vh + 10px);}
+  .hero-inicio-logo{height:clamp(110px,22vw,210px); height:clamp(110px, min(22vw, 100dvh - 6vh - 291px), 210px);}
   .hero-inicio .eyebrow{margin-bottom:var(--space-6); font-size:13px;}
   .hero-inicio-tagline{margin:var(--space-6) 0 var(--space-7);}
   .gal-row img{height:220px;}
@@ -1297,9 +1290,6 @@ footer li a:hover{opacity:1; color:var(--color-amarillo);}
   .page-intro-grid{grid-template-columns:1fr; gap:36px; padding-bottom:36px;}
   .page-intro-text h1{font-size:clamp(38px,8vw,64px);}
   .page-intro-media{aspect-ratio:1.3;}
-  body[data-page="catalogo"] .page-intro{padding:36px 0 4px;}
-  body[data-page="catalogo"] .page-intro-grid{gap:24px; padding-bottom:24px;}
-  body[data-page="catalogo"] .page-intro-media{aspect-ratio:1.7;}
   .page-intro-media.duo{grid-template-columns:1.2fr 1fr; gap:14px;}
   .page-intro-media.duo .secondary{transform:translateY(14px);}
   .comunidad-grid{grid-template-columns:1fr; gap:40px;}
@@ -1315,13 +1305,13 @@ footer li a:hover{opacity:1; color:var(--color-amarillo);}
   .gal-row img{height:140px;}
   .wrap{padding:0 var(--gutter-mobile);}
   nav{padding:14px var(--gutter-mobile);}
-  .hero-inicio{padding-bottom:5vh;}
+  .hero-inicio{padding-bottom:calc(5vh + 10px);}
   .hero-inicio-content{padding:0 var(--gutter-mobile);}
   .hero-inicio .eyebrow{margin-bottom:var(--space-5); font-size:10.5px; letter-spacing:0.1em;}
-  .hero-inicio-logo{height:clamp(92px,32vw,160px);}
+  .hero-inicio-logo{height:clamp(92px,32vw,160px); height:clamp(92px, min(32vw, 100dvh - 5vh - 356px), 160px);}
   .hero-inicio-tagline{white-space:normal; font-size:17px; letter-spacing:0.04em; margin:var(--space-5) 0 var(--space-6);}
   .hero-inicio-tagline::before, .hero-inicio-tagline::after{width:24px; margin:0 10px;}
-  .hero-inicio .hero-ctas{gap:18px; flex-direction:column; width:100%; max-width:300px;}
+  .hero-inicio .hero-ctas{gap:18px; flex-direction:column; width:100%; max-width:300px; margin-left:auto; margin-right:auto;}
   .hero-inicio .hero-ctas .btn:not(.btn-outline){width:100%; justify-content:center; padding:15px 28px;}
   .hero-inicio .hero-ctas .btn-outline{padding-bottom:4px;}
   .stat-row{flex-direction:column; gap:var(--space-4);}
@@ -1343,13 +1333,6 @@ footer li a:hover{opacity:1; color:var(--color-amarillo);}
   .page-intro-text p{font-size:16px;}
   .page-intro-grid{gap:28px; padding-bottom:28px;}
   .page-intro-media{aspect-ratio:1.05;}
-  /* Destino (catalogo.html): hero más bajo que el de Nosotros/Galería —
-     acá abajo hay una grilla de experiencias esperando, así que la
-     imagen no necesita tanta altura como en una página de una sola
-     sección. */
-  body[data-page="catalogo"] .page-intro{padding:28px 0 4px;}
-  body[data-page="catalogo"] .page-intro-grid{gap:18px; padding-bottom:20px;}
-  body[data-page="catalogo"] .page-intro-media{aspect-ratio:1.9;}
   .page-intro-media.duo{grid-template-columns:1fr; gap:14px;}
   .page-intro-media.duo .primary{aspect-ratio:1.3;}
   .page-intro-media.duo .secondary{width:58%; margin-left:auto; transform:none; aspect-ratio:1;}

@@ -5,7 +5,7 @@ const { test, expect } = require("./support/fixtures");
  *   Home → Experiencias → filtros (destino + tipo, combinados) → detalle → ← Volver
  *
  * Test 3 — Filtros del catálogo (mismo destino, sin repetir la
- * navegación completa: arranca directo en catalogo.html?destino=cusco).
+ * navegación completa: arranca directo en experiencias.html?destino=cusco).
  */
 
 test("Home → Experiencias → filtros (destino + tipo) → detalle → breadcrumb y ← Volver", async ({ page }) => {
@@ -68,7 +68,7 @@ test("Experiencias: volver a Todos desde ambos filtros", async ({ page }) => {
 });
 
 test("Filtros del catálogo por destino cambian el resultado de forma coherente", async ({ page }) => {
-  await page.goto("/catalogo.html?destino=cusco&origen=experiencias");
+  await page.goto("/experiencias.html?destino=cusco");
 
   const grid = page.locator("#prop-grid .exp-card");
   const filtros = page.locator("#prop-filtros .filtro-btn");
@@ -94,11 +94,11 @@ test("Filtros del catálogo por destino cambian el resultado de forma coherente"
 /*
  * Corrección puntual post-PRO-10: el resumen ya no se recorta con
  * line-clamp/overflow:hidden, y .actions centra el grupo de botones
- * (1 acción en el carrusel de Inicio, 2 en catalogo.html) en vez de
+ * (1 acción en el carrusel de Inicio, 2 en el catálogo) en vez de
  * alinearlo a la izquierda.
  */
 test("Descripción completa (sin recorte) y CTA centrado con 2 acciones", async ({ page }) => {
-  await page.goto("/catalogo.html?destino=cusco&origen=experiencias");
+  await page.goto("/experiencias.html?destino=cusco");
 
   const cityTourCard = page.locator(".exp-card", { hasText: "City Tour" });
   const resumen = cityTourCard.locator(".resumen");
@@ -134,4 +134,30 @@ test("CTA centrado con 1 sola acción (carrusel de Inicio)", async ({ page }) =>
   const leftGap = actionsBox.x - cardBox.x;
   const rightGap = (cardBox.x + cardBox.width) - (actionsBox.x + actionsBox.width);
   expect(Math.abs(leftGap - rightGap)).toBeLessThan(3);
+});
+
+/*
+ * catalogo.html quedó como redirección mínima a experiencias.html (el
+ * catálogo principal): conserva ?destino= y ?tipo= (los únicos filtros
+ * que soportaba) y descarta el resto (p.ej. ?origen=).
+ */
+test("catalogo.html redirige a experiencias.html conservando destino y tipo", async ({ page }) => {
+  await page.goto("/catalogo.html?destino=cusco&tipo=tour&origen=experiencias");
+  await expect(page).toHaveURL(/\/experiencias\.html\?destino=cusco&tipo=tour$/);
+  await expect(page.locator("#prop-grid .exp-card")).toHaveCount(2);
+
+  await page.goto("/catalogo.html");
+  await expect(page).toHaveURL(/\/experiencias\.html$/);
+  await expect(page.locator("#prop-grid .exp-card").first()).toBeVisible();
+});
+
+test("Inicio: 'Ver todas las experiencias' y las tarjetas de destino usan la arquitectura actual", async ({ page }) => {
+  await page.goto("/index.html");
+  await expect(page.locator(".section-foot a").first()).toHaveAttribute("href", "experiencias.html");
+
+  const cards = page.locator("#destinos-home .dest-card");
+  await expect(cards.first()).toBeVisible();
+  const hrefs = await cards.evaluateAll((els) => els.map((e) => e.getAttribute("href")));
+  expect(hrefs.length).toBeGreaterThan(0);
+  hrefs.forEach((h) => expect(h).toMatch(/^destino\.html\?destino=/));
 });

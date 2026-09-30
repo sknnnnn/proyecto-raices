@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Travesías — Proyecto Raíces</title>
-<meta name="description" content="Travesías de varios días de Proyecto Raíces: trekking y camping en Argentina y Perú.">
+<title data-i18n="meta.travesias.title">Travesías — Proyecto Raíces</title>
+<meta name="description" content="Travesías de varios días de Proyecto Raíces: trekking y camping en Argentina y Perú." data-i18n-content="meta.travesias.desc">
 <link rel="canonical" href="https://proyectoraices.com.ar/travesias.html">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cascadia+Mono:wght@400;600;700&display=swap" rel="stylesheet">
@@ -12,7 +12,7 @@
 <link rel="icon" href="assets/img/logo-amarillo.png">
 <link rel="stylesheet" href="assets/css/style.css">
 </head>
-<body data-page="travesias" data-tipo-fijo="travesia">
+<body data-page="travesias" data-nav-active="experiencias" data-tipo-fijo="travesia">
 <a class="skip-link" href="#main" data-i18n="nav.saltarContenido">Saltar al contenido</a>
 
 <header>
@@ -52,8 +52,8 @@
     <div class="breadcrumb"><a href="index.html" data-i18n="common.inicio">Inicio</a> / <span data-i18n="travesias.h1">Travesías</span></div>
     <div class="page-intro-grid">
       <div class="page-intro-media duo">
-        <div class="primary" style="--intro-primary-ratio:1.05;"><img src="assets/img/hero-travesias-bariloche.jpg" alt="Vista amplia de lagos y montañas patagónicas, el paisaje que se recorre a lo largo de varios días" style="object-position:center 60%;"></div>
-        <div class="secondary"><img src="assets/img/intro-travesias-llamas.jpg" alt="Llamas frente a picos nevados en la cordillera, protagonistas del camino" style="object-position:center 30%;"></div>
+        <div class="primary" style="--intro-primary-ratio:1.05;"><img src="assets/img/hero-travesias-bariloche.jpg" alt="Vista amplia de lagos y montañas patagónicas, el paisaje que se recorre a lo largo de varios días" data-i18n-alt="alt.travesias.hero" style="object-position:center 60%;"></div>
+        <div class="secondary"><img src="assets/img/intro-travesias-llamas.jpg" alt="Llamas frente a picos nevados en la cordillera, protagonistas del camino" data-i18n-alt="alt.travesias.intro" style="object-position:center 30%;"></div>
       </div>
       <div class="page-intro-text">
         <div class="kicker" data-i18n="travesias.kicker">Días enteros para recorrer</div>
@@ -66,7 +66,6 @@
 
 <section>
   <div class="wrap">
-    <div id="prop-filtro-activo" style="display:none; margin-bottom:20px; font-size:14px; color:#4a463c;"></div>
     <div class="filtros" id="prop-filtros"></div>
     <div class="exp-grid" id="prop-grid"></div>
   </div>

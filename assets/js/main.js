@@ -11,9 +11,11 @@
    NAVEGACIÓN POR DOS EJES (conviven sobre la misma data):
    - Por tipo: tours.html / travesias.html / paquetes.html
      cada una fija su tipo vía body[data-tipo-fijo].
-   - Por destino: destinos.html → catalogo.html?destino=slug
-     (catalogo.html no tiene tipo fijo: mezcla tours, travesías
-     y paquetes de ese destino, con chips para filtrar por tipo).
+   - Por destino: destinos.html → destino.html?destino=slug (ficha
+     editorial) → experiencias.html?destino=slug (catálogo principal,
+     sin tipo fijo: mezcla tours, travesías y paquetes, con chips de
+     tipo + selector de destino). catalogo.html es sólo una redirección
+     a experiencias.html, conservada por los enlaces antiguos.
 
    Cada función de render sólo actúa si encuentra en la página
    el contenedor que le corresponde, así este único archivo
@@ -173,8 +175,11 @@ function initNav(){
     });
   }
 
-  // Marca el link activo según data-page en <body>
-  const page = document.body.getAttribute("data-page");
+  // Marca el link activo según data-page en <body>. Las páginas que
+  // pertenecen a otra sección del menú (Tours/Travesías/Paquetes y la
+  // ficha de una experiencia → Experiencias) lo indican con
+  // data-nav-active, sin tocar data-page (que también usa el CSS).
+  const page = document.body.getAttribute("data-nav-active") || document.body.getAttribute("data-page");
   if (page) {
     document.querySelectorAll(`.navlinks a[data-nav="${page}"]`).forEach(a => {
       a.classList.add("active");
@@ -420,8 +425,9 @@ function initLightbox(){
 /* =========================================================
    GRILLA DE PROPUESTAS
    Usada por: tours.html, travesias.html, paquetes.html
-   (con body[data-tipo-fijo]) y catalogo.html (sin tipo fijo,
-   filtrado por destino, con chips de tipo).
+   (con body[data-tipo-fijo]) y experiencias.html (catálogo
+   principal, con body[data-catalogo-full]: chips de tipo +
+   selector de destino).
    ========================================================= */
 async function renderPropuestasGrid(){
   const grid = document.getElementById("prop-grid");
@@ -436,23 +442,16 @@ async function renderPropuestasGrid(){
   // Contexto explícito (PRO-48) que cada card agrega a su link hacia
   // propuesta.html, para que el botón "← Volver a…" del detalle no
   // dependa de document.referrer. tours.html/travesias.html/paquetes.html
-  // (data-tipo-fijo) mandan su propio tipo; catalogo.html sólo manda
-  // contexto cuando llegó con un ?origen= válido (experiencias/destinos)
-  // — un acceso directo a catalogo.html no genera ese origen, así que sus
-  // cards quedan sin contexto, igual que antes.
+  // (data-tipo-fijo) mandan su propio tipo; experiencias.html
+  // (data-catalogo-full) manda "experiencias".
   let volverCtx = "";
   if (tipoFijo && TIPOS_PROPUESTA[tipoFijo]) {
     const origenTipo = TIPOS_PROPUESTA[tipoFijo].pagina.replace(/\.html$/, "");
     volverCtx = `&origen=${origenTipo}${destinoFiltro ? `&destino=${encodeURIComponent(destinoFiltro)}` : ""}`;
   } else if (catalogoFull) {
     // experiencias.html es ahora el catálogo principal (PRO-62): el
-    // "← Volver" del detalle debe apuntar acá directo, no a catalogo.html.
+    // "← Volver" del detalle debe apuntar acá directo.
     volverCtx = `&origen=experiencias${destinoFiltro ? `&destino=${encodeURIComponent(destinoFiltro)}` : ""}`;
-  } else if (destinoFiltro) {
-    const origenCat = params.get("origen");
-    if (origenCat === "experiencias" || origenCat === "destinos") {
-      volverCtx = `&origen=${origenCat}&destino=${encodeURIComponent(destinoFiltro)}`;
-    }
   }
 
   grid.innerHTML = `<div class="empty-state">${I18N.t("common.loading")}</div>`;
@@ -531,10 +530,9 @@ async function renderPropuestasGrid(){
       });
     } else if (catalogoFull) {
       // experiencias.html como catálogo principal (PRO-62): chips de tipo
-      // + selector de destino agrupado por país, combinables entre sí —
-      // mismos patrones que ya usan por separado tours/travesias/paquetes
-      // (selector de destino) y catalogo.html (chips de tipo), ahora
-      // juntos en el mismo punto de entrada.
+      // + selector de destino agrupado por país, combinables entre sí
+      // (el selector de destino es el mismo que usan tours/travesias/
+      // paquetes).
       filtrosWrap.innerHTML = `
         <div class="exp-catalogo-filtros">
           <div class="filtros">${tipoChipsHtml()}</div>
@@ -553,10 +551,6 @@ async function renderPropuestasGrid(){
         if (tipoFiltro) p.set("tipo", tipoFiltro);
         aplicarFiltroSuave(p);
       });
-    } else {
-      // catalogo.html (explorando por destino): los chips filtran por tipo.
-      filtrosWrap.innerHTML = tipoChipsHtml();
-      bindTipoChips(filtrosWrap);
     }
   }
 
@@ -565,20 +559,6 @@ async function renderPropuestasGrid(){
   // único tipo ya filtrado esto no cambia nada (round-robin de 1 grupo).
   // (El filtro por tipo/destino ya se aplicó del lado de DataAPI.)
   lista = interleaveByTipo(lista);
-
-  // ---- Aviso de filtro activo (sólo relevante en catalogo.html) ----
-  const tituloFiltro = document.getElementById("prop-filtro-activo");
-  if (tituloFiltro) {
-    if (destinoFiltro && !tipoFijo) {
-      const d = destinos.find(d => d.slug === destinoFiltro);
-      tituloFiltro.innerHTML = `${I18N.t("common.mostrandoPropuestasEn")} <b></b> · <a href="destinos.html">${I18N.t("common.verTodosDestinosLink")}</a>`;
-      // textContent: destinoFiltro viene de la URL y no debe interpretarse como HTML.
-      tituloFiltro.querySelector("b").textContent = d ? d.nombre : destinoFiltro;
-      tituloFiltro.style.display = "block";
-    } else {
-      tituloFiltro.style.display = "none";
-    }
-  }
 
   if (lista.length === 0) {
     grid.innerHTML = `<div class="empty-state">${I18N.t("common.sinPropuestasFiltro")}</div>`;
@@ -616,7 +596,7 @@ function aplicarFiltroSuave(params){
 // completo en la ficha) para que la línea entre en una sola línea aun
 // con varios lugares. Usada tanto acá como en el carrusel de Inicio.
 function travesiaMetaHtml(p){
-  const dias = p.duracion ? p.duracion.split(" / ")[0] : p.duracion;
+  const dias = p.duracion ? I18N.translateEnum("duracion", p.duracion.split(" / ")[0]) : p.duracion;
   const lugares = (p.detalle && Array.isArray(p.detalle.recorridoMetadata) && p.detalle.recorridoMetadata.length)
     ? p.detalle.recorridoMetadata.join(" · ")
     : (p.destino ? p.destino.nombre : "");
@@ -635,7 +615,7 @@ function propuestaCardHtml(p, volverCtx){
       <a class="img-wrap" href="${href}" aria-label="${I18N.t("aria.verDetallesDe")} ${p.nombre}">
         ${p.imagen ? `<img src="${p.imagen}" alt="${p.nombre}" loading="lazy"${p.imagenPos ? ` style="object-position:${p.imagenPos};"` : ""}>` : `<div class="exp-img-fallback"><span>${p.nombre}</span></div>`}
         <span class="cat-badge">${tipoInfo ? tipoInfo.label : p.tipoProducto}</span>
-        <div class="img-meta">${p.tipoProducto === "travesia" ? travesiaMetaHtml(p) : `${p.duracion} · ${I18N.translateEnum("modalidad", p.modalidad)}`}</div>
+        <div class="img-meta">${p.tipoProducto === "travesia" ? travesiaMetaHtml(p) : `${I18N.translateEnum("duracion", p.duracion)} · ${I18N.translateEnum("modalidad", p.modalidad)}`}</div>
       </a>
       <div class="body">
         ${p.esPlaceholder ? `<span class="placeholder-badge">${I18N.t("common.contenidoEjemplo")}</span>` : ""}
@@ -670,9 +650,8 @@ function renderCalendarioSalidas(){
 /* ---------- Navegación contextual "← Volver a…" (PRO-48) ----------
    Botón discreto y secundario, complementario al breadcrumb (no lo
    reemplaza). Determinista: nunca usa history.back(), sólo enlaces
-   internos ya resueltos por quien la llama (catalogo.html según
-   ?origen=, o renderPropuestaDetalle según el mismo contexto que arma
-   el breadcrumb). Sin contexto válido (href/label null), el link queda
+   internos ya resueltos por quien la llama (renderPropuestaDetalle
+   según el mismo contexto que arma el breadcrumb). Sin contexto válido (href/label null), el link queda
    oculto — no aparece "Volver" en accesos directos. */
 function setVolverLink(id, href, label){
   const el = document.getElementById(id);
@@ -733,8 +712,14 @@ async function renderPropuestaDetalle(){
   } catch (err) {
     console.error("Error cargando la galería:", err);
   }
-  const galeria = galeriaRows.length ? galeriaRows.map(g => g.url) : (p.imagen ? [p.imagen] : []);
-  const principal = galeria[0] || null;
+  // Cada foto con su propio encuadre: el "foco" de esa imagen en la
+  // galería; el encuadre de la card (p.imagenPos) sólo vale para la
+  // misma foto de la card, no para otra imagen distinta.
+  const galeria = galeriaRows.length
+    ? galeriaRows.map(g => ({ url: g.url, pos: g.foco || (g.url === p.imagen ? p.imagenPos : null) || null }))
+    : (p.imagen ? [{ url: p.imagen, pos: p.imagenPos || null }] : []);
+  const principal = galeria[0] ? galeria[0].url : null;
+  const principalPos = galeria[0] ? galeria[0].pos : null;
 
   const bcEl = document.getElementById("exp-breadcrumb");
   if (bcEl) {
@@ -749,22 +734,16 @@ async function renderPropuestaDetalle(){
     // Contexto explícito por query params (PRO-48): ya no depende de
     // document.referrer. Las cards que llevan a propuesta.html (ver
     // propuestaCardHtml en este mismo archivo) agregan "?origen=" y,
-    // cuando corresponde, "&destino=" — mismo mecanismo que catalogo.html
-    // ya usa para su propio botón "← Volver a…".
-    const origen = params.get("origen"); // "experiencias" | "destinos" | "tours" | "travesias" | "paquetes" | null
+    // cuando corresponde, "&destino=".
+    const origen = params.get("origen"); // "experiencias" | "destino" | "tours" | "travesias" | "paquetes" | null
     const destinoCtxSlug = params.get("destino");
     try {
       if (origen === "destino" && destinoCtxSlug) {
         // Venís de la ficha editorial del destino (PRO-34), no del
-        // catálogo: "Volver" te lleva de nuevo ahí, no a catalogo.html.
+        // catálogo: "Volver" te lleva de nuevo ahí.
         const refDestinoEditorial = await DataAPI.getDestinoPorSlug(destinoCtxSlug);
         volverHref = `destino.html?destino=${encodeURIComponent(destinoCtxSlug)}`;
         volverLabel = refDestinoEditorial ? refDestinoEditorial.nombre : I18N.t("common.destinoLabel");
-        tieneContexto = true;
-      } else if (origen === "destinos" && destinoCtxSlug) {
-        const refDestino = await DataAPI.getDestinoPorSlug(destinoCtxSlug);
-        volverHref = `catalogo.html?destino=${encodeURIComponent(destinoCtxSlug)}&origen=${origen}`;
-        volverLabel = refDestino ? refDestino.nombre : I18N.t("common.catalogo");
         tieneContexto = true;
       } else if (tipoInfo && origen === tipoInfo.pagina.replace(/\.html$/, "")) {
         // Contexto válido con o sin filtro de destino — si no había
@@ -817,11 +796,11 @@ async function renderPropuestaDetalle(){
     <div class="exp-detail-grid" style="margin-top:28px;">
       <div>
         <div class="exp-gallery-main">
-          ${principal ? `<img src="${principal}" alt="${p.nombre}" id="exp-main-img"${p.imagenPos ? ` style="object-position:${p.imagenPos};"` : ""}>` : `<div class="exp-img-fallback"><span>${p.nombre}</span></div>`}
+          ${principal ? `<img src="${principal}" alt="${p.nombre}" id="exp-main-img"${principalPos ? ` style="object-position:${principalPos};"` : ""}>` : `<div class="exp-img-fallback"><span>${p.nombre}</span></div>`}
         </div>
         ${galeria.length > 1 ? `
         <div class="exp-gallery-thumbs">
-          ${galeria.map(src => `<img src="${src}" alt="${p.nombre}" style="cursor:pointer;" onclick="document.getElementById('exp-main-img').src='${src}'">`).join("")}
+          ${galeria.map(g => `<img src="${g.url}" alt="${p.nombre}" style="cursor:pointer;${g.pos ? ` object-position:${g.pos};` : ""}" data-pos="${g.pos || ""}">`).join("")}
         </div>` : ""}
 
         <div class="exp-body">
@@ -854,6 +833,16 @@ async function renderPropuestaDetalle(){
       </aside>
     </div>
   `;
+
+  // Miniaturas: cambian la foto principal junto con su propio encuadre.
+  const mainImg = document.getElementById("exp-main-img");
+  cont.querySelectorAll(".exp-gallery-thumbs img").forEach(th => {
+    th.addEventListener("click", () => {
+      if (!mainImg) return;
+      mainImg.src = th.getAttribute("src");
+      mainImg.style.objectPosition = th.dataset.pos || "";
+    });
+  });
 }
 
 /* ---- Router: elige el helper según p.tipoProducto ---- */
@@ -904,7 +893,7 @@ function detalleBaseHtml(p){
   const d = p.detalle || {};
   let html = "";
   html += infoRowSiHay(I18N.t("common.destinoLabel"), p.destino ? p.destino.nombre : "");
-  html += infoRowSiHay(I18N.t("detalle.duracion"), p.duracion);
+  html += infoRowSiHay(I18N.t("detalle.duracion"), I18N.translateEnum("duracion", p.duracion));
   html += infoRowSiHay(I18N.t("detalle.modalidad"), I18N.translateEnum("modalidad", p.modalidad));
 
   if (p.tipoProducto === "tour") {
@@ -985,7 +974,7 @@ async function renderDetallePaquete(d, p){
    Plantilla única para los 12 destinos: contenido editorial e
    informativo del lugar primero (identidad, fotos reales, datos
    reales del destino), acceso secundario a "ver todo en el catálogo"
-   (catalogo.html?destino=slug) después — no duplica esa grilla acá,
+   (experiencias.html?destino=slug) después — no duplica esa grilla acá,
    sólo muestra las experiencias reales de este destino con el mismo
    componente (propuestaCardHtml) que ya usa el resto del sitio.
    Nunca inventa contenido: lo que no existe todavía en la ficha del
@@ -1028,7 +1017,7 @@ async function renderDestinoEditorial(){
   const metaDesc = document.querySelector('meta[name="description"]');
   if (metaDesc && d.resumen) metaDesc.setAttribute("content", d.resumen);
 
-  // Mismo criterio que ya usan destinos.html/catalogo.html: d.disponible
+  // Mismo criterio que ya usa destinos.html: d.disponible
   // (no d.esPlaceholder) decide si el destino se trata como "Próximamente"
   // — ya contempla el caso Choquequirao (ficha con esPlaceholder:true pero
   // con una experiencia publicada, que por eso no debe verse como pendiente).
@@ -1076,7 +1065,7 @@ async function renderDestinoEditorial(){
 
   // Volver a esta ficha de destino desde propuesta.html (PRO-48): mismo
   // mecanismo de "origen"/"destino" por query param que ya usan
-  // catalogo.html y las páginas de tipo fijo.
+  // las páginas de tipo fijo.
   const volverCtx = `&origen=destino&destino=${encodeURIComponent(d.slug)}`;
 
   // Destino ya no duplica el catálogo: en vez de una card comercial (con

@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Proyecto Raíces — Turismo aventura en Argentina y Perú</title>
-<meta name="description" content="Proyecto Raíces crea y selecciona experiencias de viaje únicas para conectar personas con destinos, culturas y momentos que quedan para siempre. Trekking, camping y salidas guiadas en Argentina y Perú.">
+<title data-i18n="meta.home.title">Proyecto Raíces — Turismo aventura en Argentina y Perú</title>
+<meta name="description" content="Proyecto Raíces crea y selecciona experiencias de viaje únicas para conectar personas con destinos, culturas y momentos que quedan para siempre. Trekking, camping y salidas guiadas en Argentina y Perú." data-i18n-content="meta.home.desc">
 <link rel="canonical" href="https://proyectoraices.com.ar/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Proyecto Raíces — Turismo aventura en Argentina y Perú">
@@ -54,7 +54,7 @@
 <main id="main">
 
 <section class="hero-inicio">
-  <img class="hero-inicio-bg" src="assets/img/hero-inicio.jpg" alt="Laguna y montañas de la Cordillera, uno de los paisajes que conecta Proyecto Raíces">
+  <img class="hero-inicio-bg" src="assets/img/hero-inicio.jpg" alt="Laguna y montañas de la Cordillera, uno de los paisajes que conecta Proyecto Raíces" data-i18n-alt="alt.home.hero">
   <div class="hero-inicio-content">
     <img class="hero-inicio-logo" src="assets/img/logo-amarillo.png" alt="Proyecto Raíces">
     <h1 class="hero-inicio-tagline" data-i18n="home.hero.tagline">TURISMO AVENTURA · ARGENTINA &amp; PERÚ</h1>
@@ -87,7 +87,7 @@
         <button type="button" class="exp-nav-arrow next" id="exp-home-next" aria-label="Ver experiencia siguiente" data-i18n-aria-label="aria.expSiguiente">→</button>
       </div>
     </div>
-    <div class="section-foot"><a href="catalogo.html" class="btn btn-outline on-light" data-i18n="home.exp.verTodas">Ver todas las experiencias</a></div>
+    <div class="section-foot"><a href="experiencias.html" class="btn btn-outline on-light" data-i18n="home.exp.verTodas">Ver todas las experiencias</a></div>
   </div>
 </section>
 
@@ -112,7 +112,7 @@
     </div>
     <div class="valores-grid">
       <a href="tours.html" class="dest-card catalogo-feature">
-        <img src="assets/img/hero-tours-mercado.jpg" alt="Tours" style="object-position:center 35%;">
+        <img src="assets/img/hero-tours-mercado.jpg" alt="Tours" data-i18n-alt="alt.home.tours" style="object-position:center 35%;">
         <div class="info">
           <span class="tag" data-i18n="common.tours">Tours</span>
           <h3 data-i18n="home.tours.h3">Salidas de un día</h3>
@@ -121,7 +121,7 @@
         </div>
       </a>
       <a href="travesias.html" class="dest-card">
-        <img src="assets/img/hero-travesias-bariloche.jpg" alt="Travesías" style="object-position:center 60%;">
+        <img src="assets/img/hero-travesias-bariloche.jpg" alt="Travesías" data-i18n-alt="alt.home.travesias" style="object-position:center 60%;">
         <div class="info">
           <span class="tag" data-i18n="common.travesias">Travesías</span>
           <h3 data-i18n="home.travesias.h3">Varios días de recorrido</h3>
@@ -130,7 +130,7 @@
         </div>
       </a>
       <a href="paquetes.html" class="dest-card">
-        <img src="assets/img/hero-paquetes-machupicchu.jpg" alt="Paquetes" style="object-position:center 20%;">
+        <img src="assets/img/hero-paquetes-machupicchu.jpg" alt="Paquetes" data-i18n-alt="alt.home.paquetes" style="object-position:center 20%;">
         <div class="info">
           <span class="tag" data-i18n="common.paquetes">Paquetes</span>
           <h3 data-i18n="home.paquetes.h3">Viajes de principio a fin</h3>
@@ -144,7 +144,7 @@
 
 <section class="about" id="nosotros">
   <div class="wrap about-grid">
-    <div class="about-photo"><img src="assets/img/quienes-somos.jpg" alt="Fotografía de Proyecto Raíces en uno de nuestros destinos"></div>
+    <div class="about-photo"><img src="assets/img/quienes-somos.jpg" alt="Fotografía de Proyecto Raíces en uno de nuestros destinos" data-i18n-alt="alt.home.quienesSomos"></div>
     <div>
       <div class="kicker" data-i18n="home.about.kicker">Quiénes somos</div>
       <h2 data-i18n="home.about.titulo">Un proyecto que nace de la tierra</h2>
@@ -291,8 +291,8 @@
       .filter(Boolean)
       .concat(destinos.filter(d => !ordenInicio.includes(d.slug)));
     destinosHome.innerHTML = destacados.slice(0, 3).map(d => `
-      <a class="dest-card ${d.esPlaceholder ? "placeholder" : ""}" href="catalogo.html?destino=${d.slug}">
-        ${d.imagen ? `<img src="${d.imagen}" alt="${d.nombre}">` : ""}
+      <a class="dest-card ${d.esPlaceholder ? "placeholder" : ""}" href="destino.html?destino=${d.slug}">
+        ${d.imagen ? `<img src="${d.imagen}" alt="${d.nombre}" style="object-position:${d.imagenPos || "center"};">` : ""}
         <div class="info">
           <span class="tag">${I18N.translateEnum("pais", d.pais)}</span>
           <h3>${d.nombre}</h3>
@@ -316,11 +316,12 @@
     const prevBtn = document.getElementById("exp-home-prev");
     const nextBtn = document.getElementById("exp-home-next");
     const counterEl = document.getElementById("exp-home-counter");
+    const navEl = carousel ? carousel.querySelector(".exp-carousel-nav") : null;
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     function featureHTML(p) {
       const tipoInfo = typeof TIPOS_PROPUESTA !== "undefined" ? TIPOS_PROPUESTA[p.tipoProducto] : null;
-      const meta = p.tipoProducto === "travesia" ? travesiaMetaHtml(p) : `${p.duracion} · ${I18N.translateEnum("modalidad", p.modalidad)}`;
+      const meta = p.tipoProducto === "travesia" ? travesiaMetaHtml(p) : `${I18N.translateEnum("duracion", p.duracion)} · ${I18N.translateEnum("modalidad", p.modalidad)}`;
       return `
         <article class="exp-feature" data-tipo="${p.tipoProducto}">
           <a class="exp-feature-frame" href="propuesta.html?id=${p.slug}" aria-label="${I18N.t("aria.verDetallesDe")} ${p.nombre}">
@@ -339,6 +340,9 @@
     let setWidth = 0;
     let totalSlides = 0;
     let lastIdx = -1;
+    // Experiencias del riel actual (una sola vez cada una) y si el riel
+    // está en modo loop (set duplicado + autoplay) — ver ajustar().
+    let lista = [];
     let tipoActivo = "";
     // rAF en curso de un desplazamiento manual (flechas) — ver scrollManual
     // más abajo. Se cancela acá también si un cambio de filtro llega a
@@ -369,25 +373,52 @@
       // Muestra editorial acotada, no el catálogo completo (eso ya
       // vive en experiencias.html vía "Ver todas las experiencias").
       const MAX_SLIDES = 10;
-      const lista = (tipoActivo ? conFoto.filter(p => p.tipoProducto === tipoActivo) : interleaveByTipo(conFoto)).slice(0, MAX_SLIDES);
+      lista = (tipoActivo ? conFoto.filter(p => p.tipoProducto === tipoActivo) : interleaveByTipo(conFoto)).slice(0, MAX_SLIDES);
       if (manualRAF) { cancelAnimationFrame(manualRAF); manualRAF = null; }
       totalSlides = lista.length;
-      lastIdx = 0;
-      if (counterEl) counterEl.textContent = totalSlides ? `${pad2(1)} / ${pad2(totalSlides)}` : "";
+      lastIdx = -1;
       if (!lista.length) {
         track.innerHTML = `<p class="empty-state">${I18N.t("common.sinExperienciasCategoria")}</p>`;
         setWidth = 0;
+        if (counterEl) counterEl.textContent = "";
+        if (navEl) navEl.style.display = "none";
         return;
       }
-      // Se duplica la lista filtrada para permitir un auto-scroll continuo
-      // sin corte visible (mismos datos reales, renderizados dos veces).
-      track.innerHTML = lista.map(featureHTML).join("") + lista.map(featureHTML).join("");
-      // setWidth = ancho de un set completo (sin el padding-inline que
-      // centra el slide activo, ver CSS): calculado a partir de
-      // cardStep() en vez de track.scrollWidth/2, porque ese padding
-      // ahora también entra en scrollWidth y correría el cálculo.
-      requestAnimationFrame(() => { setWidth = totalSlides * cardStep(); });
+      track.innerHTML = lista.map(featureHTML).join("");
       viewport.scrollLeft = 0;
+      setWidth = 0;
+      ajustar();
+    }
+
+    // Decide si el riel necesita ser infinito y recalcula su ancho.
+    // Se llama al renderizar y en cada resize/rotación del dispositivo.
+    // Sólo se duplica el set (para el loop sin cortes) y se activa el
+    // autoplay cuando un set completo NO entra en el viewport; si entra
+    // (por ejemplo una única experiencia) no hay duplicados, autoplay,
+    // flechas ni contador. setWidth = ancho de un set completo (sin el
+    // padding-inline que centra el slide activo, ver CSS): calculado a
+    // partir de cardStep() en vez de track.scrollWidth/2, porque ese
+    // padding también entra en scrollWidth y correría el cálculo.
+    function ajustar() {
+      if (!totalSlides) return;
+      const primera = track.querySelector(".exp-feature");
+      if (!primera) return;
+      const fraccion = setWidth > 0 ? viewport.scrollLeft / setWidth : 0;
+      const paso = cardStep();
+      const gap = paso - primera.offsetWidth;
+      const hayLoop = totalSlides * paso - gap > viewport.clientWidth + 1;
+      const hijos = track.querySelectorAll(".exp-feature").length;
+      if (hayLoop && hijos === totalSlides) {
+        track.insertAdjacentHTML("beforeend", lista.map(featureHTML).join(""));
+      } else if (!hayLoop && hijos > totalSlides) {
+        track.innerHTML = lista.map(featureHTML).join("");
+      }
+      setWidth = hayLoop ? totalSlides * cardStep() : 0;
+      viewport.scrollLeft = hayLoop ? fraccion * setWidth : 0;
+      if (navEl) navEl.style.display = hayLoop ? "" : "none";
+      lastIdx = -1;
+      if (hayLoop) updateCounter(Math.round(viewport.scrollLeft / cardStep()));
+      else if (counterEl) counterEl.textContent = "";
     }
 
     if (filtrosWrap) {
@@ -402,6 +433,15 @@
     }
 
     render();
+
+    // Un único listener (no se acumula con los cambios de filtro): al
+    // cambiar el tamaño de la ventana o girar el dispositivo se vuelve a
+    // medir el riel, así el loop no queda trabado con anchos viejos.
+    let resizeRAF = null;
+    window.addEventListener("resize", () => {
+      cancelAnimationFrame(resizeRAF);
+      resizeRAF = requestAnimationFrame(ajustar);
+    });
 
     function updateCounter(idx) {
       if (!counterEl || !totalSlides) return;

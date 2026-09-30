@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tours — Proyecto Raíces</title>
-<meta name="description" content="Tours de medio día y día completo de Proyecto Raíces: actividades guiadas de trekking, camping y naturaleza en Argentina y Perú.">
+<title data-i18n="meta.tours.title">Tours — Proyecto Raíces</title>
+<meta name="description" content="Tours de medio día y día completo de Proyecto Raíces: actividades guiadas de trekking, camping y naturaleza en Argentina y Perú." data-i18n-content="meta.tours.desc">
 <link rel="canonical" href="https://proyectoraices.com.ar/tours.html">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cascadia+Mono:wght@400;600;700&display=swap" rel="stylesheet">
@@ -12,7 +12,7 @@
 <link rel="icon" href="assets/img/logo-amarillo.png">
 <link rel="stylesheet" href="assets/css/style.css">
 </head>
-<body data-page="tours" data-tipo-fijo="tour">
+<body data-page="tours" data-nav-active="experiencias" data-tipo-fijo="tour">
 <a class="skip-link" href="#main" data-i18n="nav.saltarContenido">Saltar al contenido</a>
 
 <header>
@@ -57,8 +57,8 @@
         <p data-i18n="tours.p">Salidas ideales para conocer un lugar sin comprometer todo tu viaje.</p>
       </div>
       <div class="page-intro-media duo">
-        <div class="primary"><img src="assets/img/hero-tours-mercado.jpg" alt="Recorriendo un mercado andino de artesanías, una experiencia real de viaje" style="object-position:center 35%;"></div>
-        <div class="secondary"><img src="assets/img/intro-tours-calle.jpg" alt="Vida local en una calle de Cusco, parte de la experiencia de un tour" style="object-position:center 20%;"></div>
+        <div class="primary"><img src="assets/img/hero-tours-mercado.jpg" alt="Recorriendo un mercado andino de artesanías, una experiencia real de viaje" data-i18n-alt="alt.tours.hero" style="object-position:center 35%;"></div>
+        <div class="secondary"><img src="assets/img/intro-tours-calle.jpg" alt="Vida local en una calle de Cusco, parte de la experiencia de un tour" data-i18n-alt="alt.tours.intro" style="object-position:center 20%;"></div>
       </div>
     </div>
   </div>
@@ -66,7 +66,6 @@
 
 <section>
   <div class="wrap">
-    <div id="prop-filtro-activo" style="display:none; margin-bottom:20px; font-size:14px; color:#4a463c;"></div>
     <div class="filtros" id="prop-filtros"></div>
     <div class="exp-grid" id="prop-grid"></div>
   </div>
