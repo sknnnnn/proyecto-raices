@@ -1118,7 +1118,11 @@ body[data-page="propuesta"] .exp-detail-grid{
   padding:40px;
 }
 .exp-gallery-main{position:relative; border-radius:var(--radius-md); overflow:hidden; margin-bottom:16px; height:420px;}
-.exp-gallery-main img{width:100%; height:100%; object-fit:cover;}
+/* La foto principal se muestra ENTERA (contain): así no se recortan personas,
+   vehículos ni el sujeto principal; los costados se rellenan con la misma
+   foto difuminada (--exp-main-bg, la setea main.js) para mantener el marco. */
+.exp-gallery-main::before{content:""; position:absolute; inset:-28px; background:var(--exp-main-bg) center/cover no-repeat; filter:blur(26px); opacity:.85;}
+.exp-gallery-main img{position:relative; width:100%; height:100%; object-fit:contain;}
 .exp-gallery-thumbs{display:grid; grid-template-columns:repeat(4,1fr); gap:10px;}
 .exp-gallery-thumbs img{border-radius:var(--radius-sm); height:80px; width:100%; object-fit:cover;}
 .exp-info-card{background:var(--color-crema); color:var(--color-tinta); border:1px solid rgba(var(--tinta-rgb),0.1); border-radius:var(--radius-md); padding:28px; position:sticky; top:96px; min-width:0;}

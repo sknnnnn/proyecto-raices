@@ -311,7 +311,7 @@
       return `
         <article class="exp-feature" data-tipo="${p.tipoProducto}">
           <a class="exp-feature-frame" href="propuesta.html?id=${p.slug}" aria-label="Ver detalles de ${p.nombre}">
-            <img src="${p.imagen}" alt="${p.nombre}" loading="lazy">
+            <img src="${p.imagen}" alt="${p.nombre}" loading="lazy"${p.imagenPos ? ` style="object-position:${p.imagenPos};"` : ""}>
             <div class="exp-feature-info">
               <span class="exp-feature-tag">${tipoInfo ? tipoInfo.label : p.tipoProducto}</span>
               <h3>${p.nombre}</h3>

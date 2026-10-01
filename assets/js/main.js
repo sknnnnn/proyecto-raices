@@ -739,8 +739,18 @@ async function renderPropuestaDetalle(){
   } catch (err) {
     console.error("Error cargando la galería:", err);
   }
-  const galeria = galeriaRows.length ? galeriaRows.map(g => g.url) : (p.imagen ? [p.imagen] : []);
-  const principal = galeria[0] || null;
+  // La imagen principal del detalle es SIEMPRE la portada de la experiencia
+  // (p.imagen, la misma que muestra su card, con el mismo encuadre). La
+  // galería se suma debajo; si la portada no está entre sus filas se
+  // antepone para poder volver a ella. Sin portada, cae a la 1ª de la galería.
+  const posDe = (url, foco) => foco || (url === p.imagen ? p.imagenPos : null) || null;
+  const fotos = galeriaRows.map(g => ({ url: g.url, pos: posDe(g.url, g.foco) }));
+  if (p.imagen) {
+    const i = fotos.findIndex(f => f.url === p.imagen);
+    if (i >= 0) fotos.splice(i, 1);
+    fotos.unshift({ url: p.imagen, pos: p.imagenPos || null });
+  }
+  const principal = fotos[0] || null;
 
   const bcEl = document.getElementById("exp-breadcrumb");
   if (bcEl) {
@@ -821,11 +831,11 @@ async function renderPropuestaDetalle(){
     <div class="exp-detail-grid" style="margin-top:28px;">
       <div>
         <div class="exp-gallery-main">
-          ${principal ? `<img src="${principal}" alt="${p.nombre}" id="exp-main-img"${p.imagenPos ? ` style="object-position:${p.imagenPos};"` : ""}>` : `<div class="exp-img-fallback"><span>${p.nombre}</span></div>`}
+          ${principal ? `<img src="${principal.url}" alt="${p.nombre}" id="exp-main-img">` : `<div class="exp-img-fallback"><span>${p.nombre}</span></div>`}
         </div>
-        ${galeria.length > 1 ? `
+        ${fotos.length > 1 ? `
         <div class="exp-gallery-thumbs">
-          ${galeria.map(src => `<img src="${src}" alt="${p.nombre}" style="cursor:pointer;" onclick="document.getElementById('exp-main-img').src='${src}'">`).join("")}
+          ${fotos.map(f => `<img src="${f.url}" alt="${p.nombre}" data-src="${f.url}" style="cursor:pointer;${f.pos ? ` object-position:${f.pos};` : ""}">`).join("")}
         </div>` : ""}
 
         <div class="exp-body">
@@ -858,6 +868,18 @@ async function renderPropuestaDetalle(){
       </aside>
     </div>
   `;
+
+  // Fondo difuminado de la foto principal (ver .exp-gallery-main: la foto se
+  // muestra entera, sin recorte) y cambio de foto al tocar una miniatura.
+  const mainBox = cont.querySelector(".exp-gallery-main");
+  const mainImg = document.getElementById("exp-main-img");
+  // URL absoluta: un url() dentro de una variable CSS se resuelve contra la hoja de estilos, no contra la página.
+  const setFondo = src => { if (mainBox) mainBox.style.setProperty("--exp-main-bg", `url("${new URL(src, document.baseURI).href}")`); };
+  if (principal) setFondo(principal.url);
+  cont.querySelectorAll(".exp-gallery-thumbs img").forEach(t => t.addEventListener("click", () => {
+    mainImg.src = t.dataset.src;
+    setFondo(t.dataset.src);
+  }));
 }
 
 /* ---- Router: elige el helper según p.tipoProducto ---- */
