@@ -11,9 +11,11 @@
    NAVEGACIÓN POR DOS EJES (conviven sobre la misma data):
    - Por tipo: tours.html / travesias.html / paquetes.html
      cada una fija su tipo vía body[data-tipo-fijo].
-   - Por destino: destinos.html → catalogo.html?destino=slug
-     (catalogo.html no tiene tipo fijo: mezcla tours, travesías
-     y paquetes de ese destino, con chips para filtrar por tipo).
+   - Por destino: destinos.html → destino.html?destino=slug (ficha
+     editorial) → experiencias.html?destino=slug (catálogo principal,
+     sin tipo fijo: mezcla tours, travesías y paquetes, con chips de
+     tipo + selector de destino). catalogo.html es sólo una redirección
+     a experiencias.html, conservada por los enlaces antiguos.
 
    Cada función de render sólo actúa si encuentra en la página
    el contenedor que le corresponde, así este único archivo
@@ -24,7 +26,7 @@
    poblada desde Supabase (tabla site_config) vía DataAPI. La consulta
    arranca apenas carga este script (no espera a DOMContentLoaded), y
    "siteConfigReady" es la promesa que cualquier script de página debe
-   esperar antes de llamar whatsappLink()/mailtoLink() o leer
+   esperar antes de llamar whatsappLink() o leer
    SITE_CONFIG — evita la carrera entre el fetch async y un script
    inline de página que quiera usarlo de entrada (ver contacto.html,
    index.html). */
@@ -44,11 +46,6 @@ function whatsappLink(mensaje){
   return `https://wa.me/${SITE_CONFIG.whatsapp}?text=${texto}`;
 }
 
-function mailtoLink(asunto){
-  const subject = encodeURIComponent(asunto || I18N.t("mailto.asuntoDefault"));
-  return `mailto:${SITE_CONFIG.email}?subject=${subject}`;
-}
-
 document.addEventListener("DOMContentLoaded", async () => {
   initNav();
   initHeaderScroll();
@@ -64,7 +61,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   renderPropuestasGrid();   // async — consulta Supabase vía DataAPI
   renderPropuestaDetalle(); // async — consulta Supabase vía DataAPI
   renderDestinoEditorial(); // async — sólo actúa si la página tiene #destino-editorial (destino.html, PRO-34)
-  renderDestinosGrid();
   renderCalendarioSalidas(); // sólo actúa si la página tiene #calendario-grid (calendario.html)
   renderEquipoGrid(); // async — sólo actúa si la página tiene #equipo-grid o #equipo-mini-grid
   initTestimoniosCarousel(); // sólo actúa si la página tiene #testi-track (Inicio)
@@ -74,23 +70,17 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 /* Metadata de presentación por tipo de producto (label/plural/página de
    listado). No es un dato de negocio de una experiencia puntual — es
-   configuración de UI fija, así que vive acá en vez de en Supabase o en
-   propuestas-data.js. "tipoProducto" en Supabase es la fuente de verdad
-   de qué tipo es cada experiencia; esto sólo mapea ese valor a texto.
-   Definido de forma condicional porque, durante la transición, algunas
-   páginas todavía cargan propuestas-data.js (que declara lo mismo con
-   "const" a nivel de script) — declararlo acá también con "const"
-   rompería esas páginas con un error de identificador duplicado. */
-if (typeof TIPOS_PROPUESTA === "undefined") {
-  window.TIPOS_PROPUESTA = {
-    tour:     { label: I18N.t("tipo.tour.label"),     labelPlural: I18N.t("tipo.tour.labelPlural"),     pagina: "tours.html" },
-    travesia: { label: I18N.t("tipo.travesia.label"), labelPlural: I18N.t("tipo.travesia.labelPlural"), pagina: "travesias.html" },
-    paquete:  { label: I18N.t("tipo.paquete.label"),  labelPlural: I18N.t("tipo.paquete.labelPlural"),  pagina: "paquetes.html" }
-  };
-}
+   configuración de UI fija, así que vive acá en vez de en Supabase.
+   "tipoProducto" en Supabase es la fuente de verdad de qué tipo es cada
+   experiencia; esto sólo mapea ese valor a texto. */
+const TIPOS_PROPUESTA = {
+  tour:     { label: I18N.t("tipo.tour.label"),     labelPlural: I18N.t("tipo.tour.labelPlural"),     pagina: "tours.html" },
+  travesia: { label: I18N.t("tipo.travesia.label"), labelPlural: I18N.t("tipo.travesia.labelPlural"), pagina: "travesias.html" },
+  paquete:  { label: I18N.t("tipo.paquete.label"),  labelPlural: I18N.t("tipo.paquete.labelPlural"),  pagina: "paquetes.html" }
+};
 
 /* ---------- Header sólido al scrollear ----------
-   En Inicio/Guías/Comentarios el header nace transparente sobre la
+   En Inicio/Comentarios el header nace transparente sobre la
    foto de portada (ver style.css); esta clase lo pasa a sólido apenas
    se scrollea, sin afectar el resto de las páginas (ahí ya es sólido
    siempre por CSS y la clase no cambia nada visualmente). */
@@ -108,13 +98,10 @@ function initHeaderScroll(){
    bloques, sin alterar los datos ni su orden de origen. Reutilizable
    por cualquier vista que junte más de un tipo en una misma lista. */
 function interleaveByTipo(lista){
-  // Acepta tanto el shape nuevo (Supabase, campo "tipoProducto") como el
-  // viejo (PROPUESTAS, campo "tipo") — útil mientras conviven páginas
-  // migradas y no migradas en la misma transición.
   const grupos = {};
   const orden = [];
   lista.forEach(p => {
-    const tipo = p.tipoProducto || p.tipo;
+    const tipo = p.tipoProducto;
     if (!grupos[tipo]) { grupos[tipo] = []; orden.push(tipo); }
     grupos[tipo].push(p);
   });
@@ -188,8 +175,11 @@ function initNav(){
     });
   }
 
-  // Marca el link activo según data-page en <body>
-  const page = document.body.getAttribute("data-page");
+  // Marca el link activo según data-page en <body>. Las páginas que
+  // pertenecen a otra sección del menú (Tours/Travesías/Paquetes y la
+  // ficha de una experiencia → Experiencias) lo indican con
+  // data-nav-active, sin tocar data-page (que también usa el CSS).
+  const page = document.body.getAttribute("data-nav-active") || document.body.getAttribute("data-page");
   if (page) {
     document.querySelectorAll(`.navlinks a[data-nav="${page}"]`).forEach(a => {
       a.classList.add("active");
@@ -435,8 +425,9 @@ function initLightbox(){
 /* =========================================================
    GRILLA DE PROPUESTAS
    Usada por: tours.html, travesias.html, paquetes.html
-   (con body[data-tipo-fijo]) y catalogo.html (sin tipo fijo,
-   filtrado por destino, con chips de tipo).
+   (con body[data-tipo-fijo]) y experiencias.html (catálogo
+   principal, con body[data-catalogo-full]: chips de tipo +
+   selector de destino).
    ========================================================= */
 async function renderPropuestasGrid(){
   const grid = document.getElementById("prop-grid");
@@ -451,23 +442,16 @@ async function renderPropuestasGrid(){
   // Contexto explícito (PRO-48) que cada card agrega a su link hacia
   // propuesta.html, para que el botón "← Volver a…" del detalle no
   // dependa de document.referrer. tours.html/travesias.html/paquetes.html
-  // (data-tipo-fijo) mandan su propio tipo; catalogo.html sólo manda
-  // contexto cuando llegó con un ?origen= válido (experiencias/destinos)
-  // — un acceso directo a catalogo.html no genera ese origen, así que sus
-  // cards quedan sin contexto, igual que antes.
+  // (data-tipo-fijo) mandan su propio tipo; experiencias.html
+  // (data-catalogo-full) manda "experiencias".
   let volverCtx = "";
   if (tipoFijo && TIPOS_PROPUESTA[tipoFijo]) {
     const origenTipo = TIPOS_PROPUESTA[tipoFijo].pagina.replace(/\.html$/, "");
     volverCtx = `&origen=${origenTipo}${destinoFiltro ? `&destino=${encodeURIComponent(destinoFiltro)}` : ""}`;
   } else if (catalogoFull) {
     // experiencias.html es ahora el catálogo principal (PRO-62): el
-    // "← Volver" del detalle debe apuntar acá directo, no a catalogo.html.
+    // "← Volver" del detalle debe apuntar acá directo.
     volverCtx = `&origen=experiencias${destinoFiltro ? `&destino=${encodeURIComponent(destinoFiltro)}` : ""}`;
-  } else if (destinoFiltro) {
-    const origenCat = params.get("origen");
-    if (origenCat === "experiencias" || origenCat === "destinos") {
-      volverCtx = `&origen=${origenCat}&destino=${encodeURIComponent(destinoFiltro)}`;
-    }
   }
 
   grid.innerHTML = `<div class="empty-state">${I18N.t("common.loading")}</div>`;
@@ -485,6 +469,39 @@ async function renderPropuestasGrid(){
   }
 
   // ---- Chips de filtro ----
+  // Piezas compartidas por las tres variantes de abajo: opciones del
+  // selector de destino (agrupadas por país) y chips de tipo con su
+  // click, que conserva el destino filtrado.
+  const destinoOptionsHtml = () => {
+    let html = `<option value="">${I18N.t("common.todosLosDestinos")}</option>`;
+    [...new Set(destinos.map(d => d.pais))].forEach(pais => {
+      html += `<optgroup label="${I18N.translateEnum("pais", pais)}">`;
+      destinos.filter(d => d.pais === pais && d.disponible).forEach(d => {
+        html += `<option value="${d.slug}"${destinoFiltro === d.slug ? " selected" : ""}>${d.nombre}</option>`;
+      });
+      html += `</optgroup>`;
+    });
+    return html;
+  };
+  const tipoChipsHtml = () => {
+    let html = `<button class="filtro-btn ${!tipoFiltro ? "active" : ""}" data-tipo="">${I18N.t("common.todos")}</button>`;
+    Object.keys(TIPOS_PROPUESTA).forEach(key => {
+      html += `<button class="filtro-btn ${tipoFiltro === key ? "active" : ""}" data-tipo="${key}">${TIPOS_PROPUESTA[key].labelPlural}</button>`;
+    });
+    return html;
+  };
+  const bindTipoChips = (wrap) => {
+    wrap.querySelectorAll(".filtro-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const tipo = btn.getAttribute("data-tipo");
+        const p = new URLSearchParams(window.location.search);
+        if (tipo) p.set("tipo", tipo); else p.delete("tipo");
+        if (destinoFiltro) p.set("destino", destinoFiltro);
+        aplicarFiltroSuave(p);
+      });
+    });
+  };
+
   const filtrosWrap = document.getElementById("prop-filtros");
   if (filtrosWrap) {
     if (tipoFijo) {
@@ -499,19 +516,10 @@ async function renderPropuestasGrid(){
       // Choquequirao): sin eso se mostraría como una opción comercial
       // activa sin serlo (caso Paracas/Huacachina/Arequipa/Lima, sin
       // ninguna propuesta todavía). d.disponible ya resuelve ese criterio.
-      const paises = [...new Set(destinos.map(d => d.pais))];
-      let optionsHtml = `<option value="">${I18N.t("common.todosLosDestinos")}</option>`;
-      paises.forEach(pais => {
-        optionsHtml += `<optgroup label="${I18N.translateEnum("pais", pais)}">`;
-        destinos.filter(d => d.pais === pais && d.disponible).forEach(d => {
-          optionsHtml += `<option value="${d.slug}"${destinoFiltro === d.slug ? " selected" : ""}>${d.nombre}</option>`;
-        });
-        optionsHtml += `</optgroup>`;
-      });
       filtrosWrap.innerHTML = `
         <div class="filtro-destino-group">
           <label class="filtro-destino-label" for="prop-destino-select">${I18N.t("common.destinoLabel")}</label>
-          <select class="filtro-destino-select" id="prop-destino-select">${optionsHtml}</select>
+          <select class="filtro-destino-select" id="prop-destino-select">${destinoOptionsHtml()}</select>
         </div>`;
       const select = document.getElementById("prop-destino-select");
       select.addEventListener("change", () => {
@@ -522,43 +530,19 @@ async function renderPropuestasGrid(){
       });
     } else if (catalogoFull) {
       // experiencias.html como catálogo principal (PRO-62): chips de tipo
-      // + selector de destino agrupado por país, combinables entre sí —
-      // mismos patrones que ya usan por separado tours/travesias/paquetes
-      // (selector de destino) y catalogo.html (chips de tipo), ahora
-      // juntos en el mismo punto de entrada.
-      let chipsHtml = `<button class="filtro-btn ${!tipoFiltro ? "active" : ""}" data-tipo="">${I18N.t("common.todos")}</button>`;
-      Object.keys(TIPOS_PROPUESTA).forEach(key => {
-        chipsHtml += `<button class="filtro-btn ${tipoFiltro === key ? "active" : ""}" data-tipo="${key}">${TIPOS_PROPUESTA[key].labelPlural}</button>`;
-      });
-
-      const paisesFull = [...new Set(destinos.map(d => d.pais))];
-      let optionsFullHtml = `<option value="">${I18N.t("common.todosLosDestinos")}</option>`;
-      paisesFull.forEach(pais => {
-        optionsFullHtml += `<optgroup label="${I18N.translateEnum("pais", pais)}">`;
-        destinos.filter(d => d.pais === pais && d.disponible).forEach(d => {
-          optionsFullHtml += `<option value="${d.slug}"${destinoFiltro === d.slug ? " selected" : ""}>${d.nombre}</option>`;
-        });
-        optionsFullHtml += `</optgroup>`;
-      });
-
+      // + selector de destino agrupado por país, combinables entre sí
+      // (el selector de destino es el mismo que usan tours/travesias/
+      // paquetes).
       filtrosWrap.innerHTML = `
         <div class="exp-catalogo-filtros">
-          <div class="filtros">${chipsHtml}</div>
+          <div class="filtros">${tipoChipsHtml()}</div>
           <div class="filtro-destino-group">
             <label class="filtro-destino-label" for="prop-destino-select">${I18N.t("common.destinoLabel")}</label>
-            <select class="filtro-destino-select" id="prop-destino-select">${optionsFullHtml}</select>
+            <select class="filtro-destino-select" id="prop-destino-select">${destinoOptionsHtml()}</select>
           </div>
         </div>`;
 
-      filtrosWrap.querySelectorAll(".filtro-btn").forEach(btn => {
-        btn.addEventListener("click", () => {
-          const tipo = btn.getAttribute("data-tipo");
-          const p = new URLSearchParams(window.location.search);
-          if (tipo) p.set("tipo", tipo); else p.delete("tipo");
-          if (destinoFiltro) p.set("destino", destinoFiltro);
-          aplicarFiltroSuave(p);
-        });
-      });
+      bindTipoChips(filtrosWrap);
       const destinoSelectFull = document.getElementById("prop-destino-select");
       destinoSelectFull.addEventListener("change", () => {
         const slug = destinoSelectFull.value;
@@ -566,22 +550,6 @@ async function renderPropuestasGrid(){
         if (slug) p.set("destino", slug); else p.delete("destino");
         if (tipoFiltro) p.set("tipo", tipoFiltro);
         aplicarFiltroSuave(p);
-      });
-    } else {
-      // catalogo.html (explorando por destino): los chips filtran por tipo.
-      let html = `<button class="filtro-btn ${!tipoFiltro ? "active" : ""}" data-tipo="">${I18N.t("common.todos")}</button>`;
-      Object.keys(TIPOS_PROPUESTA).forEach(key => {
-        html += `<button class="filtro-btn ${tipoFiltro === key ? "active" : ""}" data-tipo="${key}">${TIPOS_PROPUESTA[key].labelPlural}</button>`;
-      });
-      filtrosWrap.innerHTML = html;
-      filtrosWrap.querySelectorAll(".filtro-btn").forEach(btn => {
-        btn.addEventListener("click", () => {
-          const tipo = btn.getAttribute("data-tipo");
-          const p = new URLSearchParams(window.location.search);
-          if (tipo) p.set("tipo", tipo); else p.delete("tipo");
-          if (destinoFiltro) p.set("destino", destinoFiltro);
-          aplicarFiltroSuave(p);
-        });
       });
     }
   }
@@ -591,18 +559,6 @@ async function renderPropuestasGrid(){
   // único tipo ya filtrado esto no cambia nada (round-robin de 1 grupo).
   // (El filtro por tipo/destino ya se aplicó del lado de DataAPI.)
   lista = interleaveByTipo(lista);
-
-  // ---- Aviso de filtro activo (sólo relevante en catalogo.html) ----
-  const tituloFiltro = document.getElementById("prop-filtro-activo");
-  if (tituloFiltro) {
-    if (destinoFiltro && !tipoFijo) {
-      const d = destinos.find(d => d.slug === destinoFiltro);
-      tituloFiltro.innerHTML = `${I18N.t("common.mostrandoPropuestasEn")} <b>${d ? d.nombre : destinoFiltro}</b> · <a href="destinos.html">${I18N.t("common.verTodosDestinosLink")}</a>`;
-      tituloFiltro.style.display = "block";
-    } else {
-      tituloFiltro.style.display = "none";
-    }
-  }
 
   if (lista.length === 0) {
     grid.innerHTML = `<div class="empty-state">${I18N.t("common.sinPropuestasFiltro")}</div>`;
@@ -640,7 +596,7 @@ function aplicarFiltroSuave(params){
 // completo en la ficha) para que la línea entre en una sola línea aun
 // con varios lugares. Usada tanto acá como en el carrusel de Inicio.
 function travesiaMetaHtml(p){
-  const dias = p.duracion ? p.duracion.split(" / ")[0] : p.duracion;
+  const dias = p.duracion ? I18N.translateEnum("duracion", p.duracion.split(" / ")[0]) : p.duracion;
   const lugares = (p.detalle && Array.isArray(p.detalle.recorridoMetadata) && p.detalle.recorridoMetadata.length)
     ? p.detalle.recorridoMetadata.join(" · ")
     : (p.destino ? p.destino.nombre : "");
@@ -659,7 +615,7 @@ function propuestaCardHtml(p, volverCtx){
       <a class="img-wrap" href="${href}" aria-label="${I18N.t("aria.verDetallesDe")} ${p.nombre}">
         ${p.imagen ? `<img src="${p.imagen}" alt="${p.nombre}" loading="lazy"${p.imagenPos ? ` style="object-position:${p.imagenPos};"` : ""}>` : `<div class="exp-img-fallback"><span>${p.nombre}</span></div>`}
         <span class="cat-badge">${tipoInfo ? tipoInfo.label : p.tipoProducto}</span>
-        <div class="img-meta">${p.tipoProducto === "travesia" ? travesiaMetaHtml(p) : `${p.duracion} · ${I18N.translateEnum("modalidad", p.modalidad)}`}</div>
+        <div class="img-meta">${p.tipoProducto === "travesia" ? travesiaMetaHtml(p) : `${I18N.translateEnum("duracion", p.duracion)} · ${I18N.translateEnum("modalidad", p.modalidad)}`}</div>
       </a>
       <div class="body">
         ${p.esPlaceholder ? `<span class="placeholder-badge">${I18N.t("common.contenidoEjemplo")}</span>` : ""}
@@ -694,9 +650,8 @@ function renderCalendarioSalidas(){
 /* ---------- Navegación contextual "← Volver a…" (PRO-48) ----------
    Botón discreto y secundario, complementario al breadcrumb (no lo
    reemplaza). Determinista: nunca usa history.back(), sólo enlaces
-   internos ya resueltos por quien la llama (catalogo.html según
-   ?origen=, o renderPropuestaDetalle según el mismo contexto que arma
-   el breadcrumb). Sin contexto válido (href/label null), el link queda
+   internos ya resueltos por quien la llama (renderPropuestaDetalle
+   según el mismo contexto que arma el breadcrumb). Sin contexto válido (href/label null), el link queda
    oculto — no aparece "Volver" en accesos directos. */
 function setVolverLink(id, href, label){
   const el = document.getElementById(id);
@@ -709,8 +664,8 @@ function setVolverLink(id, href, label){
 
 /* =========================================================
    DETALLE DE PROPUESTA (propuesta.html)
-   La ficha lee "tipo" y arma automáticamente los bloques
-   específicos a partir de "detalle" (ver propuestas-data.js).
+   La ficha lee "tipoProducto" y arma automáticamente los bloques
+   específicos a partir de "detalle" (jsonb de la experiencia en Supabase).
    Cada helper de abajo sabe leer el "detalle" de UN tipo y
    devuelve dos partes: bloques para el cuerpo (bodyHtml) y
    filas para la tarjeta lateral (asideHtml). Los campos que
@@ -757,8 +712,14 @@ async function renderPropuestaDetalle(){
   } catch (err) {
     console.error("Error cargando la galería:", err);
   }
-  const galeria = galeriaRows.length ? galeriaRows.map(g => g.url) : (p.imagen ? [p.imagen] : []);
-  const principal = galeria[0] || null;
+  // Cada foto con su propio encuadre: el "foco" de esa imagen en la
+  // galería; el encuadre de la card (p.imagenPos) sólo vale para la
+  // misma foto de la card, no para otra imagen distinta.
+  const galeria = galeriaRows.length
+    ? galeriaRows.map(g => ({ url: g.url, pos: g.foco || (g.url === p.imagen ? p.imagenPos : null) || null }))
+    : (p.imagen ? [{ url: p.imagen, pos: p.imagenPos || null }] : []);
+  const principal = galeria[0] ? galeria[0].url : null;
+  const principalPos = galeria[0] ? galeria[0].pos : null;
 
   const bcEl = document.getElementById("exp-breadcrumb");
   if (bcEl) {
@@ -773,22 +734,16 @@ async function renderPropuestaDetalle(){
     // Contexto explícito por query params (PRO-48): ya no depende de
     // document.referrer. Las cards que llevan a propuesta.html (ver
     // propuestaCardHtml en este mismo archivo) agregan "?origen=" y,
-    // cuando corresponde, "&destino=" — mismo mecanismo que catalogo.html
-    // ya usa para su propio botón "← Volver a…".
-    const origen = params.get("origen"); // "experiencias" | "destinos" | "tours" | "travesias" | "paquetes" | null
+    // cuando corresponde, "&destino=".
+    const origen = params.get("origen"); // "experiencias" | "destino" | "tours" | "travesias" | "paquetes" | null
     const destinoCtxSlug = params.get("destino");
     try {
       if (origen === "destino" && destinoCtxSlug) {
         // Venís de la ficha editorial del destino (PRO-34), no del
-        // catálogo: "Volver" te lleva de nuevo ahí, no a catalogo.html.
+        // catálogo: "Volver" te lleva de nuevo ahí.
         const refDestinoEditorial = await DataAPI.getDestinoPorSlug(destinoCtxSlug);
         volverHref = `destino.html?destino=${encodeURIComponent(destinoCtxSlug)}`;
         volverLabel = refDestinoEditorial ? refDestinoEditorial.nombre : I18N.t("common.destinoLabel");
-        tieneContexto = true;
-      } else if (origen === "destinos" && destinoCtxSlug) {
-        const refDestino = await DataAPI.getDestinoPorSlug(destinoCtxSlug);
-        volverHref = `catalogo.html?destino=${encodeURIComponent(destinoCtxSlug)}&origen=${origen}`;
-        volverLabel = refDestino ? refDestino.nombre : I18N.t("common.catalogo");
         tieneContexto = true;
       } else if (tipoInfo && origen === tipoInfo.pagina.replace(/\.html$/, "")) {
         // Contexto válido con o sin filtro de destino — si no había
@@ -826,10 +781,10 @@ async function renderPropuestaDetalle(){
   // Tours y Travesías: el CTA principal va directo a WhatsApp con el
   // nombre de la propuesta precargado (whatsappLink ya arma la URL con
   // el mensaje codificado).
-  const tourWaHref = p.tipoProducto === "tour" && typeof whatsappLink === "function"
+  const tourWaHref = p.tipoProducto === "tour"
     ? whatsappLink(I18N.t("propuesta.whatsappTour", { nombre: p.nombre }))
     : null;
-  const travesiaWaHref = p.tipoProducto === "travesia" && typeof whatsappLink === "function"
+  const travesiaWaHref = p.tipoProducto === "travesia"
     ? whatsappLink(I18N.t("propuesta.whatsappTravesia", { nombre: p.nombre }))
     : null;
 
@@ -841,11 +796,11 @@ async function renderPropuestaDetalle(){
     <div class="exp-detail-grid" style="margin-top:28px;">
       <div>
         <div class="exp-gallery-main">
-          ${principal ? `<img src="${principal}" alt="${p.nombre}" id="exp-main-img"${p.imagenPos ? ` style="object-position:${p.imagenPos};"` : ""}>` : `<div class="exp-img-fallback"><span>${p.nombre}</span></div>`}
+          ${principal ? `<img src="${principal}" alt="${p.nombre}" id="exp-main-img"${principalPos ? ` style="object-position:${principalPos};"` : ""}>` : `<div class="exp-img-fallback"><span>${p.nombre}</span></div>`}
         </div>
         ${galeria.length > 1 ? `
         <div class="exp-gallery-thumbs">
-          ${galeria.map(src => `<img src="${src}" alt="${p.nombre}" style="cursor:pointer;" onclick="document.getElementById('exp-main-img').src='${src}'">`).join("")}
+          ${galeria.map(g => `<img src="${g.url}" alt="${p.nombre}" style="cursor:pointer;${g.pos ? ` object-position:${g.pos};` : ""}" data-pos="${g.pos || ""}">`).join("")}
         </div>` : ""}
 
         <div class="exp-body">
@@ -878,6 +833,16 @@ async function renderPropuestaDetalle(){
       </aside>
     </div>
   `;
+
+  // Miniaturas: cambian la foto principal junto con su propio encuadre.
+  const mainImg = document.getElementById("exp-main-img");
+  cont.querySelectorAll(".exp-gallery-thumbs img").forEach(th => {
+    th.addEventListener("click", () => {
+      if (!mainImg) return;
+      mainImg.src = th.getAttribute("src");
+      mainImg.style.objectPosition = th.dataset.pos || "";
+    });
+  });
 }
 
 /* ---- Router: elige el helper según p.tipoProducto ---- */
@@ -928,7 +893,7 @@ function detalleBaseHtml(p){
   const d = p.detalle || {};
   let html = "";
   html += infoRowSiHay(I18N.t("common.destinoLabel"), p.destino ? p.destino.nombre : "");
-  html += infoRowSiHay(I18N.t("detalle.duracion"), p.duracion);
+  html += infoRowSiHay(I18N.t("detalle.duracion"), I18N.translateEnum("duracion", p.duracion));
   html += infoRowSiHay(I18N.t("detalle.modalidad"), I18N.translateEnum("modalidad", p.modalidad));
 
   if (p.tipoProducto === "tour") {
@@ -1005,43 +970,11 @@ async function renderDetallePaquete(d, p){
 }
 
 /* =========================================================
-   GRILLA DE DESTINOS (destinos.html + home)
-   Cada destino enlaza a catalogo.html?destino=slug, que
-   mezcla tours, travesías y paquetes de ese lugar.
-   ========================================================= */
-function renderDestinosGrid(){
-  const argCont = document.getElementById("destinos-argentina");
-  const intCont = document.getElementById("destinos-internacional");
-  if ((!argCont && !intCont) || typeof DESTINOS === "undefined") return;
-
-  const cardHtml = (d) => {
-    const cantidad = typeof PROPUESTAS !== "undefined" ? getPropuestasPorDestino(d.slug).length : 0;
-    return `
-    <a class="dest-card ${d.esPlaceholder ? "placeholder" : ""}" href="catalogo.html?destino=${d.slug}">
-      ${d.imagen ? `<img src="${d.imagen}" alt="${d.nombre}">` : ""}
-      <div class="info">
-        <span class="tag">${d.pais}</span>
-        <h3>${d.nombre}</h3>
-        <p>${d.resumen}</p>
-        ${d.esPlaceholder ? `<span class="placeholder-flag">Contenido en preparación</span>` : `<span class="count">${cantidad} propuesta${cantidad === 1 ? "" : "s"} →</span>`}
-      </div>
-    </a>`;
-  };
-
-  if (argCont) {
-    argCont.innerHTML = DESTINOS.filter(d => d.grupo === "argentina").map(cardHtml).join("");
-  }
-  if (intCont) {
-    intCont.innerHTML = DESTINOS.filter(d => d.grupo === "internacional").map(cardHtml).join("");
-  }
-}
-
-/* =========================================================
    PÁGINA EDITORIAL DE DESTINO (destino.html?destino=slug) — PRO-34
    Plantilla única para los 12 destinos: contenido editorial e
    informativo del lugar primero (identidad, fotos reales, datos
    reales del destino), acceso secundario a "ver todo en el catálogo"
-   (catalogo.html?destino=slug) después — no duplica esa grilla acá,
+   (experiencias.html?destino=slug) después — no duplica esa grilla acá,
    sólo muestra las experiencias reales de este destino con el mismo
    componente (propuestaCardHtml) que ya usa el resto del sitio.
    Nunca inventa contenido: lo que no existe todavía en la ficha del
@@ -1084,7 +1017,7 @@ async function renderDestinoEditorial(){
   const metaDesc = document.querySelector('meta[name="description"]');
   if (metaDesc && d.resumen) metaDesc.setAttribute("content", d.resumen);
 
-  // Mismo criterio que ya usan destinos.html/catalogo.html: d.disponible
+  // Mismo criterio que ya usa destinos.html: d.disponible
   // (no d.esPlaceholder) decide si el destino se trata como "Próximamente"
   // — ya contempla el caso Choquequirao (ficha con esPlaceholder:true pero
   // con una experiencia publicada, que por eso no debe verse como pendiente).
@@ -1121,8 +1054,8 @@ async function renderDestinoEditorial(){
   // nombre/país/presentación (no un bloque aparte debajo de la grilla):
   // subtítulos chicos en amarillo, contenido secundario, continuidad
   // vertical con el resto del hero, sin cards ni columnas iguales. Los
-  // tres campos todavía no existen en la base para ningún destino: se
-  // muestran igual, cada uno con su propio "Próximamente".
+  // destinos que todavía no tienen cargado un campo (cuando_ir/
+  // como_llegar/naturaleza_cultura en Supabase) muestran "Próximamente".
   const heroTopicosHtml = `
     <div class="destino-hero-topicos">
       <div class="destino-hero-topico"><h3>${I18N.t("destino.cuandoIr")}</h3><p>${d.cuandoIr || I18N.t("common.proximamente")}</p></div>
@@ -1132,7 +1065,7 @@ async function renderDestinoEditorial(){
 
   // Volver a esta ficha de destino desde propuesta.html (PRO-48): mismo
   // mecanismo de "origen"/"destino" por query param que ya usan
-  // catalogo.html y las páginas de tipo fijo.
+  // las páginas de tipo fijo.
   const volverCtx = `&origen=destino&destino=${encodeURIComponent(d.slug)}`;
 
   // Destino ya no duplica el catálogo: en vez de una card comercial (con
@@ -1253,18 +1186,6 @@ async function renderEquipoGrid(){
   });
 }
 
-/* =========================================================
-   CARRUSEL DE COMENTARIOS (Inicio)
-   Lee los datos de comentarios-data.js (array "comentarios")
-   y arma el carrusel entero (slides + puntos) desde ahí: el
-   HTML nunca tiene reseñas escritas a mano. Sólo actúa si la
-   página tiene #testi-track (por ahora, únicamente index.html).
-   Autoplay con pausa en hover/foco y reinicio del intervalo
-   ante una interacción manual, para que el movimiento
-   automático no compita con el usuario. Respeta
-   prefers-reduced-motion desactivando el autoplay.
-   ========================================================= */
-
 /* ---------- Galería: filas justificadas (sin recortar ni deformar) ----------
    .gal-row trae las fotos en flexbox simple (fallback si falla JS).
    Acá las agrupamos en filas que ocupan todo el ancho, dándole a cada
@@ -1328,6 +1249,17 @@ function initGaleriaJustify(){
   });
 }
 
+/* =========================================================
+   CARRUSEL DE COMENTARIOS (Inicio)
+   Lee los datos de comentarios-data.js (array "comentarios")
+   y arma el carrusel entero (slides + puntos) desde ahí: el
+   HTML nunca tiene reseñas escritas a mano. Sólo actúa si la
+   página tiene #testi-track (por ahora, únicamente index.html).
+   Autoplay con pausa en hover/foco y reinicio del intervalo
+   ante una interacción manual, para que el movimiento
+   automático no compita con el usuario. Respeta
+   prefers-reduced-motion desactivando el autoplay.
+   ========================================================= */
 function initTestimoniosCarousel(){
   const carousel = document.getElementById("testi-carousel");
   const track = document.getElementById("testi-track");

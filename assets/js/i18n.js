@@ -354,7 +354,45 @@ const I18N = (() => {
 
       /* ---------- WhatsApp / mailto por defecto ---------- */
       "whatsapp.mensajeDefault": "Hola, quiero consultar por una experiencia de Proyecto Raíces.",
-      "mailto.asuntoDefault": "Consulta desde la web"
+      "mailto.asuntoDefault": "Consulta desde la web",
+
+      /* ---------- Metadatos de páginas estáticas (title, meta description, alt) ---------- */
+      "meta.home.title": "Proyecto Raíces — Turismo aventura en Argentina y Perú",
+      "meta.experiencias.title": "Experiencias — Proyecto Raíces",
+      "meta.destinos.title": "Destinos — Proyecto Raíces",
+      "meta.destino.title": "Destino — Proyecto Raíces",
+      "meta.tours.title": "Tours — Proyecto Raíces",
+      "meta.travesias.title": "Travesías — Proyecto Raíces",
+      "meta.paquetes.title": "Paquetes — Proyecto Raíces",
+      "meta.propuesta.title": "Propuesta — Proyecto Raíces",
+      "meta.nosotros.title": "Nosotros — Proyecto Raíces",
+      "meta.galeria.title": "Galería — Proyecto Raíces",
+      "meta.comentarios.title": "Comentarios — Proyecto Raíces",
+      "meta.contacto.title": "Contacto — Proyecto Raíces",
+      "meta.home.desc": "Proyecto Raíces crea y selecciona experiencias de viaje únicas para conectar personas con destinos, culturas y momentos que quedan para siempre. Trekking, camping y salidas guiadas en Argentina y Perú.",
+      "meta.experiencias.desc": "Tours, travesías y paquetes de Proyecto Raíces en un solo lugar: elegí tu próxima aventura en Argentina y Perú.",
+      "meta.destinos.desc": "Descubrí los destinos de Proyecto Raíces: Bariloche, Ushuaia, San Martín de los Andes, Villa Pehuenia y Norte Neuquino en Argentina, y Cusco (Perú) a nivel internacional.",
+      "meta.destino.desc": "Conocé cada destino de Proyecto Raíces: identidad del lugar, fotos reales y las experiencias disponibles ahí.",
+      "meta.tours.desc": "Tours de medio día y día completo de Proyecto Raíces: actividades guiadas de trekking, camping y naturaleza en Argentina y Perú.",
+      "meta.travesias.desc": "Travesías de varios días de Proyecto Raíces: trekking y camping en Argentina y Perú.",
+      "meta.paquetes.desc": "Paquetes de viaje integrales de Proyecto Raíces en Argentina y Perú, con atención personalizada de principio a fin.",
+      "meta.propuesta.desc": "Detalle de tour, travesía o paquete de turismo aventura de Proyecto Raíces.",
+      "meta.nosotros.desc": "Conocé a Proyecto Raíces: quiénes somos, nuestra propuesta de valor y cómo creamos experiencias de viaje en Argentina y Perú.",
+      "meta.galeria.desc": "Galería de fotos de las experiencias y salidas de Proyecto Raíces en Argentina y Perú.",
+      "meta.comentarios.desc": "Lo que dicen los viajeros que ya vivieron una experiencia con Proyecto Raíces.",
+      "meta.contacto.desc": "Contactate con Proyecto Raíces para consultar disponibilidad, armar un viaje a medida o resolver dudas sobre nuestras experiencias en Argentina y Perú.",
+      "alt.home.hero": "Laguna y montañas de la Cordillera, uno de los paisajes que conecta Proyecto Raíces",
+      "alt.home.tours": "Tours",
+      "alt.home.travesias": "Travesías",
+      "alt.home.paquetes": "Paquetes",
+      "alt.home.quienesSomos": "Fotografía de Proyecto Raíces en uno de nuestros destinos",
+      "alt.nosotros.hero": "Mujer cusqueña compartiendo su oficio artesanal, parte de las comunidades con las que trabajamos",
+      "alt.nosotros.historia": "Caminando hacia una ciudadela inca entre las montañas, el ritmo despacio que define cada salida",
+      "alt.paquetes.hero": "Viajera con los brazos abiertos frente a Machu Picchu, disfrutando un viaje resuelto de principio a fin",
+      "alt.tours.hero": "Recorriendo un mercado andino de artesanías, una experiencia real de viaje",
+      "alt.tours.intro": "Vida local en una calle de Cusco, parte de la experiencia de un tour",
+      "alt.travesias.hero": "Vista amplia de lagos y montañas patagónicas, el paisaje que se recorre a lo largo de varios días",
+      "alt.travesias.intro": "Llamas frente a picos nevados en la cordillera, protagonistas del camino"
     },
 
     en: {
@@ -678,12 +716,51 @@ const I18N = (() => {
 
       /* ---------- Default WhatsApp / mailto ---------- */
       "whatsapp.mensajeDefault": "Hi, I'd like to ask about a Proyecto Raíces experience.",
-      "mailto.asuntoDefault": "Website inquiry"
+      "mailto.asuntoDefault": "Website inquiry",
+
+      /* ---------- Static page metadata (title, meta description, alt) ---------- */
+      "meta.home.title": "Proyecto Raíces — Adventure tourism in Argentina and Peru",
+      "meta.experiencias.title": "Experiences — Proyecto Raíces",
+      "meta.destinos.title": "Destinations — Proyecto Raíces",
+      "meta.destino.title": "Destination — Proyecto Raíces",
+      "meta.tours.title": "Tours — Proyecto Raíces",
+      "meta.travesias.title": "Treks — Proyecto Raíces",
+      "meta.paquetes.title": "Packages — Proyecto Raíces",
+      "meta.propuesta.title": "Listing — Proyecto Raíces",
+      "meta.nosotros.title": "About us — Proyecto Raíces",
+      "meta.galeria.title": "Gallery — Proyecto Raíces",
+      "meta.comentarios.title": "Reviews — Proyecto Raíces",
+      "meta.contacto.title": "Contact — Proyecto Raíces",
+      "meta.home.desc": "Proyecto Raíces creates and selects unique travel experiences to connect people with destinations, cultures and moments that last forever. Trekking, camping and guided trips in Argentina and Peru.",
+      "meta.experiencias.desc": "Proyecto Raíces tours, treks and packages in one place: choose your next adventure in Argentina and Peru.",
+      "meta.destinos.desc": "Discover Proyecto Raíces destinations: Bariloche, Ushuaia, San Martín de los Andes, Villa Pehuenia and Norte Neuquino in Argentina, and Cusco (Peru) internationally.",
+      "meta.destino.desc": "Get to know each Proyecto Raíces destination: the character of the place, real photos and the experiences available there.",
+      "meta.tours.desc": "Half-day and full-day Proyecto Raíces tours: guided trekking, camping and nature activities in Argentina and Peru.",
+      "meta.travesias.desc": "Multi-day Proyecto Raíces treks: trekking and camping in Argentina and Peru.",
+      "meta.paquetes.desc": "All-inclusive Proyecto Raíces travel packages in Argentina and Peru, with personalized attention from start to finish.",
+      "meta.propuesta.desc": "Details of a Proyecto Raíces adventure tourism tour, trek or package.",
+      "meta.nosotros.desc": "Get to know Proyecto Raíces: who we are, our value proposition and how we create travel experiences in Argentina and Peru.",
+      "meta.galeria.desc": "Photo gallery of Proyecto Raíces experiences and departures in Argentina and Peru.",
+      "meta.comentarios.desc": "What travelers who have already had an experience with Proyecto Raíces say.",
+      "meta.contacto.desc": "Get in touch with Proyecto Raíces to check availability, plan a custom trip or ask about our experiences in Argentina and Peru.",
+      "alt.home.hero": "Lake and mountains of the Cordillera, one of the landscapes that connects Proyecto Raíces",
+      "alt.home.tours": "Tours",
+      "alt.home.travesias": "Treks",
+      "alt.home.paquetes": "Packages",
+      "alt.home.quienesSomos": "Photo of Proyecto Raíces at one of our destinations",
+      "alt.nosotros.hero": "A woman from Cusco sharing her craft, part of the communities we work with",
+      "alt.nosotros.historia": "Walking toward an Inca citadel among the mountains, the slow pace that defines every trip",
+      "alt.paquetes.hero": "Traveler with open arms in front of Machu Picchu, enjoying a trip arranged from start to finish",
+      "alt.tours.hero": "Walking through an Andean crafts market, a real travel experience",
+      "alt.tours.intro": "Local life on a street in Cusco, part of the tour experience",
+      "alt.travesias.hero": "Wide view of Patagonian lakes and mountains, the landscape covered over several days",
+      "alt.travesias.intro": "Llamas in front of snow-capped peaks in the mountain range, protagonists of the trail"
     }
   };
 
   /* ---------- Enums de Supabase con pocos valores fijos ----------
-     destinos.pais, experiencias.modalidad y detalle.dificultad no
+     destinos.pais, experiencias.modalidad, experiencias.duracion y
+     detalle.dificultad no
      tienen columna "_en" (serían decenas de filas repitiendo apenas
      2–7 valores reales): se traducen acá, una sola vez por valor real,
      y el resto del sitio los resuelve con I18N.translateEnum() en vez
@@ -702,6 +779,17 @@ const I18N = (() => {
       "Salida con reserva previa": "Departure by reservation",
       "Paquete a medida": "Custom package"
     },
+    // Duración: valores fijos ("Medio día", "Día completo") y el patrón
+    // "N días / M noches" (también "N días" solo), conservando los
+    // números tal cual; "3 h", "3–4 h", etc. ya son iguales en inglés.
+    duracion: (v) => {
+      if (v === "Medio día") return "Half day";
+      if (v === "Día completo") return "Full day";
+      const m = /^(\d+) días?(?: \/ (\d+) noches?)?$/.exec(v);
+      if (!m) return v;
+      const dias = `${m[1]} ${m[1] === "1" ? "day" : "days"}`;
+      return m[2] ? `${dias} / ${m[2]} ${m[2] === "1" ? "night" : "nights"}` : dias;
+    },
     dificultad: {
       "Alta": "High",
       "Media": "Medium",
@@ -718,6 +806,7 @@ const I18N = (() => {
     if (currentLang !== "en") return valor;
     const mapa = enumMaps[categoria];
     if (!mapa) return valor;
+    if (typeof mapa === "function") return mapa(valor);
     return mapa[valor] || valor;
   }
 
@@ -759,6 +848,9 @@ const I18N = (() => {
     });
     scope.querySelectorAll("[data-i18n-alt]").forEach(el => {
       el.setAttribute("alt", t(el.getAttribute("data-i18n-alt")));
+    });
+    scope.querySelectorAll("[data-i18n-content]").forEach(el => {
+      el.setAttribute("content", t(el.getAttribute("data-i18n-content")));
     });
     scope.querySelectorAll("[data-i18n-title]").forEach(el => {
       el.setAttribute("title", t(el.getAttribute("data-i18n-title")));

@@ -103,8 +103,8 @@ const DataAPI = (() => {
     return { id: a.id, slug: a.slug, nombre: a.nombre };
   }
 
-  function mapExperiencia(e, destinosPorId) {
-    const destinoRow = e.destino || (destinosPorId ? destinosPorId[e.destino_id] : null);
+  function mapExperiencia(e) {
+    const destinoRow = e.destino || null;
     const actividades = (e.experiencia_actividades || [])
       .map(rel => mapActividad(rel.actividades))
       .filter(Boolean);
@@ -229,6 +229,7 @@ const DataAPI = (() => {
       .from("experiencias")
       .select(EXPERIENCIA_SELECT)
       .eq("slug", slug)
+      .eq("publicado", true)
       .eq("activo", true)
       .maybeSingle();
     if (error) throw error;
@@ -268,9 +269,11 @@ const DataAPI = (() => {
       .eq("paquete_id", paqueteId)
       .order("orden", { ascending: true });
     if (error) throw error;
+    // publicado y activo se evalúan sobre la fila cruda (select "*"): así
+    // "activo" no hace falta exponerlo en el shape mapeado.
     return (data || [])
-      .map(row => ({ orden: row.orden, experiencia: row.experiencia ? mapExperiencia(row.experiencia) : null }))
-      .filter(row => row.experiencia && row.experiencia.publicado);
+      .filter(row => row.experiencia && row.experiencia.publicado === true && row.experiencia.activo === true)
+      .map(row => ({ orden: row.orden, experiencia: mapExperiencia(row.experiencia) }));
   }
 
   /* ================= EQUIPO ================= */
