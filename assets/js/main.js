@@ -715,9 +715,15 @@ async function renderPropuestaDetalle(){
   // Cada foto con su propio encuadre: el "foco" de esa imagen en la
   // galería; el encuadre de la card (p.imagenPos) sólo vale para la
   // misma foto de la card, no para otra imagen distinta.
-  const galeria = galeriaRows.length
-    ? galeriaRows.map(g => ({ url: g.url, pos: g.foco || (g.url === p.imagen ? p.imagenPos : null) || null }))
-    : (p.imagen ? [{ url: p.imagen, pos: p.imagenPos || null }] : []);
+  // La imagen principal del detalle es SIEMPRE la portada de la card
+  // (p.imagen, con su mismo encuadre): si no está entre las filas de la
+  // galería se antepone, así siempre se puede volver a ella.
+  const galeria = galeriaRows.map(g => ({ url: g.url, pos: g.foco || (g.url === p.imagen ? p.imagenPos : null) || null }));
+  if (p.imagen) {
+    const i = galeria.findIndex(g => g.url === p.imagen);
+    if (i >= 0) galeria.splice(i, 1);
+    galeria.unshift({ url: p.imagen, pos: p.imagenPos || null });
+  }
   const principal = galeria[0] ? galeria[0].url : null;
   const principalPos = galeria[0] ? galeria[0].pos : null;
 
