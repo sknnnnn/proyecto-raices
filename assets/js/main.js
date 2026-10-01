@@ -831,11 +831,11 @@ async function renderPropuestaDetalle(){
     <div class="exp-detail-grid" style="margin-top:28px;">
       <div>
         <div class="exp-gallery-main">
-          ${principal ? `<img src="${principal.url}" alt="${p.nombre}" id="exp-main-img">` : `<div class="exp-img-fallback"><span>${p.nombre}</span></div>`}
+          ${principal ? `<img src="${principal.url}" alt="${p.nombre}" id="exp-main-img"${principal.pos ? ` style="object-position:${principal.pos};"` : ""}>` : `<div class="exp-img-fallback"><span>${p.nombre}</span></div>`}
         </div>
         ${fotos.length > 1 ? `
         <div class="exp-gallery-thumbs">
-          ${fotos.map(f => `<img src="${f.url}" alt="${p.nombre}" data-src="${f.url}" style="cursor:pointer;${f.pos ? ` object-position:${f.pos};` : ""}">`).join("")}
+          ${fotos.map(f => `<img src="${f.url}" alt="${p.nombre}" data-src="${f.url}" data-pos="${f.pos || ""}" style="cursor:pointer;${f.pos ? ` object-position:${f.pos};` : ""}">`).join("")}
         </div>` : ""}
 
         <div class="exp-body">
@@ -869,16 +869,12 @@ async function renderPropuestaDetalle(){
     </div>
   `;
 
-  // Fondo difuminado de la foto principal (ver .exp-gallery-main: la foto se
-  // muestra entera, sin recorte) y cambio de foto al tocar una miniatura.
-  const mainBox = cont.querySelector(".exp-gallery-main");
+  // Al tocar una miniatura, la foto principal pasa a esa imagen con su propio
+  // encuadre (foco / imagen_pos), igual que en el marco horizontal inicial.
   const mainImg = document.getElementById("exp-main-img");
-  // URL absoluta: un url() dentro de una variable CSS se resuelve contra la hoja de estilos, no contra la página.
-  const setFondo = src => { if (mainBox) mainBox.style.setProperty("--exp-main-bg", `url("${new URL(src, document.baseURI).href}")`); };
-  if (principal) setFondo(principal.url);
   cont.querySelectorAll(".exp-gallery-thumbs img").forEach(t => t.addEventListener("click", () => {
     mainImg.src = t.dataset.src;
-    setFondo(t.dataset.src);
+    mainImg.style.objectPosition = t.dataset.pos || "";
   }));
 }
 
